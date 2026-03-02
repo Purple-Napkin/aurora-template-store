@@ -119,7 +119,7 @@ function CheckoutAcmeContent() {
               </span>
               <span className="text-aurora-muted">
                 {formatPrice(
-                  (item.unitAmount ?? 0) * (item.quantity ?? 1) * 100,
+                  (item.unitAmount ?? 0) * (item.quantity ?? 1),
                   session.currency
                 )}
               </span>

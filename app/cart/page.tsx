@@ -149,7 +149,7 @@ export default function CartPage() {
                 <span>{formatPrice(grandTotal)}</span>
               </div>
             </div>
-            <div className="flex gap-2 mt-4">
+            <div className="flex gap-2 mt-4" data-holmes="cross-sell">
               <input
                 type="text"
                 placeholder="Promo code"

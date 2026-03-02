@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { getHolmesScriptUrl } from "@aurora-studio/sdk";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
 import { StoreProvider } from "@/components/StoreContext";
@@ -44,7 +45,10 @@ export default function RootLayout({
         </StoreProvider>
         {process.env.NEXT_PUBLIC_AURORA_API_URL && process.env.NEXT_PUBLIC_TENANT_SLUG && (
           <Script
-            src={`${process.env.NEXT_PUBLIC_AURORA_API_URL.replace(/\/$/, "")}/api/holmes/v1/script.js?site=${process.env.NEXT_PUBLIC_TENANT_SLUG}`}
+            src={getHolmesScriptUrl(
+              process.env.NEXT_PUBLIC_AURORA_API_URL,
+              process.env.NEXT_PUBLIC_TENANT_SLUG
+            )}
             strategy="afterInteractive"
           />
         )}

@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@aurora-studio/sdk':
-        specifier: ^0.2.3
-        version: 0.2.3
+        specifier: file:../aurora-sdk
+        version: file:../aurora-sdk
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -70,8 +70,8 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@aurora-studio/sdk@0.2.3':
-    resolution: {integrity: sha512-I3+7ShQ3iWCJbRnnKFdUcUcBur9LZPEp/pRBZc8wC9qWprvIJC2seUgatyefJgmAHxO36p+CzckxzTJ46jFspQ==}
+  '@aurora-studio/sdk@file:../aurora-sdk':
+    resolution: {directory: ../aurora-sdk, type: directory}
     engines: {node: '>=18'}
 
   '@emnapi/core@1.8.1':
@@ -1836,7 +1836,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@aurora-studio/sdk@0.2.3': {}
+  '@aurora-studio/sdk@file:../aurora-sdk': {}
 
   '@emnapi/core@1.8.1':
     dependencies:

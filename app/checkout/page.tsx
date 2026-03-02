@@ -106,7 +106,10 @@ export default function CheckoutPage() {
   return (
     <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6">
       {store && (
-        <div className="flex items-center justify-between mb-6">
+        <div
+          className="flex items-center justify-between mb-6"
+          data-holmes="checkout-extras"
+        >
           <span className="text-aurora-muted">Checkout from: {store.name}</span>
           <Link href="/stores" className="text-aurora-accent hover:underline text-sm">
             Change Store
@@ -211,7 +214,7 @@ export default function CheckoutPage() {
                   className="w-full px-4 py-3 rounded-component bg-aurora-surface border border-aurora-border text-white"
                 />
               </div>
-              <div>
+              <div data-holmes="checkout-extras">
                 <label className="block font-medium mb-2">Delivery instructions (optional)</label>
                 <textarea
                   value={instructions}
@@ -221,7 +224,10 @@ export default function CheckoutPage() {
                   className="w-full px-4 py-3 rounded-component bg-aurora-surface border border-aurora-border text-white"
                 />
               </div>
-              <label className="flex items-center gap-3 cursor-pointer">
+              <label
+                className="flex items-center gap-3 cursor-pointer"
+                data-holmes="checkout-extras"
+              >
                 <input
                   type="checkbox"
                   checked={allowSubstitutions}
@@ -245,7 +251,10 @@ export default function CheckoutPage() {
           )}
 
           {step === 3 && (
-            <div className="p-4 rounded-component bg-aurora-surface border border-aurora-border">
+            <div
+              className="p-4 rounded-component bg-aurora-surface border border-aurora-border"
+              data-holmes="payment"
+            >
               <p className="text-aurora-muted">
                 You will be redirected to complete payment securely.
               </p>

@@ -51,7 +51,7 @@ export async function YouMayAlsoLike({
   if (records.length === 0) return null;
 
   return (
-    <div>
+    <div data-holmes="recommendations">
       <h2 className="text-xl font-bold mb-4">You May Also Like</h2>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {records.map((record) => {
