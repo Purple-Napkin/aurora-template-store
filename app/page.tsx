@@ -10,9 +10,15 @@ export default function HomePage() {
     <div className="max-w-6xl mx-auto">
       <StoreContextBar />
 
-      <HeroBanner />
+      {/* Holmes script injects personalized hero when data-holmes=home-hero exists */}
+      <div data-holmes="home-hero">
+        <HeroBanner />
+      </div>
 
       <CategoryNav />
+
+      {/* Holmes script injects personalized sections (Meals, Top up, Inspiration) when data-holmes=home-sections exists */}
+      <div data-holmes="home-sections" className="px-4 sm:px-6 py-6" />
 
       <section className="py-12 px-4 sm:px-6">
         <h2 className="text-xl font-bold mb-2 flex items-center gap-2">

@@ -35,16 +35,16 @@ export async function CategoryNav() {
 
   return (
     <div className="border-b border-aurora-border overflow-x-auto">
-      <div className="flex gap-2 px-4 py-3 min-w-max">
-        {categories.map((cat) => (
-          <Link
-            key={cat.slug}
-            href={`/catalogue?category=${encodeURIComponent(cat.slug)}`}
-            className="shrink-0 px-4 py-2 rounded-component bg-aurora-surface/80 border border-aurora-border hover:border-aurora-accent/40 text-sm font-medium transition-colors whitespace-nowrap"
-          >
-            {cat.name}
-          </Link>
-        ))}
+      <div className="flex gap-2 px-4 py-4 min-w-max">
+          {categories.map((cat) => (
+            <Link
+              key={cat.slug}
+              href={`/catalogue?category=${encodeURIComponent(cat.slug)}`}
+              className="shrink-0 px-4 py-2.5 rounded-full bg-aurora-surface/70 border border-aurora-border/70 hover:bg-aurora-surface hover:border-aurora-accent/50 hover:text-aurora-accent text-sm font-medium transition-all duration-200 whitespace-nowrap shadow-sm"
+            >
+              {cat.name}
+            </Link>
+          ))}
       </div>
     </div>
   );

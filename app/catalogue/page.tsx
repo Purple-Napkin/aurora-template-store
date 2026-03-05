@@ -8,8 +8,13 @@ import { useStore } from "@/components/StoreContext";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { search, createAuroraClient } from "@/lib/aurora";
 import type { SearchHit } from "@/lib/aurora";
+import {
+  CatalogueFilters,
+  type CategoryItem,
+  type SortOption,
+} from "@/components/CatalogueFilters";
 
-const DEFAULT_CATEGORIES = [
+const DEFAULT_CATEGORIES: CategoryItem[] = [
   { name: "Bakery Items", slug: "bakery-items" },
   { name: "Frozen Foods", slug: "frozen-foods" },
   { name: "Vegetables", slug: "vegetables" },
@@ -35,8 +40,6 @@ function getDisplayName(record: Record<string, unknown>): string {
   return String(r.name ?? r.title ?? r.snippet ?? record.id ?? "");
 }
 
-type TabType = "featured" | "bestsellers" | "new" | "sale";
-
 function CatalogueContent() {
   const searchParams = useSearchParams();
   const category = searchParams.get("category") ?? "";
@@ -44,11 +47,12 @@ function CatalogueContent() {
   const [hits, setHits] = useState<SearchHit[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<TabType>("featured");
+  const [tab, setTab] = useState<SortOption>("featured");
   const [catalogSlug, setCatalogSlug] = useState<string | null>(null);
   const [currency, setCurrency] = useState("GBP");
   const [page, setPage] = useState(0);
-  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+  const [categories, setCategories] = useState<CategoryItem[]>(DEFAULT_CATEGORIES);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const limit = 24;
 
   useEffect(() => {
@@ -125,169 +129,163 @@ function CatalogueContent() {
     loadProducts();
   }, [loadProducts]);
 
-  const tabs: { id: TabType; label: string }[] = [
-    { id: "featured", label: "Featured" },
-    { id: "bestsellers", label: "Bestsellers" },
-    { id: "new", label: "New Arrivals" },
-    { id: "sale", label: "On Sale" },
-  ];
+  const handleSortChange = useCallback((sort: SortOption) => {
+    setTab(sort);
+    setPage(0);
+  }, []);
 
   return (
-    <div className="max-w-6xl mx-auto py-10 sm:py-16 px-4 sm:px-6">
-      <h1 className="text-xl sm:text-2xl font-bold mb-4">Products</h1>
+    <div className="max-w-7xl mx-auto py-6 sm:py-10 px-4 sm:px-6">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Sidebar filters (desktop) */}
+        <CatalogueFilters
+          categories={categories}
+          currentCategory={category}
+          currentSort={tab}
+          onSortChange={handleSortChange}
+          storeName={store?.name}
+          variant="sidebar"
+        />
 
-      <div className="flex flex-wrap items-center gap-2 mb-4">
-        <Link
-          href="/catalogue"
-          className={`px-4 py-2 rounded-component text-sm font-medium transition-colors ${
-            !category ? "bg-aurora-accent text-aurora-bg" : "bg-aurora-surface/80 border border-aurora-border hover:border-aurora-accent/40"
-          }`}
-        >
-          All
-        </Link>
-        {categories.map((cat) => (
-          <Link
-            key={cat.slug}
-            href={`/catalogue?category=${encodeURIComponent(cat.slug)}`}
-            className={`px-4 py-2 rounded-component text-sm font-medium transition-colors ${
-              category === cat.slug ? "bg-aurora-accent text-aurora-bg" : "bg-aurora-surface/80 border border-aurora-border hover:border-aurora-accent/40"
-            }`}
-          >
-            {cat.name}
-          </Link>
-        ))}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2 mb-6">
-        <span className="text-aurora-muted text-sm mr-2">Sort:</span>
-        {tabs.map((t) => (
+        {/* Mobile filters bar */}
+        <div className="lg:hidden flex items-center gap-3">
           <button
-            key={t.id}
             type="button"
-            onClick={() => { setTab(t.id); setPage(0); }}
-            className={`px-3 py-1.5 rounded-component text-xs font-medium transition-colors ${
-              tab === t.id
-                ? "bg-aurora-accent/20 text-aurora-accent border border-aurora-accent/40"
-                : "bg-aurora-surface/50 border border-aurora-border/50 text-aurora-muted hover:text-white hover:border-aurora-border"
-            }`}
+            onClick={() => setFiltersOpen((o) => !o)}
+            className="flex items-center gap-2 px-4 py-2 rounded-component bg-aurora-surface/80 border border-aurora-border hover:border-aurora-accent/40 text-sm font-medium"
           >
-            {t.label}
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            Filters
           </button>
-        ))}
-        {store && (
-          <span className="text-aurora-muted text-xs flex items-center gap-1 ml-2">
-            Store products
+          <span className="text-aurora-muted text-sm">
+            {category ? categories.find((c) => c.slug === category)?.name ?? category : "All"} · {tab === "featured" ? "Featured" : tab === "bestsellers" ? "Bestsellers" : tab === "new" ? "New" : "On Sale"}
           </span>
-        )}
-      </div>
+        </div>
 
-      {store && (
-        <p className="text-aurora-muted text-sm mb-4">
-          Showing products from {store.name}
-        </p>
-      )}
+        {/* Main content */}
+        <main className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold mb-4">Products</h1>
 
-      {loading ? (
-        <p className="text-aurora-muted py-12 text-center">Loading…</p>
-      ) : (
-        <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5">
-            {hits.map((record) => {
-              const id = (record.recordId ?? record.id) as string;
-              const name = getDisplayName(record);
-              const rawPrice = getPrice(record);
-              const sellByWeight = Boolean(record.sell_by_weight);
-              const unit = (record.unit as string) || "kg";
-              const pricePerUnit = record.price_per_unit as number | undefined;
-              const priceCents =
-                sellByWeight && pricePerUnit != null
-                  ? Math.round(pricePerUnit * 100)
-                  : rawPrice != null
-                    ? Math.round(rawPrice * 100)
-                    : undefined;
-              const imageUrl = getImageUrl(record);
+          {/* Mobile filter drawer */}
+          {filtersOpen && (
+            <div className="lg:hidden mb-6 rounded-component border border-aurora-border overflow-hidden">
+              <CatalogueFilters
+                categories={categories}
+                currentCategory={category}
+                currentSort={tab}
+                onSortChange={handleSortChange}
+                storeName={store?.name}
+                onClose={() => setFiltersOpen(false)}
+                variant="drawer"
+              />
+            </div>
+          )}
 
-              return (
-                <div
-                  key={id}
-                  className="group p-4 rounded-component bg-aurora-surface/80 border border-aurora-border hover:border-aurora-accent/40 hover:shadow-lg transition-all overflow-hidden"
-                >
-                  <Link href={`/catalogue/${id}`} className="block">
-                    <div className="aspect-square rounded-component bg-aurora-surface-hover mb-3 overflow-hidden">
-                      {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">
-                          —
+          {loading ? (
+            <p className="text-aurora-muted py-12 text-center">Loading…</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+                {hits.map((record) => {
+                  const id = (record.recordId ?? record.id) as string;
+                  const name = getDisplayName(record);
+                  const rawPrice = getPrice(record);
+                  const sellByWeight = Boolean(record.sell_by_weight);
+                  const unit = (record.unit as string) || "kg";
+                  const pricePerUnit = record.price_per_unit as number | undefined;
+                  const priceCents =
+                    sellByWeight && pricePerUnit != null
+                      ? Math.round(pricePerUnit * 100)
+                      : rawPrice != null
+                        ? Math.round(rawPrice * 100)
+                        : undefined;
+                  const imageUrl = getImageUrl(record);
+
+                  return (
+                    <div
+                      key={id}
+                      className="group p-4 rounded-component bg-aurora-surface/80 border border-aurora-border hover:border-aurora-accent/40 hover:shadow-lg transition-all overflow-hidden"
+                    >
+                      <Link href={`/catalogue/${id}`} className="block">
+                        <div className="aspect-square rounded-component bg-aurora-surface-hover mb-3 overflow-hidden">
+                          {imageUrl ? (
+                            <img
+                              src={imageUrl}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">
+                              —
+                            </div>
+                          )}
+                        </div>
+                        <p className="font-semibold text-sm sm:text-base truncate group-hover:text-aurora-accent transition-colors">
+                          {name}
+                        </p>
+                        {(priceCents != null || (sellByWeight && pricePerUnit != null)) && (
+                          <p className="text-sm mt-1 font-bold text-aurora-accent">
+                            {sellByWeight && pricePerUnit != null
+                              ? formatPrice(Math.round(pricePerUnit * 100), currency) + `/${unit}`
+                              : formatPrice(priceCents!, currency)}
+                          </p>
+                        )}
+                      </Link>
+                      {priceCents != null && catalogSlug && (
+                        <div className="mt-3">
+                          <AddToCartButton
+                            recordId={id}
+                            tableSlug={catalogSlug}
+                            name={name}
+                            unitAmount={priceCents}
+                            sellByWeight={sellByWeight}
+                            unit={unit}
+                            imageUrl={imageUrl}
+                          />
                         </div>
                       )}
                     </div>
-                    <p className="font-semibold text-sm sm:text-base truncate group-hover:text-aurora-accent transition-colors">
-                      {name}
-                    </p>
-                    {(priceCents != null || (sellByWeight && pricePerUnit != null)) && (
-                      <p className="text-sm mt-1 font-bold text-aurora-accent">
-                        {sellByWeight && pricePerUnit != null
-                          ? formatPrice(Math.round(pricePerUnit * 100), currency) + `/${unit}`
-                          : formatPrice(priceCents!, currency)}
-                      </p>
-                    )}
-                  </Link>
-                  {priceCents != null && catalogSlug && (
-                    <div className="mt-3">
-                      <AddToCartButton
-                        recordId={id}
-                        tableSlug={catalogSlug}
-                        name={name}
-                        unitAmount={priceCents}
-                        sellByWeight={sellByWeight}
-                        unit={unit}
-                        imageUrl={imageUrl}
-                      />
-                    </div>
-                  )}
+                  );
+                })}
+              </div>
+              {hits.length === 0 && (
+                <p className="text-center text-aurora-muted py-12">
+                  {category
+                    ? "No products in this category yet. Try another category or add products in Aurora Studio."
+                    : !store
+                      ? "Select a store to see products."
+                      : "No products yet. Add products in Aurora Studio."}
+                </p>
+              )}
+              {total > limit && (
+                <div className="flex justify-center gap-2 mt-8">
+                  <button
+                    type="button"
+                    onClick={() => setPage((p) => Math.max(0, p - 1))}
+                    disabled={page === 0}
+                    className="px-4 py-2 rounded-component border border-aurora-border disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+                  <span className="px-4 py-2 text-aurora-muted">
+                    Page {page + 1} of {Math.ceil(total / limit)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPage((p) => p + 1)}
+                    disabled={(page + 1) * limit >= total}
+                    className="px-4 py-2 rounded-component border border-aurora-border disabled:opacity-50"
+                  >
+                    Next
+                  </button>
                 </div>
-              );
-            })}
-          </div>
-          {hits.length === 0 && (
-            <p className="text-center text-aurora-muted py-12">
-              {category
-                ? "No products in this category yet. Try another category or add products in Aurora Studio."
-                : !store
-                  ? "Select a store to see products."
-                  : "No products yet. Add products in Aurora Studio."}
-            </p>
+              )}
+            </>
           )}
-          {total > limit && (
-            <div className="flex justify-center gap-2 mt-8">
-              <button
-                type="button"
-                onClick={() => setPage((p) => Math.max(0, p - 1))}
-                disabled={page === 0}
-                className="px-4 py-2 rounded-component border border-aurora-border disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="px-4 py-2 text-aurora-muted">
-                Page {page + 1} of {Math.ceil(total / limit)}
-              </span>
-              <button
-                type="button"
-                onClick={() => setPage((p) => p + 1)}
-                disabled={(page + 1) * limit >= total}
-                className="px-4 py-2 rounded-component border border-aurora-border disabled:opacity-50"
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </>
-      )}
+        </main>
+      </div>
     </div>
   );
 }
