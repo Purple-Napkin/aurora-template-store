@@ -42,6 +42,23 @@ export function getTenantSlug(): string {
   return tenantSlug;
 }
 
+/** Store config — safe for client: fetches via /api/store/config (keeps API key server-side). */
+export async function getStoreConfig(): Promise<{
+  enabled: boolean;
+  catalogTableSlug?: string;
+  categoryTableSlug?: string;
+  currency?: string;
+  [key: string]: unknown;
+} | null> {
+  if (typeof window !== "undefined") {
+    const res = await fetch("/api/store/config");
+    if (!res.ok) return null;
+    return res.json();
+  }
+  const client = createAuroraClient();
+  return client.store.config();
+}
+
 // Re-export types for consumers
 export type { SearchParams, SearchResult, SearchHit, DeliverySlot, StoreItem };
 export type {
