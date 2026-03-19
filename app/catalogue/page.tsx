@@ -375,6 +375,9 @@ function CatalogueContent() {
             <SortDropdown value={tab} onChange={handleSortChange} />
           </div>
 
+          {/* Holmes injects "Complete your [Recipe]" when recipe mission + cart has items */}
+          <div data-holmes="basket-bundle" className="mb-6 min-h-[1px]" />
+
           {/* Holmes injects personalised "Recommended for you" block */}
           <div data-holmes="catalogue-list" className="mb-8 min-h-[1px]" />
 

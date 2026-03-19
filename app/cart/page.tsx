@@ -6,6 +6,7 @@ import { useCart } from "@/components/CartProvider";
 import { useStore } from "@/components/StoreContext";
 import { BasketBundlePlaceholder } from "@/components/BasketBundlePlaceholder";
 import { HolmesContextualWell } from "@/components/HolmesContextualWell";
+import { RecipePicker } from "@/components/RecipePicker";
 import { HolmesTidbits } from "@/components/HolmesTidbits";
 import { ProductImage } from "@/components/ProductImage";
 import { SubstituteButton } from "@/components/SubstituteButton";
@@ -78,7 +79,7 @@ export default function CartPage() {
         </div>
       )}
 
-      <HolmesContextualWell />
+      <HolmesContextualWell variant="cart" />
       {items[0] && (
         <div className="mb-6">
           <HolmesTidbits
@@ -102,9 +103,10 @@ export default function CartPage() {
           </div>
           <ReorderLastShop />
           <BasketSaverTips />
+          <RecipePicker />
           <CompleteYourMeal />
           {/* Holmes injects bundle here when mission confidence >= 0.5; skeleton hides when inject happens or after ~3s */}
-          <div className="mb-6">
+          <div id="basket-bundle" className="mb-6">
             <div data-holmes="basket-bundle" className="min-h-[1px]" />
             <BasketBundlePlaceholder />
           </div>

@@ -32,6 +32,9 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-0">
           <HolmesContextualWell />
 
+          {/* Holmes injects "Complete your [Recipe]" when recipe mission + cart has items */}
+          <div data-holmes="basket-bundle" className="min-h-[1px] mb-4" />
+
           {/* Mission-based entry points - Holmes-influenced when inference exists */}
           <MissionEntryPoints />
 

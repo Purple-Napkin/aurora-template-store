@@ -233,6 +233,37 @@ export async function holmesGoesWith(
   return client.store.holmesGoesWith(productId, limit);
 }
 
+/** Holmes bundle/recipe options for cart. Returns 1–3 combos when cart has 2+ items. */
+export async function holmesCombosForCart(params: {
+  cartIds: string[];
+  cartNames?: string[];
+  limit?: number;
+  sid?: string;
+}): Promise<{ combos: Array<{ slug: string; title: string; productImageUrls?: string[] }> }> {
+  const qs = new URLSearchParams({ cart_ids: params.cartIds.join(",") });
+  if (params.cartNames?.length) qs.set("cart_names", params.cartNames.join(","));
+  if (params.limit) qs.set("limit", String(params.limit));
+  if (params.sid) qs.set("sid", params.sid);
+  const res = await fetch(`/api/holmes/combos-for-cart?${qs.toString()}`);
+  if (!res.ok) return { combos: [] };
+  return res.json();
+}
+
+/** Set selected combo for session (from recipe picker). */
+export async function holmesSelectCombo(params: {
+  sid: string;
+  slug: string;
+  title?: string;
+}): Promise<{ ok: boolean }> {
+  const res = await fetch("/api/holmes/select-combo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
+  });
+  if (!res.ok) throw new Error("Failed to set selected combo");
+  return res.json();
+}
+
 /** Holmes insights: similar products by type (what_it_is). For substitutions - same product type, not complementary. */
 export async function holmesSimilarProducts(
   productId: string,

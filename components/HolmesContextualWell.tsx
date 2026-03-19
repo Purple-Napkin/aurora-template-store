@@ -8,22 +8,30 @@ import { ProductImage } from "@/components/ProductImage";
 type Props = {
   /** Pass when on product detail page */
   currentProductId?: string | null;
+  /** When "cart", shows "Complete your [Recipe] – add missing ingredients" instead of "View options" */
+  variant?: "default" | "cart";
 };
 
 /**
  * Holmes "paying attention" well - subtle hint based on cart and mission.
  * Renders at top of cart, PDP, or home when Holmes has something relevant.
+ * Shows proactive "We have recipes" banner when Holmes has combos for the cart.
  */
-export function HolmesContextualWell({ currentProductId }: Props) {
+export function HolmesContextualWell({ currentProductId, variant = "default" }: Props) {
   const { items } = useCart();
   const [hint, setHint] = useState<string | null>(null);
   const [products, setProducts] = useState<Array<{ id: string; name: string; url: string; image_url?: string }>>([]);
+  const [hasCombo, setHasCombo] = useState(false);
+  const [comboTitle, setComboTitle] = useState<string | null>(null);
 
   useEffect(() => {
     const cartNames = items.map((i) => i.name).filter(Boolean);
+    const cartIds = items.map((i) => i.recordId).filter(Boolean);
     if (cartNames.length === 0 && !currentProductId) {
       setHint(null);
       setProducts([]);
+      setHasCombo(false);
+      setComboTitle(null);
       return;
     }
     const sid =
@@ -33,6 +41,7 @@ export function HolmesContextualWell({ currentProductId }: Props) {
     const qs = new URLSearchParams();
     if (sid) qs.set("sid", sid);
     if (cartNames.length) qs.set("cart_names", cartNames.join(","));
+    if (cartIds.length) qs.set("cart_ids", cartIds.join(","));
     if (currentProductId) qs.set("current_product", currentProductId);
     fetch(`/api/holmes/contextual-hint?${qs.toString()}`)
       .then((r) => r.json())
@@ -44,12 +53,55 @@ export function HolmesContextualWell({ currentProductId }: Props) {
           setHint(null);
           setProducts([]);
         }
+        setHasCombo(Boolean(data?.hasCombo));
+        setComboTitle(data?.comboTitle ?? null);
       })
       .catch(() => {
         setHint(null);
         setProducts([]);
+        setHasCombo(false);
+        setComboTitle(null);
       });
-  }, [items.map((i) => i.name).join(","), currentProductId]);
+  }, [items.map((i) => `${i.recordId}:${i.name}`).join(","), currentProductId]);
+
+  // Proactive "We have suggestions" banner when combo exists but no rule-based hint
+  if (hasCombo && !hint) {
+    const isRecipeStyle =
+      comboTitle &&
+      /recipe|dinner|meal|chicken|pasta|curry|stir.?fry|paella|risotto/i.test(comboTitle);
+    const cartCopy =
+      variant === "cart" && comboTitle
+        ? isRecipeStyle
+          ? `Complete your ${comboTitle} – add missing ingredients`
+          : `Complete your ${comboTitle} – add suggested items`
+        : isRecipeStyle
+          ? `Holmes found a recipe for what you&apos;re building${comboTitle ? ` – complete your ${comboTitle}` : ""}.`
+          : `Holmes has suggestions for your cart${comboTitle ? ` – ${comboTitle}` : ""}.`;
+    return (
+      <div className="pattern-well mb-6 p-4 rounded-xl border border-aurora-primary/30 bg-aurora-primary/5">
+        <p className="text-sm text-aurora-text mb-2">{cartCopy}</p>
+        {variant === "cart" ? (
+          <a
+            href="#basket-bundle"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-aurora-primary/15 text-aurora-primary text-sm font-medium hover:bg-aurora-primary/25 transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById("basket-bundle")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            {isRecipeStyle ? "See ingredients to add" : "See suggested items"}
+          </a>
+        ) : (
+          <Link
+            href="/cart"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-aurora-primary/15 text-aurora-primary text-sm font-medium hover:bg-aurora-primary/25 transition-colors"
+          >
+            View options
+          </Link>
+        )}
+      </div>
+    );
+  }
 
   if (!hint) return null;
 
