@@ -4,20 +4,27 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { RecipeMissionHero } from "./RecipeMissionHero";
 import { RecipeIngredientsSection } from "./RecipeIngredientsSection";
 import { getStoreConfig } from "@/lib/aurora";
+export type QuickAction = { label: string; href: string };
+export type Mission = { label: string; href: string };
+export type ShoppingListTemplate = { slug: string; label: string; description?: string; searchTerms: string[] };
 
-type HomePersonalization = {
+export type HomePersonalization = {
   mode: "default" | "recipe_mission";
   recipeSlug?: string;
   recipeTitle?: string;
+  quickActions?: QuickAction[];
+  missions?: Mission[];
+  shoppingListTemplates?: ShoppingListTemplate[];
+  trustSignal?: string;
 } | null;
 
 const MissionAwareContext = createContext<HomePersonalization>(null);
 
-function useMissionAware() {
+export function useMissionAware() {
   return useContext(MissionAwareContext);
 }
 
-/** Fetches home-personalization with Holmes sid. Provides mode, recipeSlug, recipeTitle. */
+/** Fetches home-personalization with Holmes sid. Provides mode, recipeSlug, recipeTitle, quickActions, missions. */
 export function MissionAwareHomeProvider({
   children,
 }: {
@@ -28,21 +35,23 @@ export function MissionAwareHomeProvider({
   useEffect(() => {
     let cancelled = false;
     const fetchData = () => {
-      const sid = (window as { holmes?: { getSessionId?: () => string } }).holmes?.getSessionId?.();
-      if (!sid) return;
+      const sid =
+        (window as { holmes?: { getSessionId?: () => string } }).holmes?.getSessionId?.() ?? "";
       fetch(`/api/holmes/home-personalization?sid=${encodeURIComponent(sid)}`)
         .then((r) => r.json())
         .then((d) => {
           if (cancelled) return;
-          if (d.mode === "recipe_mission" && d.recipeSlug && d.recipeTitle) {
-            setData({
-              mode: "recipe_mission",
-              recipeSlug: d.recipeSlug,
-              recipeTitle: d.recipeTitle,
-            });
-          } else {
-            setData({ mode: "default" });
-          }
+          setData({
+            mode: d.mode === "recipe_mission" ? "recipe_mission" : "default",
+            recipeSlug: d.recipeSlug,
+            recipeTitle: d.recipeTitle,
+            quickActions: Array.isArray(d.quickActions) ? d.quickActions : undefined,
+            missions: Array.isArray(d.missions) ? d.missions : undefined,
+            shoppingListTemplates: Array.isArray(d.shoppingListTemplates)
+              ? d.shoppingListTemplates
+              : undefined,
+            trustSignal: typeof d.trustSignal === "string" ? d.trustSignal : undefined,
+          });
         })
         .catch(() => {
           if (!cancelled) setData({ mode: "default" });

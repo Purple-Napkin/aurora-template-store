@@ -1,13 +1,12 @@
 import { StoreContextBar } from "@/components/StoreContextBar";
-import { HeroBanner } from "@/components/HeroBanner";
+import { HeroCommandSurface } from "@/components/HeroCommandSurface";
 import { HolmesContextualWell } from "@/components/HolmesContextualWell";
-import { SpecialOffers } from "@/components/SpecialOffers";
-import { CategoryCards } from "@/components/CategoryCards";
-import { CategoryNav } from "@/components/CategoryNav";
+import { MissionEntryPoints } from "@/components/MissionEntryPoints";
+import { ShoppingListTemplates } from "@/components/ShoppingListTemplates";
 import { HolmesHomeRefresher } from "@/components/HolmesHomeRefresher";
 import { HomeSections } from "@/components/HomeSections";
-import { RecentRecipes } from "@/components/RecentRecipes";
-import { getTimeOfDay } from "@/lib/utils";
+import { SmartCartPanel } from "@/components/SmartCartPanel";
+import { LiveSignalsRow } from "@/components/LiveSignalsRow";
 import {
   MissionAwareHomeProvider,
   MissionAwareHero,
@@ -17,7 +16,6 @@ import {
 export const dynamic = "force-dynamic";
 
 export default function HomePage() {
-  const timeOfDay = getTimeOfDay();
   return (
     <>
       <HolmesHomeRefresher />
@@ -26,38 +24,33 @@ export default function HomePage() {
           <StoreContextBar />
         </div>
 
-        {/* Hero breaks out to full viewport width - no dark side bars */}
+        {/* Hero + command surface - actionable intent capture with real retail warmth */}
         <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
           <MissionAwareHero>
-            <HeroBanner />
+            <HeroCommandSurface />
           </MissionAwareHero>
         </div>
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <HolmesContextualWell />
-          <CategoryNav />
 
-          {/* Category suggestions - Holmes-ordered when session available */}
-          <section className="py-6">
-            <h2 className="text-xl font-bold mb-4">Suggestions for {timeOfDay}</h2>
-            <CategoryCards />
-          </section>
+          {/* Mission-based entry points - Holmes-influenced when inference exists */}
+          <MissionEntryPoints />
 
-          <RecentRecipes />
+          {/* Shopping list templates - e.g. Travel essentials when travel prep detected */}
+          <ShoppingListTemplates />
 
-          {/* Mission-aware: RecipeIngredientsSection when Holmes infers recipe, else HomeSections */}
+          {/* Live adapting signals - perceived intelligence */}
+          <LiveSignalsRow />
+
+          {/* Single adaptive feed - Holmes data via event, trust signals, merged sections */}
           <MissionAwareSections>
             <HomeSections />
           </MissionAwareSections>
 
-      <section className="py-12">
-        <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
-          Special Offers
-          <span className="text-aurora-muted text-base font-normal">Store-specific offers</span>
-        </h2>
-        <SpecialOffers />
-      </section>
-      </div>
+          {/* Smart cart panel - bridges browsing to conversion */}
+          <SmartCartPanel />
+        </div>
       </MissionAwareHomeProvider>
     </>
   );
