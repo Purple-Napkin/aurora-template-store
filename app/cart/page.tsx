@@ -8,6 +8,7 @@ import { BasketBundlePlaceholder } from "@/components/BasketBundlePlaceholder";
 import { HolmesContextualWell } from "@/components/HolmesContextualWell";
 import { HolmesTidbits } from "@/components/HolmesTidbits";
 import { ProductImage } from "@/components/ProductImage";
+import { SubstituteButton } from "@/components/SubstituteButton";
 import { CompleteYourMeal } from "@/components/CompleteYourMeal";
 import { ForgotSuggestions } from "@/components/ForgotSuggestions";
 import { BasketCompositionSummary } from "@/components/BasketCompositionSummary";
@@ -135,6 +136,7 @@ export default function CartPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-4">
+                  <SubstituteButton item={item} />
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
