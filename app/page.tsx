@@ -45,7 +45,26 @@ export default function HomePage() {
         </div>
 
       {/* Holmes script injects personalized sections (Meals, Top up, Inspiration) when data-holmes=home-sections exists */}
-      <div data-holmes="home-sections" className="py-6" />
+      <div data-holmes="home-sections" className="py-6">
+        <div className="animate-pulse space-y-10" aria-hidden="true">
+          <section>
+            <div className="h-6 w-48 bg-aurora-surface-hover rounded mb-4" />
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="aspect-square rounded-lg bg-aurora-surface-hover" />
+              ))}
+            </div>
+          </section>
+          <section>
+            <div className="h-6 w-44 bg-aurora-surface-hover rounded mb-4" />
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="aspect-square rounded-lg bg-aurora-surface-hover" />
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
 
       <section className="py-12">
         <h2 className="text-xl font-bold mb-2 flex items-center gap-2">

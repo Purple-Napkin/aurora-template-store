@@ -53,7 +53,8 @@ export function holmesProductView(productIds: string[]): void {
 
 export function holmesCartUpdate(
   count: number,
-  items?: Array<{ id: string; name: string; price: number }>
+  items?: Array<{ id: string; name: string; price: number }>,
+  bootstrap?: boolean
 ): void {
   if (typeof window === "undefined") return;
   if (window.holmes) {
@@ -61,6 +62,8 @@ export function holmesCartUpdate(
     if (items) window.holmes.setCartItems(items);
   }
   document.dispatchEvent(
-    new CustomEvent("holmes:cartUpdate", { detail: { count, items: items ?? [] } })
+    new CustomEvent("holmes:cartUpdate", {
+      detail: { count, items: items ?? [], bootstrap: bootstrap === true },
+    })
   );
 }

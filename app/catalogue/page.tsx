@@ -184,10 +184,21 @@ function CatalogueContent() {
         .catch(() => {});
     };
     fetchSuggested();
-    const t = setTimeout(fetchSuggested, 2000);
+    const onReady = () => { fetchSuggested(); };
+    document.addEventListener("holmes:ready", onReady);
+    const pollInterval = setInterval(() => {
+      const sid = (window as { holmes?: { getSessionId?: () => string } }).holmes?.getSessionId?.();
+      if (sid) {
+        fetchSuggested();
+        clearInterval(pollInterval);
+      }
+    }, 400);
+    const timeout = setTimeout(() => clearInterval(pollInterval), 6000);
     return () => {
       cancelled = true;
-      clearTimeout(t);
+      document.removeEventListener("holmes:ready", onReady);
+      clearInterval(pollInterval);
+      clearTimeout(timeout);
     };
   }, []);
 
@@ -233,6 +244,9 @@ function CatalogueContent() {
             <h1 className="font-display text-xl sm:text-2xl font-bold">Products</h1>
             <SortDropdown value={tab} onChange={handleSortChange} />
           </div>
+
+          {/* Holmes injects personalised "Recommended for you" block */}
+          <div data-holmes="catalogue-list" className="mb-8 min-h-[1px]" />
 
           {/* Mobile filter drawer */}
           {filtersOpen && (

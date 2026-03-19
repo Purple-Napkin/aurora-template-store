@@ -76,6 +76,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     holmesCartUpdate(count, holmesItems);
   }, [items, mounted]);
 
+  useEffect(() => {
+    if (!mounted) return;
+    const fireBootstrap = () => {
+      const count = items.reduce((s, i) => s + i.quantity, 0);
+      const holmesItems = items.map((i) => ({
+        id: i.recordId,
+        name: i.name,
+        price: i.unitAmount,
+      }));
+      holmesCartUpdate(count, holmesItems, true);
+    };
+    if ((window as { holmes?: { getSessionId?: () => string } }).holmes?.getSessionId) {
+      fireBootstrap();
+    }
+    document.addEventListener("holmes:ready", fireBootstrap);
+    return () => document.removeEventListener("holmes:ready", fireBootstrap);
+  }, [items, mounted]);
+
   const addItem = useCallback((item: Omit<CartItem, "id" | "quantity"> & { quantity?: number }) => {
     const qty = item.quantity ?? 1;
     const cartId = `${item.tableSlug}:${item.recordId}`;

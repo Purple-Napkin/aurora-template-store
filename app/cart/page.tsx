@@ -77,7 +77,17 @@ export default function CartPage() {
             </button>
           </div>
           {/* Holmes injects "In a rush? We picked this for you" bundle here when mission confidence >= 0.5 and cart has items */}
-          <div data-holmes="basket-bundle" className="mb-6 min-h-[1px]" />
+          <div data-holmes="basket-bundle" className="mb-6 min-h-[1px]">
+            <div className="animate-pulse rounded-component bg-aurora-surface border border-aurora-border p-4" aria-hidden="true">
+              <div className="h-5 w-56 bg-aurora-surface-hover rounded mb-4" />
+              <div className="flex gap-4 overflow-hidden">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-20 h-20 rounded-lg bg-aurora-surface-hover shrink-0" />
+                ))}
+              </div>
+              <div className="h-10 w-64 bg-aurora-surface-hover rounded-lg mt-4" />
+            </div>
+          </div>
           <div className="space-y-4">
             {items.map((item) => (
               <div
