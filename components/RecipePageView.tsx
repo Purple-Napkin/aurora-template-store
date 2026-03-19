@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { holmesRecipe, holmesRecipeProducts } from "@/lib/aurora";
+import { holmesRecipeView } from "@/lib/holmes-events";
 import { HolmesTidbits } from "@/components/HolmesTidbits";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductImage } from "@/components/ProductImage";
@@ -36,6 +37,10 @@ export function RecipePageView({
   const [catalogSlug, setCatalogSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    holmesRecipeView(recipeSlug, recipeTitle);
+  }, [recipeSlug, recipeTitle]);
 
   useEffect(() => {
     let cancelled = false;

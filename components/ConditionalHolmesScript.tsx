@@ -1,21 +1,16 @@
-"use client";
-
 import Script from "next/script";
-import { useSearchParams } from "next/navigation";
 import { getHolmesScriptUrl } from "@aurora-studio/sdk";
 
 /**
- * Loads Holmes script only when holmes_disabled is not in the URL.
- * Add ?holmes_disabled=1 to any URL to disable Holmes for testing.
+ * Loads Holmes script when Aurora API and tenant are configured.
+ * Rendered as server component so script is in initial HTML.
+ * To disable Holmes: set cookie holmes_holdout=1 (the script checks this).
  */
 export function ConditionalHolmesScript() {
-  const searchParams = useSearchParams();
-  const disabled = searchParams.get("holmes_disabled") === "1";
-
   const apiUrl = process.env.NEXT_PUBLIC_AURORA_API_URL;
   const tenantSlug = process.env.NEXT_PUBLIC_TENANT_SLUG;
 
-  if (disabled || !apiUrl || !tenantSlug) {
+  if (!apiUrl || !tenantSlug) {
     return null;
   }
 

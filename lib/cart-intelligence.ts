@@ -41,6 +41,10 @@ export const RECIPE_SUGGESTIONS = [
   "spaghetti ingredients",
   "risotto ingredients",
   "stir fry ingredients",
+  "steak ingredients",
+  "chicken ingredients",
+  "salmon ingredients",
+  "soup ingredients",
 ] as const;
 
 /** Recipe search terms → canonical recipe slug for getRecipeTitle (e.g. spaghetti, linguine → pasta) */
@@ -54,12 +58,34 @@ const RECIPE_WORD_MAP: Record<string, string> = {
   risotto: "risotto",
   "stir fry": "stir fry",
   "stir-fry": "stir fry",
+  steak: "steak",
+  chicken: "chicken",
+  salmon: "salmon",
+  soup: "soup",
 };
 
-/** Match query prefix to a recipe suggestion for predictive search */
+/** Match query prefix to a recipe suggestion for predictive search. Also detects "X recipe" and "recipe for X" intent. */
 export function getRecipeSuggestion(query: string): string | null {
   const q = query.trim().toLowerCase();
   if (q.length < 2) return null;
+
+  const recipeMatch = q.match(/^(.+?)\s+recipe$/);
+  if (recipeMatch) {
+    const dish = recipeMatch[1].trim();
+    if (dish.length >= 2 && dish.length <= 30 && /^[a-z\s\-']+$/i.test(dish)) {
+      const title = dish.replace(/\s+/g, " ").trim().replace(/\b\w/g, (c) => c.toUpperCase());
+      return `${title} ingredients?`;
+    }
+  }
+  const recipeForMatch = q.match(/recipe\s+(?:for\s+)?(.+)$/);
+  if (recipeForMatch) {
+    const dish = recipeForMatch[1].trim();
+    if (dish.length >= 2 && dish.length <= 30 && /^[a-z\s\-']+$/i.test(dish)) {
+      const title = dish.replace(/\s+/g, " ").trim().replace(/\b\w/g, (c) => c.toUpperCase());
+      return `${title} ingredients?`;
+    }
+  }
+
   const match = RECIPE_SUGGESTIONS.find((r) => r.startsWith(q) || q.startsWith(r.split(" ")[0]));
   return match ? `${match}?` : null;
 }

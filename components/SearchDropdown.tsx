@@ -148,7 +148,7 @@ export function SearchDropdown({
               )}
               {showRecipeSuggestion && (
                 <Link
-                  href={`/catalogue?q=${encodeURIComponent(recipeSuggestion!.replace("?", ""))}`}
+                  href={`/catalogue?q=${encodeURIComponent(recipeSuggestion!.replace("?", "").split(" ")[0].toLowerCase())}`}
                   onClick={() => { addToRecent(recipeSuggestion!); setOpen(false); }}
                   className="flex items-center gap-3 px-4 py-2 hover:bg-aurora-surface-hover transition-colors border-b border-aurora-border"
                 >

@@ -86,6 +86,7 @@ export function ProductImage({
       alt={alt}
       className={mergedClassName}
       onError={() => setErrored(true)}
+      suppressHydrationWarning
     />
   );
 }

@@ -1,23 +1,38 @@
 import Link from "next/link";
-import { createAuroraClient } from "@/lib/aurora";
+import { createAuroraClient, getStoreConfig } from "@/lib/aurora";
 
 function getTimeOfDayOverrides(hour: number): { title?: string; cta?: string } | null {
   if (hour >= 5 && hour < 11) return { title: "Start the day right", cta: "Shop breakfast" };
   if (hour >= 11 && hour < 14) return { title: "Lunch sorted", cta: "Grab lunch" };
-  if (hour >= 17 && hour < 21) return { title: "Dinner in 20", cta: "Shop dinner" };
+  if (hour >= 17 && hour < 21) return { title: "Dinner in 5mins", cta: "Shop dinner" };
   return null;
+}
+
+function getHourInTimezone(timezone: string): number {
+  try {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour: "numeric",
+      hour12: false,
+    });
+    return parseInt(formatter.format(new Date()), 10);
+  } catch {
+    return new Date().getHours();
+  }
 }
 
 /**
  * Fetches hero banners from CMS (hero_banners table) when available.
  * Falls back to default hero content when table is empty or missing.
- * Varies title/CTA by time of day when no CMS override.
+ * Varies title/CTA by time of day (store timezone) when no CMS override.
  */
 export async function HeroBanner() {
   const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "Store";
   const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL ?? "";
   const defaultImage = "/Hippo-Hero.jpg";
-  const hour = new Date().getHours();
+  const config = await getStoreConfig();
+  const timezone = (config as { timezone?: string })?.timezone ?? "Europe/London";
+  const hour = getHourInTimezone(timezone);
   const timeOverrides = getTimeOfDayOverrides(hour);
 
   let banners: Array<{ title?: string; subtitle?: string; image_url?: string; link_url?: string }> = [];
@@ -36,7 +51,7 @@ export async function HeroBanner() {
 
   const banner = banners[0];
   const bgImage = banner?.image_url || defaultImage;
-  const baseTitle = banner?.title ?? "Your weekly shop in 20 minutes";
+  const baseTitle = banner?.title ?? "Your weekly shop in 5mins";
   const title = banner?.title ? baseTitle : (timeOverrides?.title ?? baseTitle);
   const subtitle = banner?.subtitle ?? "Fresh groceries from local stores delivered today.";
 

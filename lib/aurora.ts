@@ -176,6 +176,19 @@ export async function holmesRecipeProducts(
   return client.store.holmesRecipeProducts(recipe, limit);
 }
 
+/** Holmes recent recipes from cache. Ordered by most recently updated. */
+export async function holmesRecentRecipes(limit = 8): Promise<{
+  recipes: Array<{ id: string; slug: string; title: string; description: string | null }>;
+}> {
+  if (typeof window !== "undefined") {
+    const res = await fetch(`/api/holmes/recipes?limit=${encodeURIComponent(limit)}`);
+    if (!res.ok) return { recipes: [] };
+    return res.json();
+  }
+  const client = createAuroraClient();
+  return client.store.holmesRecentRecipes(limit);
+}
+
 /** Holmes cached recipe. Fetches via AI on cache miss. */
 export async function holmesRecipe(slug: string): Promise<HolmesRecipe | null> {
   if (typeof window !== "undefined") {

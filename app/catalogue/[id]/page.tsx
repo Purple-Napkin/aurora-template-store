@@ -25,6 +25,15 @@ function getDisplayName(record: Record<string, unknown>): string {
   return String(record[field] ?? record.id ?? "");
 }
 
+/** Entity for Holmes tidbits lookup (entity_slug). API lowercases; use slug format to match common storage. */
+function toProductEntity(name: string): string {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+}
+
 function formatPrice(cents: number, currency = "GBP"): string {
   return new Intl.NumberFormat("en-GB", {
     style: "currency",
@@ -115,7 +124,10 @@ export default async function ProductPage({
             <p className="text-aurora-muted">{description}</p>
           )}
           <div className="mt-4">
-            <HolmesTidbits entity={id} entityType="product" />
+            <HolmesTidbits
+              entity={toProductEntity(name)}
+              entityType="product"
+            />
           </div>
           {vendorName && (
             <p className="text-sm">

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import "./globals.css";
 import { CartProvider } from "@/components/CartProvider";
 import { AddToCartFlyProvider } from "@/components/AddToCartFly";
@@ -48,9 +47,7 @@ export default function RootLayout({
           </AuthProvider>
           </StoreConfigProvider>
         </StoreProvider>
-        <Suspense fallback={null}>
-          <ConditionalHolmesScript />
-        </Suspense>
+        <ConditionalHolmesScript />
       </body>
     </html>
   );

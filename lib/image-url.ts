@@ -26,12 +26,12 @@ export function getThumbnailImageUrl(
   try {
     const u = new URL(raw.startsWith("//") ? `https:${raw}` : raw);
     const params = u.searchParams;
-    if (params.has("w") || params.has("h")) return raw;
+    if (params.has("w") || params.has("h")) return raw.startsWith("//") ? `https:${raw}` : raw;
     params.set("w", String(Math.min(4000, width)));
     params.set("h", String(Math.min(4000, height)));
     params.set("fit", "pad");
     params.set("fm", "webp");
-    return u.toString().replace(/^https:\/\//, "//");
+    return u.toString();
   } catch {
     return raw;
   }
@@ -63,9 +63,13 @@ export function resolveProductImageUrl(
   if (raw.startsWith("http://") || raw.startsWith("https://")) {
     return raw;
   }
+  if (raw.startsWith("//")) {
+    return `https:${raw}`;
+  }
 
   const base =
     baseUrl ??
+    process.env.NEXT_PUBLIC_IMAGE_BASE_URL?.trim() ??
     (typeof window !== "undefined"
       ? window.location?.origin
       : null) ??

@@ -14,6 +14,7 @@ declare global {
       setProductsViewed: (ids: string[]) => void;
       setCartCount: (n: number) => void;
       setCartItems: (items: Array<{ id: string; name: string; price: number }>) => void;
+      setRecipeViewed?: (slug: string, title: string) => void;
       getSessionId?: () => string;
       getMissionStartTimestamp?: () => number | null;
       addBundleToCart?: (
@@ -22,6 +23,17 @@ declare global {
       ) => void;
     };
   }
+}
+
+export function holmesRecipeView(slug: string, title: string): void {
+  if (typeof document === "undefined") return;
+  const s = String(slug || "").trim();
+  const t = String(title || "").trim();
+  if (!s || !t) return;
+  if (window.holmes?.setRecipeViewed) window.holmes.setRecipeViewed(s, t);
+  document.dispatchEvent(
+    new CustomEvent("holmes:recipeView", { detail: { slug: s, title: t } })
+  );
 }
 
 /** Dispatch event for Holmes to add a bundle to cart. CartProvider listens and calls addItem. */

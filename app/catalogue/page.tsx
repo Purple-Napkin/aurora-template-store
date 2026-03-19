@@ -9,6 +9,7 @@ import { useCart } from "@/components/CartProvider";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { search, getStoreConfig } from "@/lib/aurora";
 import { getRecipeTitle, expandRecipeSearchQuery } from "@/lib/cart-intelligence";
+import { holmesSearch } from "@/lib/holmes-events";
 import type { SearchHit } from "@/lib/aurora";
 import {
   CatalogueFilters,
@@ -247,6 +248,10 @@ function CatalogueContent() {
   }, []);
 
   const recipeTitle = getRecipeTitle(q);
+
+  useEffect(() => {
+    if (q.trim() && recipeTitle) holmesSearch(q.trim());
+  }, [q, recipeTitle]);
   const addAllToCart = useCallback(() => {
     if (!catalogSlug) return;
     for (const hit of hits) {

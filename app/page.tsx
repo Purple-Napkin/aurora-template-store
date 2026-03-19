@@ -6,6 +6,8 @@ import { CategoryCards } from "@/components/CategoryCards";
 import { CategoryNav } from "@/components/CategoryNav";
 import { HolmesHomeRefresher } from "@/components/HolmesHomeRefresher";
 import { HomeSections } from "@/components/HomeSections";
+import { RecentRecipes } from "@/components/RecentRecipes";
+import { getTimeOfDay } from "@/lib/utils";
 import {
   MissionAwareHomeProvider,
   MissionAwareHero,
@@ -15,6 +17,7 @@ import {
 export const dynamic = "force-dynamic";
 
 export default function HomePage() {
+  const timeOfDay = getTimeOfDay();
   return (
     <>
       <HolmesHomeRefresher />
@@ -34,10 +37,13 @@ export default function HomePage() {
           <HolmesContextualWell />
           <CategoryNav />
 
-          {/* Category cards - Holmes-ordered when session available */}
-          <div className="py-6">
+          {/* Category suggestions - Holmes-ordered when session available */}
+          <section className="py-6">
+            <h2 className="text-xl font-bold mb-4">Suggestions for {timeOfDay}</h2>
             <CategoryCards />
-          </div>
+          </section>
+
+          <RecentRecipes />
 
           {/* Mission-aware: RecipeIngredientsSection when Holmes infers recipe, else HomeSections */}
           <MissionAwareSections>
