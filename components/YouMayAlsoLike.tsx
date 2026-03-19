@@ -2,11 +2,8 @@ import Link from "next/link";
 import { createAuroraClient, holmesGoesWith } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { AddToCartButton } from "./AddToCartButton";
-
-function getImageUrl(record: Record<string, unknown>): string | null {
-  const field = ["image_url", "image", "thumbnail", "photo"].find((f) => record[f]);
-  return field ? String(record[field]) : null;
-}
+import { ProductImage } from "./ProductImage";
+import { getImageUrlFromRecord } from "@/lib/image-url";
 
 /** Aurora stores prices as decimal. Use toCents for display/cart. */
 function getPrice(record: Record<string, unknown>): number | undefined {
@@ -83,7 +80,7 @@ export async function YouMayAlsoLike({
           const id = String(record.id ?? "");
           const name = getDisplayName(record);
           const priceCents = toCents(getPrice(record));
-          const imageUrl = getImageUrl(record);
+          const imageUrl = getImageUrlFromRecord(record);
 
           return (
             <div
@@ -92,13 +89,11 @@ export async function YouMayAlsoLike({
             >
               <Link href={`/catalogue/${id}`}>
                 <div className="aspect-square rounded-component bg-aurora-surface-hover mb-2 overflow-hidden">
-                  {imageUrl ? (
-                    <img src={imageUrl} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-aurora-muted text-2xl">
-                       - 
-                    </div>
-                  )}
+                  <ProductImage
+                    src={imageUrl}
+                    className="w-full h-full object-cover"
+                    fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-2xl">-</div>}
+                  />
                 </div>
                 <p className="font-semibold text-sm truncate">{name}</p>
                 {priceCents != null && (

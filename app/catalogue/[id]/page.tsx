@@ -6,6 +6,7 @@ import { HolmesProductViewTracker } from "@/components/HolmesProductViewTracker"
 import { ProductDetailTabs } from "@/components/ProductDetailTabs";
 import { ProductImageGallery } from "@/components/ProductImageGallery";
 import { YouMayAlsoLike } from "@/components/YouMayAlsoLike";
+import { HolmesContextualWell } from "@/components/HolmesContextualWell";
 
 function getImageUrl(record: Record<string, unknown>): string | null {
   const field = ["image_url", "image", "thumbnail", "photo"].find((f) => record[f]);
@@ -83,6 +84,8 @@ export default async function ProductPage({
   return (
     <div className="max-w-6xl mx-auto py-10 sm:py-14 px-4 sm:px-6">
       <HolmesProductViewTracker productId={id} />
+      <HolmesContextualWell currentProductId={id} />
+
       <nav className="text-sm text-aurora-muted mb-6">
         <Link href="/" className="hover:text-aurora-text">Home</Link>
         {" > "}

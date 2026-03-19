@@ -15,9 +15,11 @@ import {
   type CategoryItem,
   type SortOption,
 } from "@/components/CatalogueFilters";
+import { ProductImage } from "@/components/ProductImage";
 import { SortDropdown } from "@/components/SortDropdown";
 import { ProductCardSkeleton } from "@/components/ProductCardSkeleton";
 import { CatalogueEmptyState } from "@/components/CatalogueEmptyState";
+import { RecipePageView } from "@/components/RecipePageView";
 
 const DEFAULT_CATEGORIES: CategoryItem[] = [
   { name: "Bakery Items", slug: "bakery-items" },
@@ -336,6 +338,14 @@ function CatalogueContent() {
                 <ProductCardSkeleton key={i} />
               ))}
             </div>
+          ) : hits.length === 0 && recipeTitle ? (
+            <div className="w-full flex-1">
+              <RecipePageView
+                recipeSlug={recipeTitle.toLowerCase()}
+                recipeTitle={recipeTitle}
+                currency={currency}
+              />
+            </div>
           ) : hits.length === 0 ? (
             <div className="w-full flex-1 flex items-start justify-center">
             <CatalogueEmptyState
@@ -376,17 +386,11 @@ function CatalogueContent() {
                     >
                       <Link href={`/catalogue/${id}`} className="block">
                         <div className="aspect-square rounded-lg bg-aurora-surface-hover mb-3 overflow-hidden">
-                          {imageUrl ? (
-                            <img
-                              src={imageUrl}
-                              alt=""
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">
-                               - 
-                            </div>
-                          )}
+                          <ProductImage
+                            src={imageUrl}
+                            className="w-full h-full object-cover"
+                            fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">-</div>}
+                          />
                         </div>
                         {brand && (
                           <p className="text-xs text-aurora-muted truncate mb-0.5">{brand}</p>

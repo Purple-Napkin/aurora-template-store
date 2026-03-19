@@ -7,6 +7,7 @@ import { formatPrice, toCents } from "@/lib/format-price";
 import { search, type SearchHit } from "@/lib/aurora";
 import { holmesSearch } from "@/lib/holmes-events";
 import { useCart } from "./CartProvider";
+import { ProductImage } from "./ProductImage";
 import { getRecipeSuggestion } from "@/lib/cart-intelligence";
 
 const RECENT_KEY = "aurora-search-recent";
@@ -167,11 +168,13 @@ export function SearchDropdown({
                             onClick={() => { handleProductSelect(hit); setOpen(false); }}
                             className="flex items-center gap-3 flex-1 min-w-0"
                           >
-                            {hit.image_url ? (
-                              <img src={hit.image_url} alt="" className="w-10 h-10 rounded-component object-cover shrink-0" />
-                            ) : (
-                              <div className="w-10 h-10 rounded-component bg-aurora-surface-hover shrink-0 flex items-center justify-center text-aurora-muted"> - </div>
-                            )}
+                            <div className="w-10 h-10 rounded-component bg-aurora-surface-hover shrink-0 overflow-hidden">
+                              <ProductImage
+                                src={hit.image_url}
+                                className="w-full h-full object-cover"
+                                fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-xs">-</div>}
+                              />
+                            </div>
                             <div className="flex-1 min-w-0">
                               <p className="font-medium truncate">{hit.name ?? hit.title ?? hit.snippet ?? hit.recordId}</p>
                               {hit.price != null && Number(hit.price) > 0 && (

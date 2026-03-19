@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getHomePersonalization } from "@/lib/aurora";
 import { getStoreConfig } from "@/lib/aurora";
+import { ProductImage } from "@/components/ProductImage";
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   gbp: "£",
@@ -53,27 +54,19 @@ export async function HomeSections() {
                     data-holmes-home-card-image
                     className="aspect-square rounded-lg bg-aurora-surface-hover mb-2 overflow-hidden"
                   >
-                    {prod.image_url ? (
-                      <img
-                        src={
-                          prod.image_url.startsWith("http")
-                            ? prod.image_url
-                            : (() => {
-                                const base = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/$/, "");
-                                return base ? `${base}${prod.image_url!.startsWith("/") ? prod.image_url : `/${prod.image_url}`}` : prod.image_url;
-                              })()
-                        }
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span
-                        data-holmes-home-card-fallback
-                        className="w-full h-full flex items-center justify-center text-aurora-muted text-2xl"
-                      >
-                        -
-                      </span>
-                    )}
+                    <ProductImage
+                      src={prod.image_url}
+                      baseUrl={process.env.NEXT_PUBLIC_APP_URL}
+                      className="w-full h-full object-cover"
+                      fallback={
+                        <span
+                          data-holmes-home-card-fallback
+                          className="w-full h-full flex items-center justify-center text-aurora-muted text-2xl"
+                        >
+                          -
+                        </span>
+                      }
+                    />
                   </div>
                   <div
                     data-holmes-home-card-title
@@ -110,20 +103,18 @@ export async function HomeSections() {
                     data-holmes-home-card-image
                     className="aspect-square rounded-lg bg-aurora-surface-hover mb-2 overflow-hidden"
                   >
-                    {card.imageUrl ? (
-                      <img
-                        src={card.imageUrl}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span
-                        data-holmes-home-card-fallback
-                        className="w-full h-full flex items-center justify-center text-aurora-muted text-sm text-center px-2"
-                      >
-                        {card.title}
-                      </span>
-                    )}
+                    <ProductImage
+                      src={card.imageUrl}
+                      className="w-full h-full object-cover"
+                      fallback={
+                        <span
+                          data-holmes-home-card-fallback
+                          className="w-full h-full flex items-center justify-center text-aurora-muted text-sm text-center px-2"
+                        >
+                          {card.title}
+                        </span>
+                      }
+                    />
                   </div>
                   <div
                     data-holmes-home-card-title

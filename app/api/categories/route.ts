@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAuroraClient } from "@/lib/aurora";
 import { search } from "@/lib/aurora";
 
-const DEFAULT_CATEGORIES = [
+const DEFAULT_CATEGORIES: { name: string; slug: string; image_url?: string }[] = [
   { name: "Bakery Items", slug: "bakery-items" },
   { name: "Frozen Foods", slug: "frozen-foods" },
   { name: "Vegetables", slug: "vegetables" },
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     const config = await aurora.store.config();
     const categorySlug = (config as { categoryTableSlug?: string }).categoryTableSlug;
 
-    let categories: { name: string; slug: string }[] = DEFAULT_CATEGORIES;
+    let categories: { name: string; slug: string; image_url?: string }[] = DEFAULT_CATEGORIES;
 
     if (config.enabled && categorySlug) {
       const { data } = await aurora.tables(categorySlug).records.list({ limit: 20 });
@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
         categories = data.map((r: Record<string, unknown>) => ({
           name: String(r.name ?? r.slug ?? r.id ?? ""),
           slug: String(r.slug ?? r.name ?? r.id ?? "").toLowerCase().replace(/\s+/g, "-"),
+          image_url: (r.image_url ?? r.image ?? r.thumbnail ?? r.photo) ? String(r.image_url ?? r.image ?? r.thumbnail ?? r.photo) : undefined,
         }));
       }
     }
@@ -45,13 +46,13 @@ export async function GET(req: NextRequest) {
               vendorId,
               category: cat.slug,
             });
-            return { ...cat, count: res.total ?? 0 };
+            return { name: cat.name, slug: cat.slug, image_url: cat.image_url, count: res.total ?? 0 };
           } catch {
-            return { ...cat, count: 0 };
+            return { name: cat.name, slug: cat.slug, image_url: cat.image_url, count: 0 };
           }
         })
       );
-      categories = withCounts.filter((c) => c.count > 0).map(({ name, slug }) => ({ name, slug }));
+      categories = withCounts.filter((c) => c.count > 0).map(({ name, slug, image_url }) => ({ name, slug, image_url }));
     }
 
     return NextResponse.json({ categories });

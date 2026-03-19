@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getApiBase, getTenantSlug } from "@/lib/aurora";
+import { createAuroraClient } from "@/lib/aurora";
 
 /**
  * Proxy Holmes recipe products from Aurora.
@@ -13,13 +13,9 @@ export async function GET(req: NextRequest) {
     if (!recipe) {
       return NextResponse.json({ error: "recipe required", products: [], total: 0 }, { status: 400 });
     }
-    const base = getApiBase();
-    const tenant = getTenantSlug();
-    const apiKey = process.env.AURORA_API_KEY ?? process.env.NEXT_PUBLIC_AURORA_API_KEY ?? "";
-    const url = `${base.replace(/\/$/, "")}/api/tenants/${encodeURIComponent(tenant)}/store/holmes/recipe-products?recipe=${encodeURIComponent(recipe)}&limit=${limit}`;
-    const res = await fetch(url, { headers: apiKey ? { "X-Api-Key": apiKey } : {} });
-    const data = await res.json().catch(() => ({ products: [], total: 0, recipe }));
-    return NextResponse.json(data);
+    const client = createAuroraClient();
+    const result = await client.store.holmesRecipeProducts(recipe, limit);
+    return NextResponse.json(result);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Recipe products failed";
     return NextResponse.json({ error: msg, products: [], total: 0 }, { status: 500 });

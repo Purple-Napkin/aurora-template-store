@@ -8,6 +8,7 @@ import { holmesRecipeProducts, search, type SearchHit } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { getMealToComplete } from "@/lib/cart-intelligence";
 import { AddToCartButton } from "@/components/AddToCartButton";
+import { ProductImage } from "@/components/ProductImage";
 import { getStoreConfig } from "@/lib/aurora";
 
 /** When cart has meal triggers (curry paste, pasta sauce), show "Complete your X" with complementary products. */
@@ -118,17 +119,11 @@ export function CompleteYourMeal() {
                     href={`/catalogue/${id}`}
                     className="block w-16 h-16 rounded-lg bg-aurora-surface-hover overflow-hidden mb-1"
                   >
-                    {p.image_url ? (
-                      <img
-                        src={p.image_url}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="w-full h-full flex items-center justify-center text-aurora-muted text-lg">
-                        -
-                      </span>
-                    )}
+                    <ProductImage
+                      src={p.image_url}
+                      className="w-full h-full object-cover"
+                      fallback={<span className="w-full h-full flex items-center justify-center text-aurora-muted text-lg">-</span>}
+                    />
                   </Link>
                   <p className="text-xs font-medium truncate w-full text-center">
                     {name}

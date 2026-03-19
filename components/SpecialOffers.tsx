@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createAuroraClient } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { AddToCartButton } from "./AddToCartButton";
+import { ProductImage } from "./ProductImage";
 
 function getImageUrl(record: Record<string, unknown>): string | null {
   const field = ["image_url", "image", "thumbnail", "photo"].find((f) => record[f]);
@@ -137,13 +138,11 @@ export async function SpecialOffers() {
           >
             <Link href={`/catalogue/${id}`} className="block">
               <div className="aspect-square rounded-component bg-aurora-surface-hover mb-3 overflow-hidden">
-                {imageUrl ? (
-                  <img src={imageUrl} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">
-                     - 
-                  </div>
-                )}
+                <ProductImage
+                  src={imageUrl}
+                  className="w-full h-full object-cover"
+                  fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">-</div>}
+                />
               </div>
               <p className="font-semibold text-sm truncate">{name}</p>
               {priceCents != null && (

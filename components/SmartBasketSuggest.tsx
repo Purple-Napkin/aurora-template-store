@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { AddToCartButton } from "./AddToCartButton";
+import { ProductImage } from "./ProductImage";
 import { useCart } from "./CartProvider";
 import { useStore } from "./StoreContext";
 import { formatPrice } from "@/lib/format-price";
@@ -71,11 +72,11 @@ export function SmartBasketSuggest() {
             >
               <Link href={`/catalogue/${id}`} className="block mb-2">
                 <div className="aspect-square rounded-lg bg-aurora-surface-hover overflow-hidden mb-2">
-                  {imageUrl ? (
-                    <img src={imageUrl} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-aurora-muted"> - </div>
-                  )}
+                  <ProductImage
+                    src={imageUrl}
+                    className="w-full h-full object-cover"
+                    fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted">-</div>}
+                  />
                 </div>
                 <p className="text-sm font-medium truncate">{name}</p>
                 {priceCents != null && (

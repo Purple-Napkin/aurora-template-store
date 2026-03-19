@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/components/CartProvider";
 import { useStore } from "@/components/StoreContext";
 import { BasketBundlePlaceholder } from "@/components/BasketBundlePlaceholder";
+import { HolmesContextualWell } from "@/components/HolmesContextualWell";
+import { ProductImage } from "@/components/ProductImage";
 import { CompleteYourMeal } from "@/components/CompleteYourMeal";
 import { ForgotSuggestions } from "@/components/ForgotSuggestions";
 import { BasketCompositionSummary } from "@/components/BasketCompositionSummary";
@@ -70,6 +72,8 @@ export default function CartPage() {
         </div>
       )}
 
+      <HolmesContextualWell />
+
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
@@ -97,15 +101,11 @@ export default function CartPage() {
                 className="flex gap-4 p-4 rounded-component bg-aurora-surface border border-aurora-border"
               >
                 <div className="w-16 h-16 rounded-component bg-aurora-surface-hover shrink-0 overflow-hidden">
-                  {item.imageUrl ? (
-                    <img
-                      src={item.imageUrl}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="w-full h-full flex items-center justify-center text-aurora-muted text-xs"> - </span>
-                  )}
+                  <ProductImage
+                    src={item.imageUrl}
+                    className="w-full h-full object-cover"
+                    fallback={<span className="w-full h-full flex items-center justify-center text-aurora-muted text-xs">-</span>}
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium">{item.name}</p>

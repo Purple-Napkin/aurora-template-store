@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ProductImage } from "./ProductImage";
 
 function getImageUrls(record: Record<string, unknown>): string[] {
   const images = record.images;
@@ -35,11 +36,12 @@ export function ProductImageGallery({ record }: ProductImageGalleryProps) {
   return (
     <div className="space-y-3">
       <div className="rounded-xl overflow-hidden aspect-square bg-aurora-surface-hover shadow-sm ring-1 ring-aurora-border/50 p-4">
-        <img
+        <ProductImage
           src={mainUrl}
-          alt=""
           className="w-full h-full object-contain cursor-zoom-in"
-          style={{ imageRendering: "auto" }}
+          fallback={
+            <span className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">-</span>
+          }
         />
       </div>
       {urls.length > 1 && (
@@ -53,7 +55,11 @@ export function ProductImageGallery({ record }: ProductImageGalleryProps) {
                 selected === i ? "border-aurora-primary" : "border-aurora-border hover:border-aurora-primary/50"
               }`}
             >
-              <img src={url} alt="" className="w-full h-full object-contain" />
+              <ProductImage
+                src={url}
+                className="w-full h-full object-contain"
+                fallback={<span className="w-full h-full flex items-center justify-center text-aurora-muted text-sm">-</span>}
+              />
             </button>
           ))}
         </div>

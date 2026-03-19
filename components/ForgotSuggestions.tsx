@@ -8,6 +8,7 @@ import { search, type SearchHit } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { getForgottenSuggestions } from "@/lib/cart-intelligence";
 import { AddToCartButton } from "@/components/AddToCartButton";
+import { ProductImage } from "@/components/ProductImage";
 import { getStoreConfig } from "@/lib/aurora";
 
 /** "You might have forgotten" - when cart has bread, suggest butter; cereal → milk, etc. */
@@ -81,11 +82,11 @@ export function ForgotSuggestions() {
               >
                 <Link href={`/catalogue/${id}`} className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="w-12 h-12 rounded-lg bg-aurora-surface overflow-hidden shrink-0">
-                    {p.image_url ? (
-                      <img src={p.image_url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="w-full h-full flex items-center justify-center text-aurora-muted">-</span>
-                    )}
+                    <ProductImage
+                      src={p.image_url}
+                      className="w-full h-full object-cover"
+                      fallback={<span className="w-full h-full flex items-center justify-center text-aurora-muted text-sm">-</span>}
+                    />
                   </div>
                   <div className="min-w-0">
                     <p className="font-medium text-sm truncate">{name}</p>

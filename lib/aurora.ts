@@ -10,6 +10,10 @@ import {
   type CheckoutSessionResult,
   type AcmeSession,
   type HolmesInferResult,
+  type HolmesRecipe,
+  type HolmesTidbit,
+  type HolmesContextualHintResult,
+  type HomePersonalizationResult,
 } from "@aurora-studio/sdk";
 
 const baseUrl =
@@ -67,6 +71,10 @@ export type {
   CheckoutSessionResult,
   AcmeSession,
   HolmesInferResult,
+  HolmesRecipe,
+  HolmesTidbit,
+  HolmesContextualHintResult,
+  HomePersonalizationResult,
 };
 
 /** Meilisearch-powered product search. Uses API route from client (keeps API key server-side). */
@@ -152,16 +160,34 @@ export async function holmesRecipeProducts(
     }
     return res.json();
   }
-  const base = getApiBase();
-  const tenant = getTenantSlug();
-  const key = process.env.AURORA_API_KEY ?? process.env.NEXT_PUBLIC_AURORA_API_KEY ?? "";
-  const url = `${base.replace(/\/$/, "")}/api/tenants/${encodeURIComponent(tenant)}/store/holmes/recipe-products?recipe=${encodeURIComponent(recipe)}&limit=${limit}`;
-  const res = await fetch(url, { headers: key ? { "X-Api-Key": key } : {} });
-  if (!res.ok) {
-    const err = (await res.json().catch(() => ({}))) as { error?: string };
-    throw new Error(err.error ?? "Recipe products failed");
+  const client = createAuroraClient();
+  return client.store.holmesRecipeProducts(recipe, limit);
+}
+
+/** Holmes cached recipe. Fetches via AI on cache miss. */
+export async function holmesRecipe(slug: string): Promise<HolmesRecipe | null> {
+  if (typeof window !== "undefined") {
+    const res = await fetch(`/api/holmes/recipe/${encodeURIComponent(slug)}`);
+    if (!res.ok) return null;
+    return res.json();
   }
-  return res.json();
+  const client = createAuroraClient();
+  return client.store.holmesRecipe(slug);
+}
+
+/** Holmes tidbits for entity (recipe, ingredient, product). */
+export async function holmesTidbits(
+  entity: string,
+  entityType = "recipe"
+): Promise<{ tidbits: HolmesTidbit[] }> {
+  if (typeof window !== "undefined") {
+    const qs = new URLSearchParams({ entity, entity_type: entityType });
+    const res = await fetch(`/api/holmes/tidbits?${qs.toString()}`);
+    if (!res.ok) return { tidbits: [] };
+    return res.json();
+  }
+  const client = createAuroraClient();
+  return client.store.holmesTidbits(entity, entityType);
 }
 
 /** Holmes insights: products that go well with a given product. Uses holmes_insights.goes_well_with. */
@@ -178,36 +204,16 @@ export async function holmesGoesWith(
     }
     return res.json();
   }
-  const base = getApiBase();
-  const tenant = getTenantSlug();
-  const key = process.env.AURORA_API_KEY ?? process.env.NEXT_PUBLIC_AURORA_API_KEY ?? "";
-  const url = `${base.replace(/\/$/, "")}/api/tenants/${encodeURIComponent(tenant)}/store/holmes/goes-with?product_id=${encodeURIComponent(productId)}&limit=${limit}`;
-  const res = await fetch(url, { headers: key ? { "X-Api-Key": key } : {} });
-  if (!res.ok) {
-    const err = (await res.json().catch(() => ({}))) as { error?: string };
-    throw new Error(err.error ?? "Goes-with failed");
-  }
-  return res.json();
+  const client = createAuroraClient();
+  return client.store.holmesGoesWith(productId, limit);
 }
 
 /** Home personalization - sections for SSR fallback. sid optional (omit for default sections). */
-export async function getHomePersonalization(sid?: string): Promise<{
-  sections: Array<{
-    type: string;
-    title: string;
-    subtitle?: string;
-    products?: Array<{ id: string; name: string; price?: number; image_url?: string }>;
-    cards?: Array<{ title: string; imageUrl: string | null; linkUrl: string }>;
-  }>;
-} | null> {
+export async function getHomePersonalization(sid?: string): Promise<HomePersonalizationResult | null> {
   try {
-    const base = getApiBase();
-    const tenant = getTenantSlug();
-    const key = process.env.AURORA_API_KEY ?? process.env.NEXT_PUBLIC_AURORA_API_KEY ?? "";
-    const url = `${base}/api/tenants/${encodeURIComponent(tenant)}/store/home-personalization${sid ? `?sid=${encodeURIComponent(sid)}` : ""}`;
-    const res = await fetch(url, { headers: key ? { "X-Api-Key": key } : {} });
-    if (!res.ok) return null;
-    return res.json();
+    const client = createAuroraClient();
+    const result = await client.store.homePersonalization(sid ?? "", undefined);
+    return result;
   } catch {
     return null;
   }
