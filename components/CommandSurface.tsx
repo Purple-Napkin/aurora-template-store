@@ -136,16 +136,17 @@ export function CommandSurface({ heroImageUrl }: { heroImageUrl?: string | null 
 
   if (heroImageUrl) {
     return (
-      <section className="relative min-h-[420px] sm:min-h-[480px] py-16 sm:py-24 px-4 sm:px-6 overflow-hidden flex flex-col justify-center">
-        {/* Hero image - full bleed, subtle scale for edge bleed */}
-        <div
-          className="absolute inset-0 bg-cover bg-center scale-105"
-          style={{ backgroundImage: `url(${heroImageUrl})` }}
-          aria-hidden
-        />
+      <section className="relative min-h-[420px] sm:min-h-[480px] py-16 sm:py-24 px-4 sm:px-6 flex flex-col justify-center">
+        {/* Hero image - full bleed, subtle scale for edge bleed (overflow-hidden clips scale only, not dropdown) */}
+        <div className="absolute inset-0 overflow-hidden" aria-hidden>
+          <div
+            className="absolute inset-0 bg-cover bg-center scale-105"
+            style={{ backgroundImage: `url(${heroImageUrl})` }}
+          />
+        </div>
         {/* Overlay - softer than before, lets image breathe for premium feel */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/60 to-white/85" />
-        <div className="absolute inset-0 bg-gradient-to-t from-aurora-bg/40 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/60 to-white/85 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-aurora-bg/40 via-transparent to-transparent pointer-events-none" />
         {content}
       </section>
     );

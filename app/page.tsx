@@ -24,14 +24,14 @@ export default function HomePage() {
           <StoreContextBar />
         </div>
 
-        {/* Hero + command surface - actionable intent capture with real retail warmth */}
-        <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+        {/* Hero + command surface - actionable intent capture with real retail warmth (z-10 so dropdown overlays Mission section) */}
+        <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] z-10">
           <MissionAwareHero>
             <HeroCommandSurface />
           </MissionAwareHero>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-0">
           <HolmesContextualWell />
 
           {/* Mission-based entry points - Holmes-influenced when inference exists */}
