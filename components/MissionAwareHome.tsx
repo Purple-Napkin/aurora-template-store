@@ -1,11 +1,26 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { RecipeIngredientsSection } from "./RecipeIngredientsSection";
 import { getStoreConfig } from "@/lib/aurora";
 export type QuickAction = { label: string; href: string };
 export type Mission = { label: string; href: string };
 export type ShoppingListTemplate = { slug: string; label: string; description?: string; searchTerms: string[] };
+
+export type ActiveMissionUiHints = {
+  emphasizeMissions?: boolean;
+  narrowCatalog?: boolean;
+  showMissionBar?: boolean;
+};
+
+export type ActiveMission = {
+  key: string;
+  label: string;
+  confidence: number;
+  band: "low" | "medium" | "high";
+  summary?: string;
+  uiHints?: ActiveMissionUiHints;
+};
 
 export type HomePersonalization = {
   mode: "default" | "recipe_mission";
@@ -15,9 +30,12 @@ export type HomePersonalization = {
   missions?: Mission[];
   shoppingListTemplates?: ShoppingListTemplate[];
   trustSignal?: string;
+  activeMission?: ActiveMission;
 } | null;
 
-const MissionAwareContext = createContext<HomePersonalization>(null);
+export type MissionAwareContextValue = (NonNullable<HomePersonalization> & { refresh: () => void }) | null;
+
+const MissionAwareContext = createContext<MissionAwareContextValue>(null);
 
 export function useMissionAware() {
   return useContext(MissionAwareContext);
@@ -30,6 +48,11 @@ export function MissionAwareHomeProvider({
   children: React.ReactNode;
 }) {
   const [data, setData] = useState<HomePersonalization>(null);
+  const fetchRef = useRef<() => void>(() => {});
+
+  const refresh = useCallback(() => {
+    fetchRef.current();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -40,6 +63,7 @@ export function MissionAwareHomeProvider({
         .then((r) => r.json())
         .then((d) => {
           if (cancelled) return;
+          const am = d.activeMission;
           setData({
             mode: d.mode === "recipe_mission" ? "recipe_mission" : "default",
             recipeSlug: d.recipeSlug,
@@ -50,12 +74,31 @@ export function MissionAwareHomeProvider({
               ? d.shoppingListTemplates
               : undefined,
             trustSignal: typeof d.trustSignal === "string" ? d.trustSignal : undefined,
+            activeMission:
+              am && typeof am.key === "string" && typeof am.label === "string"
+                ? {
+                    key: am.key,
+                    label: am.label,
+                    confidence: typeof am.confidence === "number" ? am.confidence : 0,
+                    band: ["low", "medium", "high"].includes(am.band) ? am.band : "low",
+                    summary: typeof am.summary === "string" ? am.summary : undefined,
+                    uiHints:
+                      am.uiHints && typeof am.uiHints === "object"
+                        ? {
+                            emphasizeMissions: !!am.uiHints.emphasizeMissions,
+                            narrowCatalog: !!am.uiHints.narrowCatalog,
+                            showMissionBar: !!am.uiHints.showMissionBar,
+                          }
+                        : undefined,
+                  }
+                : undefined,
           });
         })
         .catch(() => {
           if (!cancelled) setData({ mode: "default" });
         });
     };
+    fetchRef.current = fetchData;
     fetchData();
     const onReady = () => fetchData();
     document.addEventListener("holmes:ready", onReady);
@@ -65,8 +108,11 @@ export function MissionAwareHomeProvider({
     };
   }, []);
 
+  const value: MissionAwareContextValue =
+    data ? { ...data, refresh } : (null as MissionAwareContextValue);
+
   return (
-    <MissionAwareContext.Provider value={data}>
+    <MissionAwareContext.Provider value={value}>
       {children}
     </MissionAwareContext.Provider>
   );

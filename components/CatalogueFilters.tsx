@@ -72,6 +72,8 @@ type CatalogueFiltersProps = {
   onClose?: () => void;
   variant?: "sidebar" | "drawer";
   suggestedSlugs?: string[];
+  /** When set, categories are reordered: mission-relevant first (progressive narrowing). */
+  missionPrioritySlugs?: string[];
 };
 
 function FilterSection({
@@ -111,7 +113,23 @@ export function CatalogueFilters({
   onClose,
   variant = "sidebar",
   suggestedSlugs = [],
+  missionPrioritySlugs = [],
 }: CatalogueFiltersProps) {
+  const sortedCategories = [...categories].sort((a, b) => {
+    const aSuggested = suggestedSlugs.includes(a.slug);
+    const bSuggested = suggestedSlugs.includes(b.slug);
+    if (aSuggested && !bSuggested) return -1;
+    if (!aSuggested && bSuggested) return 1;
+    if (missionPrioritySlugs.length > 0) {
+      const aIdx = missionPrioritySlugs.indexOf(a.slug);
+      const bIdx = missionPrioritySlugs.indexOf(b.slug);
+      if (aIdx >= 0 && bIdx < 0) return -1;
+      if (aIdx < 0 && bIdx >= 0) return 1;
+      if (aIdx >= 0 && bIdx >= 0) return aIdx - bIdx;
+    }
+    return 0;
+  });
+
   const content = (
     <div className="space-y-0">
       {/* Categories */}
@@ -128,15 +146,7 @@ export function CatalogueFilters({
           >
             All categories
           </Link>
-          {[...categories]
-            .sort((a, b) => {
-              const aSuggested = suggestedSlugs.includes(a.slug);
-              const bSuggested = suggestedSlugs.includes(b.slug);
-              if (aSuggested && !bSuggested) return -1;
-              if (!aSuggested && bSuggested) return 1;
-              return 0;
-            })
-            .map((cat) => {
+          {sortedCategories.map((cat) => {
               const isSuggested = suggestedSlugs.includes(cat.slug);
               return (
               <Link

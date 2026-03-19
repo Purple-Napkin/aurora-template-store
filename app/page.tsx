@@ -8,7 +8,6 @@ import { HomeSections } from "@/components/HomeSections";
 import { SmartCartPanel } from "@/components/SmartCartPanel";
 import { LiveSignalsRow } from "@/components/LiveSignalsRow";
 import {
-  MissionAwareHomeProvider,
   MissionAwareHero,
   MissionAwareSections,
 } from "@/components/MissionAwareHome";
@@ -19,8 +18,7 @@ export default function HomePage() {
   return (
     <>
       <HolmesHomeRefresher />
-      <MissionAwareHomeProvider>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <StoreContextBar />
         </div>
 
@@ -51,7 +49,6 @@ export default function HomePage() {
           {/* Smart cart panel - bridges browsing to conversion */}
           <SmartCartPanel />
         </div>
-      </MissionAwareHomeProvider>
     </>
   );
 }

@@ -45,10 +45,12 @@ These are **raw materials**. Holmes decides *when* and *what* to show based on i
 
 | Layer | Role |
 |-------|------|
-| **Command surface** | Zero-state entry. Search + quick actions. Quick actions are **Holmes-influenced** when inference exists. |
-| **Mission entry points** | Cook dinner, Quick snacks, etc. **Cold start:** sensible defaults. **Holmes active:** missions reflect inferred intent (e.g. "Travel prep", "Last-minute gifts"). |
+| **Active mission bar** | Top of screen when inference ≥ 0.6. Shows label, confidence band, summary. Dismiss / Reset. Drives catalogue narrowing when `narrowCatalog` and not dismissed. |
+| **Command surface** | **Missions first, search secondary.** "What are you trying to do?" + Start here chips, then "Search the store" (smaller). Quick actions Holmes-influenced when inference exists. |
+| **Mission entry points** | Cook dinner, Quick snacks, etc. **Cold start:** sensible defaults. **Holmes active:** missions reflect inferred intent (e.g. "Travel essentials", "Travel prep"). |
 | **Adaptive feed** | Sections from `home-personalization`. Holmes orders and filters based on mission. Trust signals ("Because it's 6pm", "Based on your browsing") build confidence. |
-| **Contextual hints** | "Planning a trip? Add travel adapter…" – HolmesContextualWell, basket bundle, etc. |
+| **Catalogue narrowing** | When `activeMission.uiHints.narrowCatalog` and bar not dismissed: categories reordered by mission priority; "For your mission" section at top. |
+| **Contextual hints** | Guardrail rules (holmes-core) + HolmesContextualWell. Micro-learning insights ("Egg noodles absorb sauce better than spaghetti"). |
 
 ---
 
@@ -76,6 +78,23 @@ These are **raw materials**. Holmes decides *when* and *what* to show based on i
 - [x] **Quick actions from Holmes** – `home-personalization` returns `quickActions`. Holmes-influenced when confidence >= 0.6 (travel_prep, recipe_mission, discovery). UI (CommandSurface) consumes when available.
 - [x] **Missions from Holmes** – `home-personalization` returns `missions`. Holmes-influenced when confidence >= 0.6. UI (MissionEntryPoints) falls back to defaults when empty.
 - [x] **Trust signals** – `home-personalization` returns `trustSignal`. "Because it's 6pm", "Based on your browsing", "Planning a trip?", etc. Kept and extended.
+- [x] **Active mission** – `home-personalization` returns `activeMission` (key, label, confidence, band, summary, uiHints). MissionAwareHomeProvider in layout; ActiveMissionBar below Nav.
+- [x] **Command surface hierarchy** – Missions first ("Start here"), search secondary ("Search the store"). Headline: "What are you trying to do?"
+- [x] **Catalogue narrowing** – When `narrowCatalog`: mission priority for categories, "For your mission" section. Respects mission bar dismiss.
+- [x] **Guardrail rules** – holmes-core `guardrail-rules.ts`; 12 rules. Contextual hint API evaluates first; micro-learning insights.
+
+---
+
+## QA Matrix: Missions and Bands
+
+| Scenario | sid | Mission key | Confidence | Expected UI |
+|----------|-----|-------------|------------|-------------|
+| Cold start | none | — | — | No mission bar. Default quick actions. Full categories. |
+| Low confidence | yes | browsing | low | No mission bar (or band "low"). Default missions. |
+| Travel prep (high) | yes | travel_prep | ≥ 0.75 | Mission bar: "Travel essentials", High confidence. narrowCatalog: travel categories first, "For your mission" section. |
+| Recipe mission | yes | recipe_mission | 0.9 | Mission bar: "Cook dinner". Recipe hero/sections on home. narrowCatalog when high. |
+| Mission bar dismissed | yes | travel_prep | high | Bar hidden. Catalogue shows full categories (no narrowing). |
+| Reset mission | yes | — | — | Clears dismiss; refetches personalization. |
 
 ---
 

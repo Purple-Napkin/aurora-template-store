@@ -84,40 +84,16 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
         </div>
       )}
       <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-aurora-text mb-3">
-        {isRecipeMission ? "Or something else?" : "What are you shopping for today?"}
+        {isRecipeMission ? "Or something else?" : "What are you trying to do?"}
       </h1>
       <p className="text-aurora-muted text-base sm:text-lg mb-6 font-medium">
-        {isRecipeMission ? "Let's get you there fast" : "Or something else?"}
+        {isRecipeMission ? "Let's get you there fast" : "Pick a mission or search below"}
       </p>
 
-      {/* Command bar - search + intent */}
+      {/* Primary: mission quick actions first */}
       <div className="relative z-20 mb-6">
-        {store ? (
-          <div
-            className="rounded-2xl border border-aurora-border bg-aurora-surface shadow-sm focus-within:border-aurora-primary/60 focus-within:ring-2 focus-within:ring-aurora-primary/20 transition-all"
-            data-command-search
-          >
-            <SearchDropdown
-              placeholder='e.g. "pasta dinner", "weekly shop", "quick snacks"'
-              vendorId={store.id}
-              fullWidth
-            />
-          </div>
-        ) : (
-          <Link
-            href="/location"
-            className="flex items-center gap-3 w-full px-6 py-4 rounded-2xl border-2 border-dashed border-aurora-border bg-aurora-surface text-aurora-muted hover:text-aurora-text hover:border-aurora-primary/40 transition-all"
-          >
-            <Search className="w-5 h-5 shrink-0" />
-            <span>Set location to search products</span>
-          </Link>
-        )}
-      </div>
-
-      {/* Quick starts */}
-      <div className="relative z-0">
         <p className="text-xs font-semibold text-aurora-muted uppercase tracking-widest mb-3">
-          Quick starts
+          Start here
         </p>
         <div className="flex flex-wrap gap-3">
           {quickActions.map((action) => {
@@ -144,6 +120,33 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
             </Link>
           )}
         </div>
+      </div>
+
+      {/* Secondary: search as tool, not entry point */}
+      <div className="relative z-10">
+        <p className="text-xs font-semibold text-aurora-muted uppercase tracking-widest mb-2">
+          Search the store
+        </p>
+        {store ? (
+          <div
+            className="rounded-xl border border-aurora-border/80 bg-aurora-surface/80 focus-within:border-aurora-primary/50 focus-within:ring-1 focus-within:ring-aurora-primary/20 transition-all max-w-md"
+            data-command-search
+          >
+            <SearchDropdown
+              placeholder="milk, pasta, bananas…"
+              vendorId={store.id}
+              fullWidth
+            />
+          </div>
+        ) : (
+          <Link
+            href="/location"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-aurora-border bg-aurora-surface/80 text-aurora-muted hover:text-aurora-text hover:border-aurora-primary/40 transition-all text-sm"
+          >
+            <Search className="w-4 h-4 shrink-0" />
+            <span>Set location to search</span>
+          </Link>
+        )}
       </div>
     </div>
   );

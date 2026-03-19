@@ -7,6 +7,7 @@ import { StoreProvider } from "@/components/StoreContext";
 import { StoreConfigProvider } from "@/components/StoreConfigContext";
 import { AuthProvider } from "@/components/AuthProvider";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
+import { MissionAwareHomeProvider } from "@/components/MissionAwareHome";
 import { AffinityToast } from "@/components/AffinityToast";
 import { HolmesDevTools } from "@/components/HolmesDevTools";
 import { VeggieBuddy } from "@/components/VeggieBuddy";
@@ -42,7 +43,9 @@ export default function RootLayout({
           <AuthProvider>
         <CartProvider>
           <AddToCartFlyProvider>
-            <ConditionalLayout>{children}</ConditionalLayout>
+            <MissionAwareHomeProvider>
+              <ConditionalLayout>{children}</ConditionalLayout>
+            </MissionAwareHomeProvider>
             <AffinityToast />
             <VeggieBuddy />
             <HolmesDevTools />

@@ -6,10 +6,13 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { useStore } from "@/components/StoreContext";
 import { useCart } from "@/components/CartProvider";
+import { useMissionAware } from "@/components/MissionAwareHome";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { search, getStoreConfig } from "@/lib/aurora";
 import { getRecipeTitle, expandRecipeSearchQuery } from "@/lib/cart-intelligence";
 import { holmesSearch } from "@/lib/holmes-events";
+import { isMissionBarDismissed } from "@/lib/mission-bar";
+import { MISSION_CATEGORY_PRIORITY, MISSION_FOCUS_QUERY } from "@/lib/mission-catalogue-config";
 import type { SearchHit } from "@/lib/aurora";
 import {
   CatalogueFilters,
@@ -65,6 +68,8 @@ function CatalogueContent() {
   const q = searchParams.get("q") ?? "";
   const { store } = useStore();
   const { addItem } = useCart();
+  const missionData = useMissionAware();
+  const [missionBarDismissed, setMissionBarDismissed] = useState(false);
   const [hits, setHits] = useState<SearchHit[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -76,8 +81,19 @@ function CatalogueContent() {
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
   const [suggestedSlugs, setSuggestedSlugs] = useState<string[]>([]);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [missionFocusHits, setMissionFocusHits] = useState<SearchHit[]>([]);
   const hasAppliedSuggestionRef = useRef(false);
   const limit = 24;
+
+  const activeMission = missionData?.activeMission;
+  const narrowCatalog =
+    activeMission?.uiHints?.narrowCatalog && !missionBarDismissed;
+  const missionPrioritySlugs = narrowCatalog && activeMission
+    ? (MISSION_CATEGORY_PRIORITY[activeMission.key] ?? [])
+    : [];
+  const focusQuery = narrowCatalog && activeMission
+    ? (MISSION_FOCUS_QUERY[activeMission.key] ?? "")
+    : "";
 
   const categoriesWithProducts = categories.filter(
     (cat) => categoryCounts[cat.slug] === undefined || categoryCounts[cat.slug] > 0
@@ -157,6 +173,42 @@ function CatalogueContent() {
   useEffect(() => {
     loadProducts();
   }, [loadProducts]);
+
+  useEffect(() => {
+    setMissionBarDismissed(isMissionBarDismissed());
+  }, []);
+  useEffect(() => {
+    const onDismissed = () => setMissionBarDismissed(true);
+    const onReset = () => setMissionBarDismissed(false);
+    window.addEventListener("holmes:missionBarDismissed", onDismissed);
+    window.addEventListener("holmes:missionBarReset", onReset);
+    return () => {
+      window.removeEventListener("holmes:missionBarDismissed", onDismissed);
+      window.removeEventListener("holmes:missionBarReset", onReset);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!focusQuery || !store?.id) {
+      setMissionFocusHits([]);
+      return;
+    }
+    let cancelled = false;
+    search({
+      q: focusQuery,
+      limit: 8,
+      offset: 0,
+      vendorId: store.id,
+      category: category || undefined,
+    })
+      .then((res) => {
+        if (!cancelled) setMissionFocusHits(res.hits ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) setMissionFocusHits([]);
+      });
+    return () => { cancelled = true; };
+  }, [focusQuery, store?.id, category]);
 
   useEffect(() => {
     let cancelled = false;
@@ -283,6 +335,7 @@ function CatalogueContent() {
           storeName={store?.name}
           variant="sidebar"
           suggestedSlugs={suggestedSlugs}
+          missionPrioritySlugs={missionPrioritySlugs}
         />
 
         {/* Mobile filters bar */}
@@ -325,6 +378,73 @@ function CatalogueContent() {
           {/* Holmes injects personalised "Recommended for you" block */}
           <div data-holmes="catalogue-list" className="mb-8 min-h-[1px]" />
 
+          {/* For your mission - when narrowCatalog, show mission-scoped products */}
+          {narrowCatalog && missionFocusHits.length > 0 && !recipeTitle && activeMission && (
+            <section className="mb-8">
+              <h2 className="text-sm font-semibold text-aurora-muted uppercase tracking-widest mb-4">
+                For your mission: {activeMission.label}
+              </h2>
+              <div className="grid gap-4 sm:gap-5 grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
+                {missionFocusHits.map((record) => {
+                  const id = (record.recordId ?? record.id) as string;
+                  const name = getDisplayName(record);
+                  const rawPrice = getPrice(record);
+                  const sellByWeight = Boolean(record.sell_by_weight);
+                  const unit = (record.unit as string) || "kg";
+                  const pricePerUnit = record.price_per_unit as number | undefined;
+                  const priceCents =
+                    sellByWeight && pricePerUnit != null
+                      ? Math.round(pricePerUnit * 100)
+                      : rawPrice != null
+                        ? Math.round(rawPrice * 100)
+                        : undefined;
+                  const imageUrl = getImageUrl(record);
+                  return (
+                    <div
+                      key={id}
+                      className="group p-4 rounded-xl bg-aurora-surface border border-aurora-border hover:border-aurora-primary/40 transition-all overflow-hidden min-w-[160px] min-h-[260px] flex flex-col"
+                    >
+                      <Link href={`/catalogue/${id}`} className="block">
+                        <div className="aspect-square rounded-lg bg-aurora-surface-hover mb-3 overflow-hidden">
+                          <ProductImage
+                            src={imageUrl}
+                            className="w-full h-full"
+                            objectFit="contain"
+                            thumbnail
+                            fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">-</div>}
+                          />
+                        </div>
+                        <p className="font-semibold text-sm truncate group-hover:text-aurora-primary transition-colors">
+                          {name}
+                        </p>
+                        {priceCents != null && (
+                          <p className="text-sm mt-1 font-bold text-aurora-primary">
+                            {sellByWeight && pricePerUnit != null
+                              ? formatPrice(Math.round(pricePerUnit * 100), currency) + `/${unit}`
+                              : formatPrice(priceCents, currency)}
+                          </p>
+                        )}
+                      </Link>
+                      {priceCents != null && catalogSlug && (
+                        <div className="mt-auto pt-3">
+                          <AddToCartButton
+                            recordId={id}
+                            tableSlug={catalogSlug}
+                            name={name}
+                            unitAmount={priceCents}
+                            sellByWeight={sellByWeight}
+                            unit={unit}
+                            imageUrl={imageUrl}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
           {/* Mobile filter drawer */}
           {filtersOpen && (
             <div className="lg:hidden mb-6 rounded-lg border border-aurora-border overflow-hidden">
@@ -337,6 +457,7 @@ function CatalogueContent() {
                 onClose={() => setFiltersOpen(false)}
                 variant="drawer"
                 suggestedSlugs={suggestedSlugs}
+                missionPrioritySlugs={missionPrioritySlugs}
               />
             </div>
           )}
