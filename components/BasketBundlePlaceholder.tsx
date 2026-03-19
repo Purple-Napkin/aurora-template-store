@@ -28,7 +28,7 @@ export function BasketBundlePlaceholder() {
 
   return (
     <div
-      className="animate-pulse rounded-component bg-aurora-surface border border-aurora-border p-4"
+      className="pattern-well animate-pulse rounded-component border border-aurora-border p-4"
       aria-hidden="true"
     >
       <div className="h-5 w-56 bg-aurora-surface-hover rounded mb-4" />

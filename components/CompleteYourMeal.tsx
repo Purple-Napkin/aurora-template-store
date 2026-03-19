@@ -89,7 +89,7 @@ export function CompleteYourMeal() {
   );
 
   return (
-    <div className="mb-6 p-4 rounded-xl bg-aurora-surface border border-aurora-primary/30">
+    <div className="pattern-well mb-6 p-4 rounded-xl border border-aurora-primary/30">
       <h3 className="font-semibold mb-2">Complete your {mealLabel}</h3>
       <p className="text-sm text-aurora-muted mb-3">
         Add rice, coconut milk & more for a full meal

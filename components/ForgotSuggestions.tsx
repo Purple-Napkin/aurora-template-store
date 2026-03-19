@@ -84,7 +84,7 @@ export function ForgotSuggestions() {
   if (!suggestions.length || products.length === 0) return null;
 
   return (
-    <div className="mb-6 p-4 rounded-xl bg-aurora-surface border border-aurora-border">
+    <div className="pattern-well mb-6 p-4 rounded-xl border border-aurora-border">
       <h3 className="font-semibold mb-2">Often added with your items</h3>
       {loading ? (
         <div className="flex gap-3">

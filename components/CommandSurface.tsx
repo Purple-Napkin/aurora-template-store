@@ -122,10 +122,11 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
         <div className="flex flex-wrap gap-3">
           {quickActions.map((action) => {
             const Icon = action.icon;
+            const href = action.label === "Recipe ideas" ? "/recipes" : action.href;
             return (
               <Link
                 key={action.label}
-                href={action.href}
+                href={href}
                 className="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-aurora-surface border border-aurora-border shadow-sm hover:border-aurora-primary/40 hover:shadow-md transition-all text-sm font-semibold text-aurora-text"
               >
                 <Icon className="w-4 h-4 text-aurora-primary" />
@@ -135,7 +136,7 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
           })}
           {!quickActions.some((a) => a.label === "Recipe ideas") && (
             <Link
-              href="/catalogue?q=recipe"
+              href="/recipes"
               className="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-aurora-surface border border-aurora-border shadow-sm hover:border-aurora-primary/40 hover:shadow-md transition-all text-sm font-semibold text-aurora-text"
             >
               <Sparkles className="w-4 h-4 text-aurora-primary" />
@@ -148,13 +149,13 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
   );
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-b from-aurora-surface to-aurora-bg border-b border-aurora-border">
+    <section className="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-b from-aurora-surface to-aurora-bg">
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-12 xl:gap-16">
-        {/* Logo - always on left */}
+        {/* Logo - always on left, with subtle well + texture anchor */}
         <div className="flex-1 min-w-0 order-2 lg:order-1 flex justify-center lg:justify-start w-full lg:min-w-[280px]">
           <Link
             href="/"
-            className="block w-full max-w-[min(85vw,320px)] lg:max-w-full transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-aurora-primary/50 rounded-lg"
+            className="logo-well block w-full max-w-[min(85vw,320px)] lg:max-w-full transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-aurora-primary/50 rounded-2xl p-4 sm:p-6 border border-aurora-border/60"
             aria-label="Home"
           >
             {logoUrl ? (

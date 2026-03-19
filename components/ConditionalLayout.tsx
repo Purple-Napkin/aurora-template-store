@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
+import { FooterTip } from "./FooterTip";
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
         <div key={pathname} className="animate-page-enter">
           {children}
         </div>
+        <FooterTip />
         <Footer />
       </main>
     </>

@@ -54,7 +54,7 @@ export function HolmesContextualWell({ currentProductId }: Props) {
   if (!hint) return null;
 
   return (
-    <div className="mb-6 p-4 rounded-xl bg-aurora-surface border border-aurora-primary/30">
+    <div className="pattern-well mb-6 p-4 rounded-xl border border-aurora-primary/30">
       <p className="text-sm text-aurora-text mb-2">{hint}</p>
       {products.length > 0 && (
         <div className="flex flex-wrap gap-2">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { InsightBlurb } from "@/components/InsightBlurb";
 
 export default function AboutPage() {
   return (
@@ -39,6 +40,11 @@ export default function AboutPage() {
           </div>
         </div>
       </div>
+
+      <div className="mt-20">
+        <InsightBlurb />
+      </div>
+
       <div className="mt-16 p-8 rounded-component bg-aurora-accent/20 border border-aurora-accent/30 text-center">
         <h2 className="text-2xl font-bold mb-2">Ready to shop with us?</h2>
         <p className="text-aurora-muted mb-6">

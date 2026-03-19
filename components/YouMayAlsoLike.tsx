@@ -85,16 +85,16 @@ export async function YouMayAlsoLike({
           return (
             <div
               key={id}
-              className="p-4 rounded-component bg-aurora-surface/80 border border-aurora-border"
+              className="pattern-well p-4 rounded-component border border-aurora-border flex flex-col"
             >
-              <Link href={`/catalogue/${id}`}>
-                <div className="aspect-square rounded-component bg-aurora-surface-hover mb-2 overflow-hidden">
+              <Link href={`/catalogue/${id}`} className="flex flex-col flex-1 min-h-0">
+                <div className="aspect-square w-full rounded-component bg-aurora-surface-hover mb-2 overflow-hidden relative shrink-0">
                   <ProductImage
                     src={imageUrl}
-                    className="w-full h-full"
+                    className="absolute inset-0 w-full h-full object-center"
                     objectFit="contain"
                     thumbnail
-                    fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-2xl">-</div>}
+                    fallback={<div className="absolute inset-0 flex items-center justify-center text-aurora-muted text-2xl">-</div>}
                   />
                 </div>
                 <p className="font-semibold text-sm truncate">{name}</p>

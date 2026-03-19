@@ -202,7 +202,7 @@ export function CatalogueFilters({
 
   return (
     <aside className="w-56 shrink-0 hidden lg:block">
-      <div className="sticky top-24 space-y-6 rounded-component bg-aurora-surface/50 border border-aurora-border p-4">
+      <div className="pattern-well sticky top-24 space-y-6 rounded-component border border-aurora-border p-4">
         {content}
       </div>
     </aside>

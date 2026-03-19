@@ -43,10 +43,11 @@ export function MissionEntryPoints() {
       <div className="flex flex-wrap gap-3">
         {missions.map((m) => {
           const Icon = m.icon;
+          const href = m.label === "Recipe ideas" ? "/recipes" : m.href;
           return (
             <Link
               key={m.label}
-              href={m.href}
+              href={href}
               className="flex items-center gap-3 px-5 py-3.5 rounded-2xl bg-aurora-surface border border-aurora-border/80 shadow-sm hover:border-aurora-primary/40 hover:shadow-md hover:shadow-aurora-primary/5 transition-all font-medium text-aurora-text"
             >
               <span className="flex items-center justify-center w-10 h-10 rounded-xl bg-aurora-primary/10 text-aurora-primary">

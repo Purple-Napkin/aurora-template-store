@@ -13,6 +13,7 @@ import { CompleteYourMeal } from "@/components/CompleteYourMeal";
 import { ForgotSuggestions } from "@/components/ForgotSuggestions";
 import { BasketCompositionSummary } from "@/components/BasketCompositionSummary";
 import { ReorderLastShop } from "@/components/ReorderLastShop";
+import { BasketSaverTips } from "@/components/BasketSaverTips";
 
 function formatPrice(cents: number): string {
   return new Intl.NumberFormat("en-GB", {
@@ -22,6 +23,7 @@ function formatPrice(cents: number): string {
 }
 
 const SHIPPING_CENTS = 250; // £2.50
+const FREE_DELIVERY_THRESHOLD_CENTS = 2500; // £25
 
 export default function CartPage() {
   const router = useRouter();
@@ -29,6 +31,7 @@ export default function CartPage() {
   const { store } = useStore();
   const shipping = items.length > 0 ? SHIPPING_CENTS : 0;
   const grandTotal = total + shipping;
+  const toFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD_CENTS - total);
 
   const handleCheckout = () => {
     router.push("/checkout");
@@ -37,15 +40,16 @@ export default function CartPage() {
   if (items.length === 0) {
     return (
       <div className="max-w-2xl mx-auto py-16 px-6 text-center">
-        <h1 className="text-2xl font-bold mb-4">Your Basket is empty</h1>
+        <span className="text-5xl mb-4 block" aria-hidden>🛒</span>
+        <h1 className="text-2xl font-bold mb-2">Your basket is empty</h1>
         <p className="text-aurora-muted mb-8">
-          Add some products from the catalogue.
+          Nothing in here yet – but we&apos;ve got plenty of good stuff waiting for you!
         </p>
         <Link
           href="/catalogue"
           className="inline-block px-6 py-3 rounded-component bg-aurora-accent text-aurora-bg font-medium hover:opacity-90"
         >
-          View catalogue
+          Start shopping
         </Link>
       </div>
     );
@@ -97,6 +101,7 @@ export default function CartPage() {
             </button>
           </div>
           <ReorderLastShop />
+          <BasketSaverTips />
           <CompleteYourMeal />
           {/* Holmes injects bundle here when mission confidence >= 0.5; skeleton hides when inject happens or after ~3s */}
           <div className="mb-6">
@@ -168,7 +173,7 @@ export default function CartPage() {
         </div>
 
         <div>
-          <div className="p-4 rounded-component bg-aurora-surface border border-aurora-border sticky top-24">
+          <div className="pattern-well p-4 rounded-component border border-aurora-border sticky top-24">
             <h2 className="font-semibold mb-4">Order Summary</h2>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
@@ -183,6 +188,11 @@ export default function CartPage() {
                 <span>Total</span>
                 <span>{formatPrice(grandTotal)}</span>
               </div>
+              {toFreeDelivery > 0 && toFreeDelivery <= 1000 && (
+                <p className="mt-3 rounded-lg bg-aurora-primary/10 px-3 py-2 text-xs text-aurora-primary">
+                  Add {formatPrice(toFreeDelivery)} more for free delivery – you&apos;re so close! 🎉
+                </p>
+              )}
             </div>
             <div data-holmes="checkout-summary" className="mt-2 min-h-[1px]" />
 
@@ -199,11 +209,11 @@ export default function CartPage() {
                 Apply
               </button>
             </div>
-            <div data-holmes="payment" className="[&_button]:outline-none [&_button]:ring-0 [&_button]:border-0">
+            <div data-holmes="payment" className="[&_button]:outline-none [&_button]:ring-0 [&_button]:focus:ring-0 [&_button]:focus:ring-offset-0 [&_a]:outline-none [&_a]:ring-0">
               <button
                 type="button"
                 onClick={handleCheckout}
-                className="w-full mt-4 py-3 sm:py-4 rounded-component bg-aurora-accent text-aurora-bg font-bold hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-aurora-primary focus:ring-offset-2 focus:ring-offset-aurora-surface transition-opacity"
+                className="checkout-btn w-full mt-4 py-3 sm:py-4 rounded-component bg-aurora-accent text-aurora-bg font-bold hover:opacity-90 transition-opacity"
               >
                 Proceed to Checkout
               </button>

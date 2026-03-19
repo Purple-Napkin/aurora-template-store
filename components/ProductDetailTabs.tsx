@@ -28,7 +28,7 @@ export function ProductDetailTabs({ record }: { record: Record<string, unknown> 
   ];
 
   return (
-    <div>
+    <div className="pattern-well rounded-xl border border-aurora-border p-6">
       <div className="flex gap-4 border-b border-aurora-border">
         {tabs.map((t) => (
           <button

@@ -5,7 +5,7 @@ const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL ?? "https://vnawbscpsiwkqniibyy
 
 export function Footer() {
   return (
-    <footer className="border-t border-aurora-border mt-auto">
+    <footer className="mt-auto">
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-8">
           <div>

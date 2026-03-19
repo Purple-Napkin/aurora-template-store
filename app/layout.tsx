@@ -9,6 +9,7 @@ import { AuthProvider } from "@/components/AuthProvider";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 import { AffinityToast } from "@/components/AffinityToast";
 import { HolmesDevTools } from "@/components/HolmesDevTools";
+import { VeggieBuddy } from "@/components/VeggieBuddy";
 
 const siteName =
   process.env.NEXT_PUBLIC_SITE_NAME ?? "Hippo Ecom";
@@ -43,6 +44,7 @@ export default function RootLayout({
           <AddToCartFlyProvider>
             <ConditionalLayout>{children}</ConditionalLayout>
             <AffinityToast />
+            <VeggieBuddy />
             <HolmesDevTools />
           </AddToCartFlyProvider>
         </CartProvider>

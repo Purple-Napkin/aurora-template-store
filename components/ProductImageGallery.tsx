@@ -25,7 +25,7 @@ export function ProductImageGallery({ record }: ProductImageGalleryProps) {
 
   if (urls.length === 0) {
     return (
-      <div className="rounded-component overflow-hidden aspect-square bg-aurora-surface flex items-center justify-center text-aurora-muted text-6xl">
+      <div className="pattern-well rounded-component overflow-hidden aspect-square flex items-center justify-center text-aurora-muted text-6xl">
          - 
       </div>
     );
@@ -35,7 +35,7 @@ export function ProductImageGallery({ record }: ProductImageGalleryProps) {
 
   return (
     <div className="space-y-3">
-      <div className="rounded-xl overflow-hidden aspect-square bg-aurora-surface-hover shadow-sm ring-1 ring-aurora-border/50 p-4">
+      <div className="pattern-well rounded-xl overflow-hidden aspect-square shadow-sm ring-1 ring-aurora-border/50 p-4">
         <ProductImage
           src={mainUrl}
           className="w-full h-full object-contain cursor-zoom-in"

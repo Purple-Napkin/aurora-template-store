@@ -19,7 +19,7 @@ export function LiveSignalsRow() {
         : { label: "Trending now", href: "/catalogue" };
 
   return (
-    <section className="py-4 border-b border-aurora-border">
+    <section className="py-4">
       <Link
         href={signal.href}
         className="flex items-center gap-2 text-sm text-aurora-muted hover:text-aurora-primary transition-colors"

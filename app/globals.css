@@ -45,6 +45,30 @@
   filter: grayscale(1);
 }
 
+/* Pattern colors: soft cream + warm beige – bakery / fresh produce feel */
+:root {
+  --pattern-cream: rgba(250, 246, 238, 0.78);   /* #FAF6EE – slightly more opaque = pattern less visible */
+  --pattern-warm: rgba(232, 226, 214, 0.5);     /* #E8E2D6 */
+}
+
+/* Logo well: subtle anchor with grocery pattern + warm cream tint */
+.logo-well {
+  background-image:
+    linear-gradient(var(--pattern-cream), var(--pattern-cream)),
+    url(/grocery-pattern.png);
+  background-repeat: repeat;
+  background-size: auto, 120px 120px;
+}
+
+/* Reusable pattern for sections (cart, catalogue, product detail) */
+.pattern-well {
+  background-image:
+    linear-gradient(var(--pattern-cream), var(--pattern-cream)),
+    url(/grocery-pattern.png);
+  background-repeat: repeat;
+  background-size: auto, 120px 120px;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -84,6 +108,22 @@ body {
 
 .cart-badge {
   animation: cart-badge-pop 0.3s ease-out;
+}
+
+/* Veggie buddy – cute floating carrot easter egg */
+@keyframes veggie-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.veggie-buddy-btn span {
+  animation: veggie-bob 2.5s ease-in-out infinite;
+}
+@keyframes veggie-tip-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.veggie-tip-tooltip {
+  animation: veggie-tip-in 0.25s ease-out;
 }
 
 @keyframes add-to-cart-fly {
@@ -128,17 +168,43 @@ body {
   font-family: var(--font-display);
 }
 
-/* Checkout buttons: remove stray focus/border from Holmes injection */
+/* Checkout buttons: remove stray focus/outline from Holmes injection and native button */
 [data-holmes="payment"] button,
-[data-holmes="checkout-summary"] button {
+[data-holmes="payment"] a,
+[data-holmes="checkout-summary"] button,
+[data-holmes="checkout-summary"] a {
   outline: none !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
   border: none !important;
   box-shadow: none !important;
 }
 [data-holmes="payment"] button:focus,
-[data-holmes="checkout-summary"] button:focus {
+[data-holmes="payment"] button:focus-visible,
+[data-holmes="payment"] button:active,
+[data-holmes="payment"] a:focus,
+[data-holmes="payment"] a:focus-visible,
+[data-holmes="payment"] a:active,
+[data-holmes="checkout-summary"] button:focus,
+[data-holmes="checkout-summary"] button:focus-visible,
+[data-holmes="checkout-summary"] button:active,
+[data-holmes="checkout-summary"] a:focus,
+[data-holmes="checkout-summary"] a:focus-visible,
+[data-holmes="checkout-summary"] a:active {
   outline: none !important;
-  box-shadow: 0 0 0 2px var(--aurora-surface), 0 0 0 4px var(--aurora-primary) !important;
+  outline-width: 0 !important;
+  outline-style: none !important;
+  box-shadow: none !important;
+}
+
+/* Proceed to Checkout – suppress any browser focus outline */
+button.checkout-btn,
+button.checkout-btn:focus,
+button.checkout-btn:focus-visible,
+button.checkout-btn:active {
+  outline: none !important;
+  outline-width: 0 !important;
+  box-shadow: none !important;
 }
 
 /* Holmes basket bundle - vanilla HTML from script, styled here */
@@ -149,7 +215,11 @@ body {
   padding: 1.25rem;
   border-radius: 12px;
   border: 1px solid var(--aurora-border);
-  background: var(--aurora-surface);
+  background-image:
+    linear-gradient(var(--pattern-cream), var(--pattern-cream)),
+    url(/grocery-pattern.png);
+  background-repeat: repeat;
+  background-size: auto, 120px 120px;
 }
 [data-holmes="basket-bundle"] [data-holmes-bundle-title] {
   font-size: 1rem;
@@ -358,7 +428,11 @@ body {
   padding: 1rem;
   border-radius: 12px;
   border: 1px solid var(--aurora-border);
-  background: var(--aurora-surface);
+  background-image:
+    linear-gradient(var(--pattern-cream), var(--pattern-cream)),
+    url(/grocery-pattern.png);
+  background-repeat: repeat;
+  background-size: auto, 120px 120px;
 }
 [data-holmes="recommendations"] [data-holmes-rec-card] a {
   text-decoration: none;
@@ -371,19 +445,23 @@ body {
   overflow: hidden;
   background: var(--aurora-surface-hover);
   margin-bottom: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
 }
 [data-holmes="recommendations"] [data-holmes-rec-card-image] img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  min-height: 100px;
   object-fit: contain;
   object-position: center;
   display: block;
 }
 [data-holmes="recommendations"] [data-holmes-rec-card-fallback] {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.5rem;
   color: var(--aurora-muted);
 }
@@ -422,7 +500,11 @@ body {
   padding: 1rem;
   border-radius: 12px;
   border: 1px solid var(--aurora-border);
-  background: var(--aurora-surface);
+  background-image:
+    linear-gradient(var(--pattern-cream), var(--pattern-cream)),
+    url(/grocery-pattern.png);
+  background-repeat: repeat;
+  background-size: auto, 120px 120px;
   text-decoration: none;
   color: inherit;
   min-height: 260px;
