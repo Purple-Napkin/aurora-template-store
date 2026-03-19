@@ -6,6 +6,7 @@ import { useCart } from "@/components/CartProvider";
 import { useStore } from "@/components/StoreContext";
 import { BasketBundlePlaceholder } from "@/components/BasketBundlePlaceholder";
 import { HolmesContextualWell } from "@/components/HolmesContextualWell";
+import { HolmesTidbits } from "@/components/HolmesTidbits";
 import { ProductImage } from "@/components/ProductImage";
 import { CompleteYourMeal } from "@/components/CompleteYourMeal";
 import { ForgotSuggestions } from "@/components/ForgotSuggestions";
@@ -73,6 +74,14 @@ export default function CartPage() {
       )}
 
       <HolmesContextualWell />
+      {items[0] && (
+        <div className="mb-6">
+          <HolmesTidbits
+            entity={items[0].recordId}
+            entityType="product"
+          />
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">

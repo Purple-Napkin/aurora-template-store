@@ -7,6 +7,7 @@ import { ProductDetailTabs } from "@/components/ProductDetailTabs";
 import { ProductImageGallery } from "@/components/ProductImageGallery";
 import { YouMayAlsoLike } from "@/components/YouMayAlsoLike";
 import { HolmesContextualWell } from "@/components/HolmesContextualWell";
+import { HolmesTidbits } from "@/components/HolmesTidbits";
 
 function getImageUrl(record: Record<string, unknown>): string | null {
   const field = ["image_url", "image", "thumbnail", "photo"].find((f) => record[f]);
@@ -113,6 +114,9 @@ export default async function ProductPage({
           {description && (
             <p className="text-aurora-muted">{description}</p>
           )}
+          <div className="mt-4">
+            <HolmesTidbits entity={id} entityType="product" />
+          </div>
           {vendorName && (
             <p className="text-sm">
               Sold by:{" "}

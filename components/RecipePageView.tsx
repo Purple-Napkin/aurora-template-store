@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { holmesRecipe, holmesRecipeProducts } from "@/lib/aurora";
+import { HolmesTidbits } from "@/components/HolmesTidbits";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { ProductImage } from "@/components/ProductImage";
 import { formatPrice, toCents } from "@/lib/format-price";
@@ -127,6 +128,9 @@ export function RecipePageView({
         {recipe?.description && (
           <p className="mt-3 text-aurora-text text-base">{recipe.description}</p>
         )}
+        <div className="mt-4">
+          <HolmesTidbits entity={recipeSlug} entityType="recipe" />
+        </div>
       </header>
 
       {products.length > 0 && catalogSlug && (
