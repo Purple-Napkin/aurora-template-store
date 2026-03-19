@@ -91,7 +91,9 @@ export async function YouMayAlsoLike({
                 <div className="aspect-square rounded-component bg-aurora-surface-hover mb-2 overflow-hidden">
                   <ProductImage
                     src={imageUrl}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
+                    objectFit="contain"
+                    thumbnail
                     fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-2xl">-</div>}
                   />
                 </div>

@@ -112,7 +112,9 @@ export default function CartPage() {
                 <div className="w-16 h-16 rounded-component bg-aurora-surface-hover shrink-0 overflow-hidden">
                   <ProductImage
                     src={item.imageUrl}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
+                    objectFit="contain"
+                    thumbnail
                     fallback={<span className="w-full h-full flex items-center justify-center text-aurora-muted text-xs">-</span>}
                   />
                 </div>

@@ -57,7 +57,9 @@ export async function HomeSections() {
                     <ProductImage
                       src={prod.image_url}
                       baseUrl={process.env.NEXT_PUBLIC_APP_URL}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full"
+                      objectFit="contain"
+                      thumbnail
                       fallback={
                         <span
                           data-holmes-home-card-fallback
@@ -105,7 +107,9 @@ export async function HomeSections() {
                   >
                     <ProductImage
                       src={card.imageUrl}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full"
+                      objectFit="contain"
+                      thumbnail
                       fallback={
                         <span
                           data-holmes-home-card-fallback

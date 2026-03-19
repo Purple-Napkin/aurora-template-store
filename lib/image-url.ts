@@ -1,9 +1,41 @@
 /**
  * Centralized product image URL resolution.
  * Ensures relative URLs get correct base (storefront or CDN) so images load reliably.
+ * Supports Contentful CDN resize params to request appropriately-sized thumbnails.
  */
 
 const IMAGE_FIELDS = ["image_url", "image", "thumbnail", "photo"] as const;
+
+/** Matches Contentful CDN URLs (images.ctfassets.net or images.eu.ctfassets.net), with or without protocol */
+const CONTENTFUL_CDN_RE = /^(https?:)?\/\/images\.(eu\.)?ctfassets\.net\//i;
+
+/**
+ * For Contentful CDN URLs, append resize params so the CDN returns an appropriately-sized
+ * image. Uses fit=pad to preserve aspect ratio and avoid cropping portrait/landscape images.
+ * Other URLs are returned unchanged.
+ */
+export function getThumbnailImageUrl(
+  url: string | null | undefined,
+  width = 400,
+  height = 400
+): string | null {
+  const raw = typeof url === "string" ? url.trim() : "";
+  if (!raw) return null;
+  if (!CONTENTFUL_CDN_RE.test(raw)) return raw;
+
+  try {
+    const u = new URL(raw.startsWith("//") ? `https:${raw}` : raw);
+    const params = u.searchParams;
+    if (params.has("w") || params.has("h")) return raw;
+    params.set("w", String(Math.min(4000, width)));
+    params.set("h", String(Math.min(4000, height)));
+    params.set("fit", "pad");
+    params.set("fm", "webp");
+    return u.toString().replace(/^https:\/\//, "//");
+  } catch {
+    return raw;
+  }
+}
 
 /**
  * Extract image URL from a product/record.

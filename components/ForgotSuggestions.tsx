@@ -110,7 +110,9 @@ export function ForgotSuggestions() {
                   <div className="w-12 h-12 rounded-lg bg-aurora-surface overflow-hidden shrink-0">
                     <ProductImage
                       src={p.image_url}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full"
+                      objectFit="contain"
+                      thumbnail
                       fallback={<span className="w-full h-full flex items-center justify-center text-aurora-muted text-sm">-</span>}
                     />
                   </div>

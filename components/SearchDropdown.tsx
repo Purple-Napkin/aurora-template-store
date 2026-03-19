@@ -171,7 +171,9 @@ export function SearchDropdown({
                             <div className="w-10 h-10 rounded-component bg-aurora-surface-hover shrink-0 overflow-hidden">
                               <ProductImage
                                 src={hit.image_url}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full"
+                                objectFit="contain"
+                                thumbnail
                                 fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-xs">-</div>}
                               />
                             </div>

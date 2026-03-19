@@ -67,7 +67,9 @@ export function HolmesContextualWell({ currentProductId }: Props) {
               <span className="w-6 h-6 rounded overflow-hidden shrink-0">
                 <ProductImage
                   src={p.image_url}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full"
+                  objectFit="contain"
+                  thumbnail
                   fallback={<span className="text-xs">-</span>}
                 />
               </span>

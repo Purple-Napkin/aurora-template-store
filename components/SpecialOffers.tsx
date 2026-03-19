@@ -85,7 +85,9 @@ export async function SpecialOffers() {
               <div className="aspect-square rounded-component bg-aurora-surface-hover mb-3 overflow-hidden">
                 <ProductImage
                   src={imageUrl}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full"
+                  objectFit="contain"
+                  thumbnail
                   fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">-</div>}
                 />
               </div>

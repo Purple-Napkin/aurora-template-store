@@ -74,7 +74,9 @@ export function SmartBasketSuggest() {
                 <div className="aspect-square rounded-lg bg-aurora-surface-hover overflow-hidden mb-2">
                   <ProductImage
                     src={imageUrl}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full"
+                    objectFit="contain"
+                    thumbnail
                     fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted">-</div>}
                   />
                 </div>
