@@ -105,6 +105,12 @@ function CatalogueContent() {
   }
 
   const loadProducts = useCallback(async () => {
+    if (getRecipeTitle(q)) {
+      setHits([]);
+      setTotal(0);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const sort = tab === "new" ? "created_at" : tab === "sale" ? "price" : "name";
@@ -338,7 +344,7 @@ function CatalogueContent() {
                 <ProductCardSkeleton key={i} />
               ))}
             </div>
-          ) : hits.length === 0 && recipeTitle ? (
+          ) : recipeTitle ? (
             <div className="w-full flex-1">
               <RecipePageView
                 recipeSlug={recipeTitle.toLowerCase()}

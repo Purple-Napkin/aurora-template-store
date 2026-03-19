@@ -11,6 +11,8 @@ export const MEAL_TRIGGERS: Record<string, { meal: string; searchTerms: string[]
   "tomato sauce": { meal: "pasta", searchTerms: ["pasta", "parmesan"] },
   "soy sauce": { meal: "stir fry", searchTerms: ["rice", "noodles", "vegetables"] },
   "paella": { meal: "paella", searchTerms: ["rice", "saffron", "seafood"] },
+  "spaghetti": { meal: "pasta", searchTerms: ["pasta", "parmesan", "olive oil", "tomato"] },
+  "pasta": { meal: "pasta", searchTerms: ["pasta", "parmesan", "olive oil"] },
   "risotto": { meal: "risotto", searchTerms: ["rice", "parmesan", "stock"] },
 };
 
@@ -36,9 +38,23 @@ export const RECIPE_SUGGESTIONS = [
   "paella ingredients",
   "curry ingredients",
   "pasta ingredients",
+  "spaghetti ingredients",
   "risotto ingredients",
   "stir fry ingredients",
 ] as const;
+
+/** Recipe search terms → canonical recipe slug for getRecipeTitle (e.g. spaghetti, linguine → pasta) */
+const RECIPE_WORD_MAP: Record<string, string> = {
+  paella: "paella",
+  curry: "curry",
+  pasta: "pasta",
+  spaghetti: "pasta",
+  linguine: "pasta",
+  penne: "pasta",
+  risotto: "risotto",
+  "stir fry": "stir fry",
+  "stir-fry": "stir fry",
+};
 
 /** Match query prefix to a recipe suggestion for predictive search */
 export function getRecipeSuggestion(query: string): string | null {
@@ -48,10 +64,15 @@ export function getRecipeSuggestion(query: string): string | null {
   return match ? `${match}?` : null;
 }
 
-/** Extract recipe title from search query for catalogue "Add all" - handles prefix match (paell→Paella) */
+/** Extract recipe title from search query for catalogue - matches "paella", "spaghetti", "pasta", etc. */
 export function getRecipeTitle(q: string): string | null {
   const lower = q.trim().toLowerCase();
   if (!lower) return null;
+  for (const [word, recipe] of Object.entries(RECIPE_WORD_MAP)) {
+    if (lower === word || lower.startsWith(word + " ") || lower.endsWith(" " + word) || word.startsWith(lower) || (word.length >= 4 && lower.startsWith(word.slice(0, 4)))) {
+      return recipe.charAt(0).toUpperCase() + recipe.slice(1);
+    }
+  }
   const match = RECIPE_SUGGESTIONS.find(
     (r) => r.startsWith(lower) || lower.startsWith(r.split(" ")[0]) || lower.includes(r.split(" ")[0])
   );

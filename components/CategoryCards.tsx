@@ -2,7 +2,65 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import {
+  Baby,
+  Beer,
+  Candy,
+  Cat,
+  Wheat,
+  Sparkles,
+  CupSoda,
+  Droplets,
+  HeartPulse,
+  Apple,
+  Drumstick,
+  Shirt,
+  UtensilsCrossed,
+  type LucideIcon,
+} from "lucide-react";
 import { ProductImage } from "@/components/ProductImage";
+
+/** Map category slug to icon when no image provided */
+function getCategoryIcon(slug: string): LucideIcon {
+  const s = slug.toLowerCase().replace(/\s+/g, "-");
+  const map: Record<string, LucideIcon> = {
+    "baby-food": Baby,
+    baby: Baby,
+    beer: Beer,
+    candy: Candy,
+    "cat-food": Cat,
+    cat: Cat,
+    cereal: Wheat,
+    "biscuits-cereal-bars": Candy,
+    "bread-rolls": Wheat,
+    cleaning: Sparkles,
+    dishwashing: Sparkles,
+    tea: CupSoda,
+    water: Droplets,
+    "health-care": HeartPulse,
+    healthcare: HeartPulse,
+    juices: Apple,
+    juice: Apple,
+    poultry: Drumstick,
+    "skin-care": Shirt,
+    skincare: Shirt,
+    vegetables: Apple,
+    fruits: Apple,
+    dairy: Droplets,
+    bakery: Wheat,
+    snacks: Candy,
+    beverages: CupSoda,
+    cheese: Apple,
+    chocolate: Candy,
+    "canned-food": UtensilsCrossed,
+    "oil-vinegar": Droplets,
+    fries: UtensilsCrossed,
+  };
+  for (const [key, icon] of Object.entries(map)) {
+    if (s === key || s.includes(key) || key.includes(s)) return icon;
+  }
+  return UtensilsCrossed;
+}
 
 /** Strong gradient presets – each category gets a stable color from slug hash */
 const CARD_GRADIENTS = [
@@ -80,7 +138,16 @@ export function CategoryCards() {
                   fallback={null}
                 />
               </div>
-            ) : null}
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="opacity-40 group-hover:opacity-60 transition-opacity">
+                  {(() => {
+                    const Icon = getCategoryIcon(cat.slug);
+                    return <Icon className="w-12 h-12 sm:w-16 sm:h-16 text-white" strokeWidth={1.5} aria-hidden />;
+                  })()}
+                </span>
+              </div>
+            )}
             <div className="absolute inset-0 flex items-end p-4 bg-gradient-to-t from-black/40 via-transparent to-transparent">
               <span className="font-bold text-sm sm:text-base text-white drop-shadow-md">
                 {cat.name}

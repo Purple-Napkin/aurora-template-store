@@ -2,10 +2,57 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import {
+  ChevronDown,
+  Baby,
+  Beer,
+  Candy,
+  Cat,
+  Wheat,
+  Sparkles,
+  CupSoda,
+  Droplets,
+  HeartPulse,
+  Apple,
+  Drumstick,
+  Shirt,
+  type LucideIcon,
+} from "lucide-react";
 import { HolmesSprinkleIcon } from "./HolmesSprinkleIcon";
 
 export type CategoryItem = { name: string; slug: string };
+
+/** Map category slug (or partial name) to icon for sidebar. */
+function getCategoryIcon(slug: string): LucideIcon {
+  const s = slug.toLowerCase();
+  const map: Record<string, LucideIcon> = {
+    "baby-food": Baby,
+    baby: Baby,
+    beer: Beer,
+    candy: Candy,
+    "cat-food": Cat,
+    cat: Cat,
+    cereal: Wheat,
+    cleaning: Sparkles,
+    dishwashing: Sparkles,
+    tea: CupSoda,
+    water: Droplets,
+    "health-care": HeartPulse,
+    healthcare: HeartPulse,
+    juices: Apple,
+    juice: Apple,
+    poultry: Drumstick,
+    "skin-care": Shirt,
+    skincare: Shirt,
+    vegetables: Apple,
+    fruits: Apple,
+    dairy: Droplets,
+    bakery: Wheat,
+    snacks: Candy,
+    beverages: CupSoda,
+  };
+  return map[s] ?? Wheat;
+}
 
 export type SortOption = "featured" | "bestsellers" | "new" | "sale";
 
@@ -102,7 +149,11 @@ export function CatalogueFilters({
                     : "text-aurora-muted hover:text-aurora-text hover:bg-aurora-surface-hover border border-transparent"
                 }`}
               >
-                {isSuggested && <HolmesSprinkleIcon className="shrink-0" />}
+                {(() => {
+                  const Icon = getCategoryIcon(cat.slug);
+                  return <Icon className="w-4 h-4 shrink-0 text-aurora-muted" aria-hidden />;
+                })()}
+                {isSuggested ? <HolmesSprinkleIcon className="shrink-0" /> : null}
                 {cat.name}
               </Link>
             );
