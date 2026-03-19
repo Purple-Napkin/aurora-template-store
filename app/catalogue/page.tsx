@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, Suspense } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { useStore } from "@/components/StoreContext";
 import { formatPrice, toCents } from "@/lib/format-price";
@@ -55,6 +55,7 @@ function getRating(record: Record<string, unknown>): number | null {
 
 function CatalogueContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const category = searchParams.get("category") ?? "";
   const q = searchParams.get("q") ?? "";
   const { store } = useStore();
@@ -69,6 +70,7 @@ function CatalogueContent() {
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
   const [suggestedSlugs, setSuggestedSlugs] = useState<string[]>([]);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const hasAppliedSuggestionRef = useRef(false);
   const limit = 24;
 
   const categoriesWithProducts = categories.filter(
@@ -202,6 +204,26 @@ function CatalogueContent() {
     };
   }, []);
 
+  // When Holmes suggests categories and we're on catalogue with no filter, navigate to first suggested
+  // so snacks/beer etc. persist instead of reverting to "All categories"
+  useEffect(() => {
+    if (
+      hasAppliedSuggestionRef.current ||
+      category !== "" ||
+      suggestedSlugs.length === 0 ||
+      categoriesWithProducts.length === 0
+    )
+      return;
+    const first = suggestedSlugs[0];
+    if (!first) return;
+    const exists = categoriesWithProducts.some((c) => c.slug === first || c.slug === first.toLowerCase().replace(/\s+/g, "-"));
+    if (exists) {
+      hasAppliedSuggestionRef.current = true;
+      const slug = categoriesWithProducts.find((c) => c.slug === first || c.slug === first.toLowerCase().replace(/\s+/g, "-"))?.slug ?? first;
+      router.replace(`/catalogue?category=${encodeURIComponent(slug)}`, { scroll: false });
+    }
+  }, [category, suggestedSlugs, categoriesWithProducts, router]);
+
   const handleSortChange = useCallback((sort: SortOption) => {
     setTab(sort);
     setPage(0);
@@ -320,7 +342,7 @@ function CatalogueContent() {
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">
-                              —
+                               - 
                             </div>
                           )}
                         </div>
