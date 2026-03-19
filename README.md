@@ -93,6 +93,36 @@ Holmes is auto-injected when `NEXT_PUBLIC_AURORA_API_URL` and `NEXT_PUBLIC_TENAN
 
 For standalone deployment, set `NEXT_PUBLIC_APP_URL` on the Aurora API to your storefront URL so Holmes redirects correctly after one-click checkout.
 
+## How to Use
+
+### First-time setup
+
+1. **Create a workspace** in [Aurora Studio](https://aurora.mandeville.digital) from the "Hippo Ecom" template, or clone this repo and provision schema manually.
+2. **Configure `.env.local`** with `NEXT_PUBLIC_AURORA_API_URL`, `AURORA_API_KEY`, and `NEXT_PUBLIC_TENANT_SLUG` (from Studio → Settings).
+3. **Enable Meilisearch** in Studio → Settings → Search, then run "Sync index" for products.
+4. Run `pnpm dev` and open [http://localhost:3001](http://localhost:3001).
+
+### Shopping flow
+
+- **Home** – Search, quick actions (Dinner in 20 mins, etc.), mission entry points. Holmes personalizes sections when it infers intent.
+- **Catalogue** – Browse by category, filter. Holmes can reorder categories and surface "Recommended for you" when it has session context.
+- **Product page** – Details, nutrition, feedback. "You May Also Like" and Holmes tidbits adapt to mission.
+- **Cart** – Bundle suggestions ("Often bought together"), contextual hints ("Planning a sandwich? Add butter…"). Substitute button on items.
+- **Checkout** – Multi-step flow. Holmes compresses checkout (hides extras) when it infers urgency. ACME test payment when Stripe not configured.
+
+### Holmes behaviour
+
+- Holmes infers mission from search, cart, browsing, time of day. Add `?holmes_disabled=1` to any URL to disable for testing.
+- **Dev tools** – In development, a Holmes toolbar appears: reset session, toggle Holmes off.
+- **Recipes** – Search for "paella" or "curry"; Holmes may infer a recipe mission and transform the home to recipe-focused layout with ingredient products.
+- **Control Dashboard** – In Aurora Studio → Holmes Control, view live inferences and mission distribution.
+
+### Deploying
+
+From Aurora Studio: Settings → Storefront → Deploy to Vercel. Environment variables are injected automatically. For standalone deploy, set `NEXT_PUBLIC_APP_URL` on the Aurora API to your storefront URL.
+
+---
+
 ## ACME Checkout
 
 When Stripe is not configured, the template uses **ACME** - a test payment provider. Checkout flow:
