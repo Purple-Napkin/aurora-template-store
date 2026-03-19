@@ -14,7 +14,7 @@
     "./aurora/pages/VendorPickwalkPage": "./aurora/pages/VendorPickwalkPage.tsx"
   },
   "dependencies": {
-    "@aurora-studio/sdk": "0.2.17",
+    "@aurora-studio/sdk": "0.2.18",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.454.0",
     "next": "15.0.7",
