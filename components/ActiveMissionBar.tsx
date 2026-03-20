@@ -95,7 +95,7 @@ export function ActiveMissionBar() {
             </div>
             {isBundleMission && hasCartItems && (
               <Link
-                href="/cart"
+                href="/cart#recipe-picker"
                 className="text-xs text-aurora-primary hover:underline shrink-0"
               >
                 {["recipe_mission", "combo_mission", "cook_dinner", "cook_dinner_tonight"].includes(

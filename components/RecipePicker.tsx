@@ -47,6 +47,8 @@ export function RecipePicker() {
     return () => { cancelled = true; };
   }, [items.length, items.map((i) => i.recordId).join(","), dismissed]);
 
+  const showPlaceholder = items.length >= 2 && !dismissed && (loading || combos.length === 0);
+
   const handleSelect = async (combo: { slug: string; title: string }) => {
     const sid =
       typeof window !== "undefined"
@@ -63,10 +65,29 @@ export function RecipePicker() {
     }
   };
 
-  if (loading || combos.length === 0) return null;
+  if (items.length < 2 || dismissed) return null;
+
+  if (showPlaceholder) {
+    return (
+      <div
+        id="recipe-picker"
+        className="pattern-well mb-6 p-4 rounded-xl border border-aurora-border bg-aurora-surface/60 scroll-mt-24"
+      >
+        <h3 className="font-semibold mb-1">Recipes from your basket</h3>
+        <p className="text-sm text-aurora-muted">
+          {loading
+            ? "Generating meal ideas from your items…"
+            : "No AI bundle options right now (need AI enabled on the store API, or try adding another item). Generic suggestions below are separate from Holmes recipes."}
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="pattern-well mb-6 p-4 rounded-xl border border-aurora-primary/30 bg-aurora-primary/5">
+    <div
+      id="recipe-picker"
+      className="pattern-well mb-6 p-4 rounded-xl border border-aurora-primary/30 bg-aurora-primary/5 scroll-mt-24"
+    >
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold">Pick your bundle</h3>
         <button
