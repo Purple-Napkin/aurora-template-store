@@ -43,6 +43,12 @@ export function Nav() {
                 All Categories
               </Link>
               <Link
+                href="/for-you"
+                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
+              >
+                For You
+              </Link>
+              <Link
                 href="/"
                 className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
               >

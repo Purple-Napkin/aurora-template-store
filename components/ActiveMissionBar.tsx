@@ -140,18 +140,20 @@ export function ActiveMissionBar() {
                   {activeMission!.summary}
                 </p>
               )}
-              {isBundleMission && hasCartItems && (
+              {(isBundleMission && hasCartItems) || activeMission!.band !== "low" ? (
                 <Link
-                  href="/cart#recipe-picker"
+                  href={isBundleMission && hasCartItems ? "/for-you#recipe-picker" : "/for-you"}
                   className="inline-flex items-center gap-1 text-xs text-aurora-primary hover:underline mt-2 font-medium"
                 >
-                  {["recipe_mission", "combo_mission", "cook_dinner", "cook_dinner_tonight"].includes(
-                    activeMission!.key
-                  )
-                    ? "Recipes for your cart →"
-                    : "Bundle ideas for your cart →"}
+                  {isBundleMission && hasCartItems
+                    ? ["recipe_mission", "combo_mission", "cook_dinner", "cook_dinner_tonight"].includes(
+                        activeMission!.key
+                      )
+                      ? "Recipes for your cart →"
+                      : "Bundle ideas for your cart →"
+                    : "View ideas →"}
                 </Link>
-              )}
+              ) : null}
             </div>
           </div>
           <div className="flex items-center gap-0.5 shrink-0">

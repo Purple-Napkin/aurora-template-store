@@ -8,8 +8,8 @@ import { ProductImage } from "@/components/ProductImage";
 type Props = {
   /** Pass when on product detail page */
   currentProductId?: string | null;
-  /** When "cart", shows "Complete your [Recipe] – add missing ingredients" instead of "View options" */
-  variant?: "default" | "cart";
+  /** "cart" = scroll to #basket-bundle; "for-you" = on For You page, no link; "default" = link to /for-you */
+  variant?: "default" | "cart" | "for-you";
 };
 
 /**
@@ -91,12 +91,12 @@ export function HolmesContextualWell({ currentProductId, variant = "default" }: 
           >
             {isRecipeStyle ? "See ingredients to add" : "See suggested items"}
           </a>
-        ) : (
+        ) : variant === "for-you" ? null : (
           <Link
-            href="/cart"
+            href="/for-you"
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-aurora-primary/15 text-aurora-primary text-sm font-medium hover:bg-aurora-primary/25 transition-colors"
           >
-            View options
+            View ideas
           </Link>
         )}
       </div>
