@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { useStore } from "@/components/StoreContext";
+import { useDietaryExclusions } from "./DietaryExclusionsContext";
 import { holmesRecipeProducts, search, type SearchHit } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { getMealToComplete } from "@/lib/cart-intelligence";
@@ -15,6 +16,7 @@ import { getStoreConfig } from "@/lib/aurora";
 export function CompleteYourMeal() {
   const { items, addItem } = useCart();
   const { store } = useStore();
+  const { excludeDietary } = useDietaryExclusions();
   const [products, setProducts] = useState<SearchHit[]>([]);
   const [loading, setLoading] = useState(false);
   const [catalogSlug, setCatalogSlug] = useState<string | null>(null);
@@ -25,7 +27,9 @@ export function CompleteYourMeal() {
   useEffect(() => {
     if (!mealData || !store?.id) return;
     setLoading(true);
-    holmesRecipeProducts(mealData.meal, 6)
+    holmesRecipeProducts(mealData.meal, 6, {
+      excludeDietary: excludeDietary.length ? excludeDietary : undefined,
+    })
       .then((res) => {
         const hits = (res.products ?? []) as SearchHit[];
         const merged = hits
@@ -36,7 +40,14 @@ export function CompleteYourMeal() {
       .catch(() => {
         const searchTerms = mealData!.searchTerms.slice(0, 3);
         return Promise.all(
-          searchTerms.map((term) => search({ q: term, limit: 3, vendorId: store!.id }))
+          searchTerms.map((term) =>
+            search({
+              q: term,
+              limit: 3,
+              vendorId: store!.id,
+              excludeDietary: excludeDietary.length ? excludeDietary : undefined,
+            })
+          )
         ).then((results) => {
           const seen = new Set<string>();
           const merged: SearchHit[] = [];
@@ -54,7 +65,7 @@ export function CompleteYourMeal() {
       })
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
-  }, [mealData, store?.id, items.length]);
+  }, [mealData, store?.id, items.length, excludeDietary]);
 
   useEffect(() => {
     getStoreConfig().then((c) => {

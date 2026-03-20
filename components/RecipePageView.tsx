@@ -10,6 +10,7 @@ import { ProductImage } from "@/components/ProductImage";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { useCart } from "@/components/CartProvider";
 import { useStore } from "@/components/StoreContext";
+import { useDietaryExclusions } from "@/components/DietaryExclusionsContext";
 import { getStoreConfig } from "@/lib/aurora";
 import type { SearchHit } from "@/lib/aurora";
 import { getTimeOfDay } from "@/lib/utils";
@@ -27,6 +28,7 @@ export function RecipePageView({
 }: RecipePageViewProps) {
   const { addItem } = useCart();
   const { store } = useStore();
+  const { excludeDietary } = useDietaryExclusions();
   const [recipe, setRecipe] = useState<{
     title: string;
     description: string | null;
@@ -47,7 +49,9 @@ export function RecipePageView({
     let cancelled = false;
     Promise.all([
       holmesRecipe(recipeSlug),
-      holmesRecipeProducts(recipeSlug, 24),
+      holmesRecipeProducts(recipeSlug, 24, {
+        excludeDietary: excludeDietary.length ? excludeDietary : undefined,
+      }),
       getStoreConfig(),
     ])
       .then(([rec, prodRes, config]) => {
@@ -72,7 +76,7 @@ export function RecipePageView({
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
-  }, [recipeSlug]);
+  }, [recipeSlug, excludeDietary]);
 
   const addAllToCart = () => {
     if (!catalogSlug) return;

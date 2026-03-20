@@ -4,6 +4,7 @@ import { createAuroraClient } from "@/lib/aurora";
 /**
  * Proxy Holmes recent recipes from Aurora cache.
  * Returns recipes ordered by most recently updated.
+ * excludeDietary (comma-separated) filters out recipes whose ingredients match excluded types.
  */
 export async function GET(req: NextRequest) {
   try {
@@ -14,8 +15,19 @@ export async function GET(req: NextRequest) {
       timeOfDayParam && ["morning", "afternoon", "evening"].includes(timeOfDayParam)
         ? (timeOfDayParam as "morning" | "afternoon" | "evening")
         : undefined;
+    const excludeDietaryRaw = searchParams.get("excludeDietary")?.trim();
+    const excludeDietary = excludeDietaryRaw
+      ? excludeDietaryRaw.split(",").map((s) => s.trim()).filter(Boolean)
+      : undefined;
     const client = createAuroraClient();
-    const result = await client.store.holmesRecentRecipes(limit, timeOfDay);
+    const opts = excludeDietary?.length ? { excludeDietary } : undefined;
+    const result = await (
+      client.store.holmesRecentRecipes as (
+        limit: number,
+        timeOfDay?: "morning" | "afternoon" | "evening",
+        opts?: { excludeDietary?: string[] }
+      ) => Promise<{ recipes: Array<{ id: string; slug: string; title: string; description: string | null }> }>
+    )(limit, timeOfDay, opts);
     return NextResponse.json(result);
   } catch {
     return NextResponse.json({ recipes: [] });

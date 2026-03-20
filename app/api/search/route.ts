@@ -14,6 +14,10 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get("category") ?? "";
     const sort = searchParams.get("sort") ?? "name";
     const order = (searchParams.get("order") ?? "asc").toLowerCase() as "asc" | "desc";
+    const excludeDietaryRaw = searchParams.get("excludeDietary") ?? "";
+    const excludeDietary = excludeDietaryRaw
+      ? excludeDietaryRaw.split(",").map((s) => s.trim()).filter(Boolean)
+      : undefined;
 
     const result = await search({
       q: q.trim() || undefined,
@@ -23,6 +27,7 @@ export async function GET(req: NextRequest) {
       category: category.trim() || undefined,
       sort,
       order,
+      excludeDietary,
     });
 
     return NextResponse.json(result);

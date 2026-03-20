@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { useStore } from "@/components/StoreContext";
+import { useDietaryExclusions } from "@/components/DietaryExclusionsContext";
 import { useCart } from "@/components/CartProvider";
 import { useMissionAware } from "@/components/MissionAwareHome";
 import { formatPrice, toCents } from "@/lib/format-price";
@@ -68,6 +69,7 @@ function CatalogueContent() {
   const category = searchParams.get("category") ?? "";
   const q = searchParams.get("q") ?? "";
   const { store } = useStore();
+  const { excludeDietary } = useDietaryExclusions();
   const { addItem } = useCart();
   const missionData = useMissionAware();
   const [missionBarDismissed, setMissionBarDismissed] = useState(false);
@@ -142,6 +144,7 @@ function CatalogueContent() {
         category: category || undefined,
         sort,
         order,
+        excludeDietary: excludeDietary.length ? excludeDietary : undefined,
       });
       setHits(res.hits ?? []);
       setTotal(res.total ?? 0);
@@ -151,7 +154,7 @@ function CatalogueContent() {
     } finally {
       setLoading(false);
     }
-  }, [store?.id, category, q, tab, page]);
+  }, [store?.id, category, q, tab, page, excludeDietary]);
 
   useEffect(() => {
     let cancelled = false;
@@ -201,6 +204,7 @@ function CatalogueContent() {
       offset: 0,
       vendorId: store.id,
       category: category || undefined,
+      excludeDietary: excludeDietary.length ? excludeDietary : undefined,
     })
       .then((res) => {
         if (!cancelled) setMissionFocusHits(res.hits ?? []);
@@ -209,7 +213,7 @@ function CatalogueContent() {
         if (!cancelled) setMissionFocusHits([]);
       });
     return () => { cancelled = true; };
-  }, [focusQuery, store?.id, category]);
+  }, [focusQuery, store?.id, category, excludeDietary]);
 
   useEffect(() => {
     let cancelled = false;
@@ -225,6 +229,7 @@ function CatalogueContent() {
               offset: 0,
               vendorId: store?.id,
               category: cat.slug,
+              excludeDietary: excludeDietary.length ? excludeDietary : undefined,
             });
             if (!cancelled) counts[cat.slug] = res.total ?? 0;
           } catch {
@@ -237,7 +242,7 @@ function CatalogueContent() {
     return () => {
       cancelled = true;
     };
-  }, [categories, store?.id]);
+  }, [categories, store?.id, excludeDietary]);
 
   useEffect(() => {
     let cancelled = false;

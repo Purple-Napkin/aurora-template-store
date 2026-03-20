@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { CartLink } from "./CartLink";
+import { DietaryNeedsDropdown } from "./DietaryNeedsDropdown";
 import { SearchDropdown } from "./SearchDropdown";
 import { useStore } from "./StoreContext";
 import { useAuth } from "./AuthProvider";
@@ -90,6 +91,7 @@ export function Nav() {
               <MapPin className="w-4 h-4 shrink-0 text-aurora-primary/70" />
               <span className="truncate">{locationDisplay}</span>
             </Link>
+            <DietaryNeedsDropdown />
             <div className="px-3 py-1.5 -mx-1 rounded-lg">
               <CartLink />
             </div>

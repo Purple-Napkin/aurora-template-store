@@ -7,6 +7,7 @@ import { formatPrice, toCents } from "@/lib/format-price";
 import { search, type SearchHit } from "@/lib/aurora";
 import { holmesSearch } from "@/lib/holmes-events";
 import { useCart } from "./CartProvider";
+import { useDietaryExclusions } from "./DietaryExclusionsContext";
 import { ProductImage } from "./ProductImage";
 import { getRecipeSuggestion } from "@/lib/cart-intelligence";
 
@@ -43,6 +44,7 @@ export function SearchDropdown({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { addItem } = useCart();
+  const { excludeDietary } = useDietaryExclusions();
 
   useEffect(() => {
     setRecentSearches(loadRecent());
@@ -70,6 +72,7 @@ export function SearchDropdown({
         q: q.trim(),
         limit: 12,
         vendorId,
+        excludeDietary: excludeDietary.length ? excludeDietary : undefined,
       });
       setHits(res.hits ?? []);
     } catch {
@@ -77,7 +80,7 @@ export function SearchDropdown({
     } finally {
       setLoading(false);
     }
-  }, [vendorId]);
+  }, [vendorId, excludeDietary]);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);

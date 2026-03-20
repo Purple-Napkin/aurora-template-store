@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useDietaryExclusions } from "./DietaryExclusionsContext";
 import { RecipeIngredientsSection } from "./RecipeIngredientsSection";
 import { getStoreConfig } from "@/lib/aurora";
 export type QuickAction = { label: string; href: string };
@@ -50,6 +51,7 @@ export function MissionAwareHomeProvider({
 }) {
   const [data, setData] = useState<HomePersonalization>(null);
   const fetchRef = useRef<() => void>(() => {});
+  const { excludeDietary } = useDietaryExclusions();
 
   const refresh = useCallback(() => {
     fetchRef.current();
@@ -60,7 +62,9 @@ export function MissionAwareHomeProvider({
     const fetchData = () => {
       const sid =
         (window as { holmes?: { getSessionId?: () => string } }).holmes?.getSessionId?.() ?? "";
-      fetch(`/api/holmes/home-personalization?sid=${encodeURIComponent(sid)}`)
+      fetch(
+        `/api/holmes/home-personalization?sid=${encodeURIComponent(sid)}${excludeDietary.length ? `&excludeDietary=${encodeURIComponent(excludeDietary.join(","))}` : ""}`
+      )
         .then((r) => r.json())
         .then((d) => {
           if (cancelled) return;
@@ -128,7 +132,7 @@ export function MissionAwareHomeProvider({
       holmesEvents.forEach((ev) => document.removeEventListener(ev, scheduleRefetch));
       if (debounce) clearTimeout(debounce);
     };
-  }, []);
+  }, [excludeDietary]);
 
   const pathname = usePathname();
   useEffect(() => {

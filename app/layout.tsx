@@ -7,6 +7,7 @@ import { StoreProvider } from "@/components/StoreContext";
 import { StoreConfigProvider } from "@/components/StoreConfigContext";
 import { AuthProvider } from "@/components/AuthProvider";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
+import { DietaryExclusionsProvider } from "@/components/DietaryExclusionsContext";
 import { MissionAwareHomeProvider } from "@/components/MissionAwareHome";
 import { AffinityToast } from "@/components/AffinityToast";
 import { HolmesDevTools } from "@/components/HolmesDevTools";
@@ -39,6 +40,7 @@ export default function RootLayout({
         }
       >
         <StoreProvider>
+          <DietaryExclusionsProvider>
           <StoreConfigProvider>
           <AuthProvider>
         <CartProvider>
@@ -53,6 +55,7 @@ export default function RootLayout({
         </CartProvider>
           </AuthProvider>
           </StoreConfigProvider>
+          </DietaryExclusionsProvider>
         </StoreProvider>
         <ConditionalHolmesScript />
       </body>

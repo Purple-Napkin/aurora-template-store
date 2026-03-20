@@ -25,6 +25,8 @@ export async function GET(req: NextRequest) {
     if (cartNames) qs.set("cart_names", cartNames);
     if (cartIds) qs.set("cart_ids", cartIds);
     if (currentProduct) qs.set("current_product", currentProduct);
+    const excludeDietary = searchParams.get("excludeDietary")?.trim();
+    if (excludeDietary) qs.set("excludeDietary", excludeDietary);
     const url = `${baseUrl.replace(/\/$/, "")}/v1/tenants/${tenantSlug}/store/holmes/contextual-hint?${qs.toString()}`;
     const res = await fetch(url, {
       headers: { "Content-Type": "application/json", "X-Api-Key": apiKey },

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Carrot, Apple, Check } from "lucide-react";
 import { useCart } from "@/components/CartProvider";
 import { holmesCombosForCart, holmesRecentRecipes, holmesRecipe, holmesRecipeProducts, getStoreConfig } from "@/lib/aurora";
+import { useDietaryExclusions } from "@/components/DietaryExclusionsContext";
 import { getMealToComplete } from "@/lib/cart-intelligence";
 import { getTimeOfDay } from "@/lib/utils";
 import { AddToCartButton } from "@/components/AddToCartButton";
@@ -57,6 +58,7 @@ type RecipeData = {
 
 export function RecipeFolioCarousel() {
   const { items, addItem } = useCart();
+  const { excludeDietary } = useDietaryExclusions();
   const [combos, setCombos] = useState<Combo[]>([]);
   const [index, setIndex] = useState(0);
   const [recipe, setRecipe] = useState<RecipeData | null>(null);
@@ -76,8 +78,9 @@ export function RecipeFolioCarousel() {
     const cartIds = items.map((i) => i.recordId).filter(Boolean);
     let cancelled = false;
 
+    const dietaryOpts = excludeDietary.length ? { excludeDietary } : undefined;
     const fetchCatalogueFallback = () => {
-      holmesRecentRecipes(24, getTimeOfDay())
+      holmesRecentRecipes(24, getTimeOfDay(), dietaryOpts)
         .then(({ recipes }) => {
           if (cancelled) return;
           if (recipes?.length) {
@@ -87,7 +90,7 @@ export function RecipeFolioCarousel() {
             return;
           }
           // Retry without time filter if time-filtered returned empty
-          return holmesRecentRecipes(24);
+          return holmesRecentRecipes(24, undefined, dietaryOpts);
         })
         .then((res) => {
           if (!res || cancelled || !res.recipes?.length) return;
@@ -124,7 +127,7 @@ export function RecipeFolioCarousel() {
         if (!cancelled) fetchCatalogueFallback();
       });
     return () => { cancelled = true; };
-  }, [items.length, items.map((i) => i.recordId).join(","), items.map((i) => i.name).join("|")]);
+  }, [items.length, items.map((i) => i.recordId).join(","), items.map((i) => i.name).join("|"), excludeDietary.join(",")]);
 
   const currentSlug = combos[index]?.slug;
 
@@ -138,7 +141,9 @@ export function RecipeFolioCarousel() {
     let cancelled = false;
     Promise.all([
       holmesRecipe(currentSlug),
-      holmesRecipeProducts(currentSlug, 24),
+      holmesRecipeProducts(currentSlug, 24, {
+        excludeDietary: excludeDietary.length ? excludeDietary : undefined,
+      }),
       getStoreConfig(),
     ])
       .then(([rec, prodRes, config]) => {
@@ -165,7 +170,7 @@ export function RecipeFolioCarousel() {
         if (!cancelled) setLoading(false);
       });
     return () => { cancelled = true; };
-  }, [currentSlug]);
+  }, [currentSlug, excludeDietary]);
 
   const goNext = useCallback(() => {
     if (animating || combos.length <= 1) return;

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { holmesRecentRecipes } from "@/lib/aurora";
 import { getTimeOfDay } from "@/lib/utils";
+import { getDietaryFromCookie } from "@/lib/dietary-server";
 import { ChefHat } from "lucide-react";
 
 /**
@@ -9,7 +10,9 @@ import { ChefHat } from "lucide-react";
  */
 export async function RecentRecipes() {
   const timeOfDay = getTimeOfDay();
-  const { recipes } = await holmesRecentRecipes(8, timeOfDay);
+  const excludeDietary = await getDietaryFromCookie();
+  const dietaryOpts = excludeDietary.length ? { excludeDietary } : undefined;
+  const { recipes } = await holmesRecentRecipes(8, timeOfDay, dietaryOpts);
 
   if (!recipes?.length) return null;
 

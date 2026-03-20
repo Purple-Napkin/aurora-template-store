@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
+import { useDietaryExclusions } from "@/components/DietaryExclusionsContext";
 import { ProductImage } from "@/components/ProductImage";
 
 type Props = {
@@ -19,6 +20,7 @@ type Props = {
  */
 export function HolmesContextualWell({ currentProductId, variant = "default" }: Props) {
   const { items } = useCart();
+  const { excludeDietary } = useDietaryExclusions();
   const [hint, setHint] = useState<string | null>(null);
   const [products, setProducts] = useState<Array<{ id: string; name: string; url: string; image_url?: string }>>([]);
   const [hasCombo, setHasCombo] = useState(false);
@@ -43,6 +45,7 @@ export function HolmesContextualWell({ currentProductId, variant = "default" }: 
     if (cartNames.length) qs.set("cart_names", cartNames.join(","));
     if (cartIds.length) qs.set("cart_ids", cartIds.join(","));
     if (currentProductId) qs.set("current_product", currentProductId);
+    if (excludeDietary.length) qs.set("excludeDietary", excludeDietary.join(","));
     fetch(`/api/holmes/contextual-hint?${qs.toString()}`)
       .then((r) => r.json())
       .then((data) => {
@@ -62,7 +65,7 @@ export function HolmesContextualWell({ currentProductId, variant = "default" }: 
         setHasCombo(false);
         setComboTitle(null);
       });
-  }, [items.map((i) => `${i.recordId}:${i.name}`).join(","), currentProductId]);
+  }, [items.map((i) => `${i.recordId}:${i.name}`).join(","), currentProductId, excludeDietary]);
 
   // Proactive "We have suggestions" banner when combo exists but no rule-based hint
   if (hasCombo && !hint) {

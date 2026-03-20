@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { holmesRecentRecipes, holmesRecipeProducts } from "@/lib/aurora";
 import { getTimeOfDay } from "@/lib/utils";
+import { getDietaryFromCookie } from "@/lib/dietary-server";
 import { RecipeProductCollage } from "@/components/RecipeProductCollage";
 import { Sparkles, ArrowLeft } from "lucide-react";
 
@@ -11,12 +12,15 @@ export const dynamic = "force-dynamic";
  * Linked from the "Recipe ideas" quick start on the hero.
  */
 export default async function RecipesInterstitialPage() {
-  const { recipes } = await holmesRecentRecipes(24, getTimeOfDay());
+  const excludeDietary = await getDietaryFromCookie();
+  const dietaryOpts = excludeDietary.length ? { excludeDietary } : undefined;
+
+  const { recipes } = await holmesRecentRecipes(24, getTimeOfDay(), dietaryOpts);
 
   const recipesWithProducts = await Promise.all(
     recipes.map(async (r) => {
       try {
-        const { products } = await holmesRecipeProducts(r.slug, 4);
+        const { products } = await holmesRecipeProducts(r.slug, 4, dietaryOpts);
         const imageUrls = (products ?? [])
           .map((p) => (p as { image_url?: string }).image_url)
           .filter((u): u is string => !!u);

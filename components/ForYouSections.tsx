@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getHomePersonalization, holmesRecentRecipes, holmesRecipeProducts } from "@/lib/aurora";
 import { getStoreConfig } from "@/lib/aurora";
 import { getTimeOfDay } from "@/lib/utils";
+import { getDietaryFromCookie } from "@/lib/dietary-server";
 import { ProductImage } from "@/components/ProductImage";
 import { ChefHat } from "lucide-react";
 import { RecipeProductCollage } from "./RecipeProductCollage";
@@ -15,10 +16,13 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
 
 /** Sections for For You page – recipes, products, inspiration. Reuses home personalization. */
 export async function ForYouSections() {
+  const excludeDietary = await getDietaryFromCookie();
+  const dietaryOpts = excludeDietary.length ? { excludeDietary } : undefined;
+
   const [homeData, config, recipesResult] = await Promise.all([
-    getHomePersonalization(),
+    getHomePersonalization(undefined, dietaryOpts),
     getStoreConfig(),
-    holmesRecentRecipes(8, getTimeOfDay()),
+    holmesRecentRecipes(8, getTimeOfDay(), dietaryOpts),
   ]);
 
   const currency =
@@ -29,7 +33,7 @@ export async function ForYouSections() {
   const recipesWithProducts = await Promise.all(
     recipes.slice(0, 4).map(async (r) => {
       try {
-        const { products } = await holmesRecipeProducts(r.slug, 4);
+        const { products } = await holmesRecipeProducts(r.slug, 4, dietaryOpts);
         const imageUrls = (products ?? [])
           .map((p) => (p as { image_url?: string }).image_url)
           .filter((u): u is string => !!u);

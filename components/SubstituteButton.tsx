@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Replace } from "lucide-react";
 import { useCart } from "./CartProvider";
+import { useDietaryExclusions } from "./DietaryExclusionsContext";
 import { holmesSimilarProducts, type SearchHit } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { ProductImage } from "./ProductImage";
@@ -39,6 +40,7 @@ function getImageUrl(hit: SearchHit): string | null {
 
 export function SubstituteButton({ item, className }: SubstituteButtonProps) {
   const { removeItem, addItem } = useCart();
+  const { excludeDietary } = useDietaryExclusions();
   const [open, setOpen] = useState(false);
   const [alternatives, setAlternatives] = useState<SearchHit[]>([]);
   const [loading, setLoading] = useState(false);
@@ -47,7 +49,9 @@ export function SubstituteButton({ item, className }: SubstituteButtonProps) {
   useEffect(() => {
     if (!open || alternatives.length > 0) return;
     setLoading(true);
-    holmesSimilarProducts(item.recordId, 6, item.name)
+    holmesSimilarProducts(item.recordId, 6, item.name, {
+      excludeDietary: excludeDietary.length ? excludeDietary : undefined,
+    })
       .then((res) => {
         const hits = (res.products ?? []) as SearchHit[];
         const filtered = hits.filter(
@@ -57,7 +61,7 @@ export function SubstituteButton({ item, className }: SubstituteButtonProps) {
       })
       .catch(() => setAlternatives([]))
       .finally(() => setLoading(false));
-  }, [open, item.recordId, alternatives.length]);
+  }, [open, item.recordId, alternatives.length, excludeDietary]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

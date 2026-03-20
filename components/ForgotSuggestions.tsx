@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useCart } from "@/components/CartProvider";
 import { useStore } from "@/components/StoreContext";
+import { useDietaryExclusions } from "./DietaryExclusionsContext";
 import { search, holmesGoesWith, type SearchHit } from "@/lib/aurora";
 import { formatPrice, toCents } from "@/lib/format-price";
 import { getForgottenSuggestions } from "@/lib/cart-intelligence";
@@ -15,6 +16,7 @@ import { getStoreConfig } from "@/lib/aurora";
 export function ForgotSuggestions() {
   const { items } = useCart();
   const { store } = useStore();
+  const { excludeDietary } = useDietaryExclusions();
   const [products, setProducts] = useState<SearchHit[]>([]);
   const [loading, setLoading] = useState(false);
   const [catalogSlug, setCatalogSlug] = useState<string | null>(null);
@@ -28,14 +30,21 @@ export function ForgotSuggestions() {
 
     const firstRecordId = items[0]?.recordId;
     const holmesPromise = firstRecordId
-      ? holmesGoesWith(firstRecordId, 8).then((r) => r.products ?? []).catch(() => [])
+      ? holmesGoesWith(firstRecordId, 8, {
+          excludeDietary: excludeDietary.length ? excludeDietary : undefined,
+        }).then((r) => r.products ?? []).catch(() => [])
       : Promise.resolve([]);
 
     const loadProducts = () => {
       const searchFallback = () =>
         Promise.all(
           suggestions.slice(0, 3).map((term) =>
-            search({ q: term, limit: 2, vendorId: store.id })
+            search({
+              q: term,
+              limit: 2,
+              vendorId: store.id,
+              excludeDietary: excludeDietary.length ? excludeDietary : undefined,
+            })
           )
         ).then((results) => {
           const seen = new Set<string>();
@@ -72,7 +81,7 @@ export function ForgotSuggestions() {
       }).catch(() => (suggestions.length > 0 ? searchFallback().catch(() => []) : []));
     };
     loadProducts().then(setProducts).catch(() => setProducts([])).finally(() => setLoading(false));
-  }, [suggestions.join(","), store?.id, items.length, items[0]?.recordId]);
+  }, [suggestions.join(","), store?.id, items.length, items[0]?.recordId, excludeDietary]);
 
   useEffect(() => {
     getStoreConfig().then((c) => {

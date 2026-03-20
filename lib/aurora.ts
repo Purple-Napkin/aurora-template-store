@@ -86,8 +86,13 @@ function excludeOffersFromSearch<T extends { hits?: unknown[] }>(result: T): T {
   return { ...result, hits: filtered } as T;
 }
 
+/** Extended search params including dietary exclusions (for storefront filtering). */
+export type StoreSearchParams = SearchParams & {
+  excludeDietary?: string[];
+};
+
 /** Meilisearch-powered product search. Uses API route from client (keeps API key server-side). */
-export async function search(params: SearchParams): Promise<SearchResult> {
+export async function search(params: StoreSearchParams): Promise<SearchResult> {
   let result: SearchResult;
   if (typeof window !== "undefined") {
     const qs = new URLSearchParams();
@@ -98,6 +103,9 @@ export async function search(params: SearchParams): Promise<SearchResult> {
     if (params.category) qs.set("category", params.category);
     if (params.sort) qs.set("sort", params.sort);
     if (params.order) qs.set("order", params.order);
+    if (params.excludeDietary?.length) {
+      qs.set("excludeDietary", params.excludeDietary.join(","));
+    }
     const res = await fetch(`/api/search?${qs.toString()}`);
     if (!res.ok) {
       const err = (await res.json().catch(() => ({}))) as { error?: string };
@@ -161,10 +169,12 @@ export async function holmesInfer(sessionId: string): Promise<HolmesInferResult>
 /** Holmes insights: products for a recipe (paella, curry, pasta). Uses holmes_insights.recipe_ideas. */
 export async function holmesRecipeProducts(
   recipe: string,
-  limit = 12
+  limit = 12,
+  opts?: { excludeDietary?: string[] }
 ): Promise<{ products: SearchHit[]; total: number; recipe: string }> {
   if (typeof window !== "undefined") {
     const qs = new URLSearchParams({ recipe, limit: String(limit) });
+    if (opts?.excludeDietary?.length) qs.set("excludeDietary", opts.excludeDietary.join(","));
     const res = await fetch(`/api/holmes/recipe-products?${qs.toString()}`);
     if (!res.ok) {
       const err = (await res.json().catch(() => ({}))) as { error?: string };
@@ -173,25 +183,27 @@ export async function holmesRecipeProducts(
     return res.json();
   }
   const client = createAuroraClient();
-  return client.store.holmesRecipeProducts(recipe, limit);
+  return client.store.holmesRecipeProducts(recipe, limit, opts);
 }
 
-/** Holmes recent recipes from cache. Ordered by most recently updated. Optional timeOfDay filters by morning/afternoon/evening. */
+/** Holmes recent recipes from cache. Ordered by most recently updated. Optional timeOfDay filters by morning/afternoon/evening. excludeDietary filters out recipes whose ingredients match excluded types. */
 export async function holmesRecentRecipes(
   limit = 8,
-  timeOfDay?: "morning" | "afternoon" | "evening"
+  timeOfDay?: "morning" | "afternoon" | "evening",
+  opts?: { excludeDietary?: string[] }
 ): Promise<{
   recipes: Array<{ id: string; slug: string; title: string; description: string | null }>;
 }> {
   if (typeof window !== "undefined") {
     const qs = new URLSearchParams({ limit: String(limit) });
     if (timeOfDay) qs.set("time_of_day", timeOfDay);
+    if (opts?.excludeDietary?.length) qs.set("excludeDietary", opts.excludeDietary.join(","));
     const res = await fetch(`/api/holmes/recipes?${qs.toString()}`);
     if (!res.ok) return { recipes: [] };
     return res.json();
   }
   const client = createAuroraClient();
-  return client.store.holmesRecentRecipes(limit, timeOfDay);
+  return client.store.holmesRecentRecipes(limit, timeOfDay, opts);
 }
 
 /** Holmes cached recipe. Fetches via AI on cache miss. */
@@ -223,10 +235,12 @@ export async function holmesTidbits(
 /** Holmes insights: products that go well with a given product. Uses holmes_insights.goes_well_with. */
 export async function holmesGoesWith(
   productId: string,
-  limit = 8
+  limit = 8,
+  opts?: { excludeDietary?: string[] }
 ): Promise<{ products: SearchHit[]; total: number }> {
   if (typeof window !== "undefined") {
     const qs = new URLSearchParams({ product_id: productId, limit: String(limit) });
+    if (opts?.excludeDietary?.length) qs.set("excludeDietary", opts.excludeDietary.join(","));
     const res = await fetch(`/api/holmes/goes-with?${qs.toString()}`);
     if (!res.ok) {
       const err = (await res.json().catch(() => ({}))) as { error?: string };
@@ -235,7 +249,7 @@ export async function holmesGoesWith(
     return res.json();
   }
   const client = createAuroraClient();
-  return client.store.holmesGoesWith(productId, limit);
+  return client.store.holmesGoesWith(productId, limit, opts);
 }
 
 /** Holmes bundle/recipe options for cart. Returns 1–3 combos when cart has 2+ items. */
@@ -273,11 +287,13 @@ export async function holmesSelectCombo(params: {
 export async function holmesSimilarProducts(
   productId: string,
   limit = 8,
-  productName?: string
+  productName?: string,
+  opts?: { excludeDietary?: string[] }
 ): Promise<{ products: SearchHit[]; total: number }> {
   if (typeof window !== "undefined") {
     const qs = new URLSearchParams({ product_id: productId, limit: String(limit) });
     if (productName?.trim()) qs.set("product_name", productName.trim());
+    if (opts?.excludeDietary?.length) qs.set("excludeDietary", opts.excludeDietary.join(","));
     const res = await fetch(`/api/holmes/similar?${qs.toString()}`);
     if (!res.ok) {
       const err = (await res.json().catch(() => ({}))) as { error?: string };
@@ -286,14 +302,17 @@ export async function holmesSimilarProducts(
     return res.json();
   }
   const client = createAuroraClient();
-  return client.store.holmesSimilar(productId, limit, productName);
+  return client.store.holmesSimilar(productId, limit, productName, opts);
 }
 
-/** Home personalization - sections for SSR fallback. sid optional (omit for default sections). */
-export async function getHomePersonalization(sid?: string): Promise<HomePersonalizationResult | null> {
+/** Home personalization - sections for SSR fallback. sid optional (omit for default sections). excludeDietary filters products and sections by dietary preferences. */
+export async function getHomePersonalization(
+  sid?: string,
+  opts?: { excludeDietary?: string[] }
+): Promise<HomePersonalizationResult | null> {
   try {
     const client = createAuroraClient();
-    const result = await client.store.homePersonalization(sid ?? "", undefined);
+    const result = await client.store.homePersonalization(sid ?? "", undefined, opts);
     return result;
   } catch {
     return null;

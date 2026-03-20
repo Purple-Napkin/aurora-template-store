@@ -6,6 +6,7 @@ import { AddToCartButton } from "./AddToCartButton";
 import { ProductImage } from "./ProductImage";
 import { useCart } from "./CartProvider";
 import { useStore } from "./StoreContext";
+import { useDietaryExclusions } from "./DietaryExclusionsContext";
 import { formatPrice } from "@/lib/format-price";
 import { holmesGoesWith, search, type SearchHit } from "@/lib/aurora";
 import { toCents } from "@/lib/format-price";
@@ -24,6 +25,7 @@ function getName(hit: SearchHit): string {
 export function SmartBasketSuggest() {
   const { items } = useCart();
   const { store } = useStore();
+  const { excludeDietary } = useDietaryExclusions();
   const [suggestions, setSuggestions] = useState<SearchHit[]>([]);
 
   const firstItemName = items[0]?.name?.split(/\s+/)[0] ?? "";
@@ -35,7 +37,9 @@ export function SmartBasketSuggest() {
     }
     const inCartIds = new Set(items.map((i) => i.recordId));
     const firstRecordId = items[0]?.recordId;
-    holmesGoesWith(firstRecordId!, 6)
+    holmesGoesWith(firstRecordId!, 6, {
+      excludeDietary: excludeDietary.length ? excludeDietary : undefined,
+    })
       .then((res) => {
         const hits = (res.products ?? []).filter(
           (h) => !inCartIds.has((h.recordId ?? h.id) as string)
@@ -43,14 +47,19 @@ export function SmartBasketSuggest() {
         setSuggestions(hits.slice(0, 4));
       })
       .catch(() =>
-        search({ q: firstItemName || undefined, limit: 6, vendorId: store?.id })
+        search({
+          q: firstItemName || undefined,
+          limit: 6,
+          vendorId: store?.id,
+          excludeDietary: excludeDietary.length ? excludeDietary : undefined,
+        })
           .then((res) => {
             const hits = (res.hits ?? []).filter((h) => !inCartIds.has(h.recordId));
             setSuggestions(hits.slice(0, 4));
           })
           .catch(() => setSuggestions([]))
       );
-  }, [items, firstItemName, store?.id]);
+  }, [items, firstItemName, store?.id, excludeDietary]);
 
   if (suggestions.length === 0) return null;
 
