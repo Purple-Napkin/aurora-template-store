@@ -104,7 +104,7 @@ export function ForgotSuggestions() {
             return (
               <div
                 key={id}
-                className="flex items-center gap-3 p-2 rounded-lg bg-aurora-surface-hover border border-aurora-border w-full"
+                className="flex items-center gap-3 p-2 rounded-lg bg-white border border-aurora-border w-full"
               >
                 <Link href={`/catalogue/${id}`} className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="w-12 h-12 rounded-lg bg-aurora-surface overflow-hidden shrink-0">
