@@ -85,7 +85,7 @@ export function ForgotSuggestions() {
 
   return (
     <div className="pattern-well mb-6 p-4 rounded-xl border border-aurora-border">
-      <h3 className="font-semibold mb-2">Often added with your items</h3>
+      <h3 className="font-semibold mb-2">Often added together</h3>
       {loading ? (
         <div className="flex gap-3">
           {[1, 2, 3].map((i) => (

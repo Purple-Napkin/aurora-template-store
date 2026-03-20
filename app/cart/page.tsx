@@ -196,7 +196,6 @@ export default function CartPage() {
                 </p>
               )}
             </div>
-            <div data-holmes="checkout-summary" className="mt-2 min-h-[1px]" />
 
             <div className="flex gap-2 mt-4" data-holmes="cross-sell">
               <input

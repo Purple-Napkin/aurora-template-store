@@ -75,7 +75,7 @@ export async function YouMayAlsoLike({
       <h2 className="font-display text-xl font-bold mb-4">
         {fromHolmes ? "Pairs well with" : "You may also like"}
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-start">
         {records.map((record) => {
           const id = String(record.id ?? "");
           const name = getDisplayName(record);
