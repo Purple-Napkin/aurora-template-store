@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "Hippo Ecom";
+const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? "Hippo Store";
 const logoUrl = process.env.NEXT_PUBLIC_LOGO_URL ?? "https://vnawbscpsiwkqniibyya.supabase.co/storage/v1/object/public/placeholders/hippo-ecom.png";
 
 export function Footer() {
@@ -20,7 +20,7 @@ export function Footer() {
             ) : null}
             <p className="text-lg font-semibold mb-2">{siteName}</p>
             <p className="text-aurora-muted text-sm">
-              Your neighborhood online grocery store. Fresh produce, quality products, and convenient delivery.
+              A modern storefront for products, orders, and checkout — powered by Aurora.
             </p>
           </div>
           <div>
