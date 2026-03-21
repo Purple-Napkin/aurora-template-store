@@ -1,6 +1,6 @@
 # Hippo Store
 
-General e-commerce storefront template for Aurora Studio (products, cart, checkout). Built on [`aurora-starter-core`](../aurora-starter-core) and `@aurora-studio/sdk`.
+General e-commerce storefront template for Aurora Studio (products, cart, checkout). Built on [`@aurora-studio/starter-core` (npm)](https://www.npmjs.com/package/@aurora-studio/starter-core) and `@aurora-studio/sdk`.
 
 - **Studio:** create a workspace with template **Hippo Store** (`hippo-store`).
 - **Deploy:** Settings → Apps → generate credentials → use GitHub template **Purple-Napkin/aurora-hippo-store**.
