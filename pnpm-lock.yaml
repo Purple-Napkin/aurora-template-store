@@ -12,8 +12,8 @@ importers:
         specifier: ^0.2.27
         version: 0.2.27
       '@aurora-studio/starter-core':
-        specifier: ^0.1.2
-        version: 0.1.2(@aurora-studio/sdk@0.2.27)(lucide-react@0.454.0(react@19.2.4))(next@15.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+        specifier: ^0.1.3
+        version: 0.1.3(@aurora-studio/sdk@0.2.27)(lucide-react@0.454.0(react@19.2.4))(next@15.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -77,8 +77,8 @@ packages:
     resolution: {integrity: sha512-M4o/uhBEZrGU5t7Cf5Kl/UzqW3c/MDZg3tIaQCDX3Sb/06izDWYQmKqim5sXMKjpSxcd8GuaamMZGmqeRZCo1A==}
     engines: {node: '>=18'}
 
-  '@aurora-studio/starter-core@0.1.2':
-    resolution: {integrity: sha512-FyignQ6hrfd/eyeWQyQo1+QA4uISz4cJcwcIRxqYMUl2mQLEJXhUkMqtexTd+VB+GBQIPPJ0HAD2SepvXizqFw==}
+  '@aurora-studio/starter-core@0.1.3':
+    resolution: {integrity: sha512-2DMYo+v41b/B5o6RqdGMECYFeEIm6Cm8lhiwxS+lYEWBfVcBz6iIEcznY9enbWiaLK3LRkWfoy3INPC8IwoMug==}
     peerDependencies:
       '@aurora-studio/sdk': ^0.2.27
       lucide-react: '>=0.400'
@@ -1874,7 +1874,7 @@ snapshots:
 
   '@aurora-studio/sdk@0.2.27': {}
 
-  '@aurora-studio/starter-core@0.1.2(@aurora-studio/sdk@0.2.27)(lucide-react@0.454.0(react@19.2.4))(next@15.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
+  '@aurora-studio/starter-core@0.1.3(@aurora-studio/sdk@0.2.27)(lucide-react@0.454.0(react@19.2.4))(next@15.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@aurora-studio/sdk': 0.2.27
       lucide-react: 0.454.0(react@19.2.4)
