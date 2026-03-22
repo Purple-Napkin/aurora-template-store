@@ -22,7 +22,11 @@ import { holmesMissionLockCombo } from "@aurora-studio/starter-core";
 import { shouldLockRecipeMissionForMissionPill } from "@/lib/holmes-mission-lock";
 import {
   fullWidthHeroBandClass,
+  splitHeroFallbackTitleClass,
   splitHeroImageClampClass,
+  splitHeroLogoWellSizingClass,
+  splitHeroRowGapClass,
+  splitHeroSectionPaddingClass,
   type HeroSize,
 } from "@/lib/commandSurfaceHeroStyles";
 
@@ -87,11 +91,13 @@ function HeroImageLink({
   heroImageUrl,
   splitClampClass,
   fullBleed,
+  heroSize,
 }: {
   href: string;
   heroImageUrl: string | null;
   splitClampClass: string;
   fullBleed: boolean;
+  heroSize: HeroSize;
 }) {
   if (fullBleed) {
     return (
@@ -117,7 +123,7 @@ function HeroImageLink({
   return (
     <Link
       href={href}
-      className="logo-well block w-full max-w-[min(85vw,320px)] lg:max-w-full transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-aurora-primary/50 rounded-2xl p-4 sm:p-6 border border-aurora-border/60"
+      className={`logo-well block w-full ${splitHeroLogoWellSizingClass(heroSize)} transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-aurora-primary/50 rounded-2xl border border-aurora-border/60`}
       aria-label="Home"
     >
       {heroImageUrl ? (
@@ -127,7 +133,7 @@ function HeroImageLink({
           className={`w-full h-auto object-contain drop-shadow-sm ${splitClampClass}`}
         />
       ) : (
-        <span className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-aurora-text">
+        <span className={splitHeroFallbackTitleClass(heroSize)}>
           {process.env.NEXT_PUBLIC_SITE_NAME ?? "Store"}
         </span>
       )}
@@ -252,6 +258,7 @@ export function CommandSurface({
             heroImageUrl={displayUrl}
             splitClampClass={splitClamp}
             fullBleed
+            heroSize={heroSize}
           />
         </div>
         <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 py-10 sm:py-12 lg:py-16 flex justify-center lg:justify-start">
@@ -262,14 +269,19 @@ export function CommandSurface({
   }
 
   return (
-    <section className="command-surface-hero py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-b from-aurora-surface to-aurora-bg">
-      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-12 xl:gap-16">
+    <section
+      className={`command-surface-hero px-4 sm:px-6 bg-gradient-to-b from-aurora-surface to-aurora-bg ${splitHeroSectionPaddingClass(heroSize)}`}
+    >
+      <div
+        className={`max-w-6xl mx-auto flex flex-col lg:flex-row items-center ${splitHeroRowGapClass(heroSize)}`}
+      >
         <div className="flex-1 min-w-0 order-2 lg:order-1 flex justify-center lg:justify-start w-full lg:min-w-[280px]">
           <HeroImageLink
             href="/"
             heroImageUrl={displayUrl}
             splitClampClass={splitClamp}
             fullBleed={false}
+            heroSize={heroSize}
           />
         </div>
 
