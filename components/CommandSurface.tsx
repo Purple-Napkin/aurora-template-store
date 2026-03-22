@@ -1,7 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { Search, UtensilsCrossed, RotateCcw, Apple, PiggyBank, Sparkles } from "lucide-react";
+import {
+  Search,
+  RotateCcw,
+  Sparkles,
+  Wrench,
+  PaintBucket,
+  Trees,
+  PiggyBank,
+  Hammer,
+  Sun,
+} from "lucide-react";
 import { SearchDropdown, useStore, useAuth } from "@aurora-studio/starter-core";
 import { useDietaryExclusions } from "./DietaryExclusionsContext";
 import { getRecipeSuggestion } from "@/lib/cart-intelligence";
@@ -11,46 +21,60 @@ import { getTimeOfDay } from "@aurora-studio/starter-core";
 import { holmesMissionLockCombo } from "@aurora-studio/starter-core";
 import { shouldLockRecipeMissionForMissionPill } from "@/lib/holmes-mission-lock";
 
-const ICON_MAP: Record<string, typeof UtensilsCrossed> = {
-  "Dinner in 20 mins": UtensilsCrossed,
-  "Dinner now": UtensilsCrossed,
-  "Breakfast ideas": UtensilsCrossed,
-  "Repeat last shop": RotateCcw,
-  "Healthy options": Apple,
-  "Under £25 shop": PiggyBank,
-  "Recipe ideas": Sparkles,
+const ICON_MAP: Record<string, typeof Wrench> = {
+  "Tools & hardware": Wrench,
+  "Paint & decor": PaintBucket,
+  "Garden & outdoor": Trees,
+  "Deals under £50": PiggyBank,
+  "Today's project": Hammer,
+  "Paint this weekend": PaintBucket,
+  "Outdoor jobs": Trees,
+  "Budget picks": PiggyBank,
+  "Finish the job": Wrench,
+  "Lighting & finish": Sun,
   "Travel essentials": Sparkles,
-  "Face wipes": Sparkles,
-  "Travel size": Sparkles,
-  "Packing checklist": Sparkles,
   "Explore more": Sparkles,
   "New arrivals": Sparkles,
   "Seasonal picks": Sparkles,
-  "Fresh ingredients": UtensilsCrossed,
-  "Quick meals": UtensilsCrossed,
+  "Healthy options": Sparkles,
+  "Breakfast ideas": Sparkles,
+  "Recipe ideas": Sparkles,
+  "Dinner now": Sparkles,
+  "Dinner in 20 mins": Sparkles,
+  "Repeat last shop": RotateCcw,
 };
 
-/** Cold-start quick actions - contextual by time of day */
-function getDefaultQuickActions(timeOfDay: string) {
-  const base = [
-    { label: "Dinner in 20 mins", href: "/catalogue?q=quick+dinner", icon: UtensilsCrossed },
-    { label: "Repeat last shop", href: "/account/orders", icon: RotateCcw, authOnly: true },
-    { label: "Healthy options", href: "/catalogue?q=healthy", icon: Apple },
-    { label: "Under £25 shop", href: "/catalogue", icon: PiggyBank },
+type LocalQuickAction = {
+  label: string;
+  href: string;
+  icon: typeof Wrench;
+  authOnly?: boolean;
+};
+
+function getDefaultQuickActions(timeOfDay: string): LocalQuickAction[] {
+  const afternoon: LocalQuickAction[] = [
+    { label: "Tools & hardware", href: "/catalogue?q=tools", icon: Wrench },
+    { label: "Paint & decor", href: "/catalogue?q=paint", icon: PaintBucket },
+    { label: "Garden & outdoor", href: "/catalogue?q=garden", icon: Trees },
+    { label: "Deals under £50", href: "/catalogue", icon: PiggyBank },
   ];
-  if (timeOfDay === "evening") {
-    return [
-      { label: "Dinner now", href: "/catalogue?q=dinner", icon: UtensilsCrossed },
-      ...base.filter((a) => a.label !== "Dinner in 20 mins"),
-    ];
-  }
   if (timeOfDay === "morning") {
     return [
-      { label: "Breakfast ideas", href: "/catalogue?q=breakfast", icon: UtensilsCrossed },
-      ...base.filter((a) => a.label !== "Dinner in 20 mins"),
+      { label: "Today's project", href: "/catalogue?q=tools", icon: Hammer },
+      { label: "Paint this weekend", href: "/catalogue?q=paint", icon: PaintBucket },
+      { label: "Outdoor jobs", href: "/catalogue?q=garden", icon: Trees },
+      { label: "Budget picks", href: "/catalogue", icon: PiggyBank },
     ];
   }
-  return base;
+  if (timeOfDay === "evening") {
+    return [
+      { label: "Finish the job", href: "/catalogue?q=tools", icon: Wrench },
+      { label: "Lighting & finish", href: "/catalogue?q=decor", icon: Sun },
+      { label: "Garden & outdoor", href: "/catalogue?q=garden", icon: Trees },
+      { label: "Deals under £50", href: "/catalogue", icon: PiggyBank },
+    ];
+  }
+  return afternoon;
 }
 
 /** Hero: logo left, shopping form right. Responsive, elegant. */
@@ -93,7 +117,6 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
         {isRecipeMission ? "Let's get you there fast" : "Pick a mission or search below"}
       </p>
 
-      {/* Primary: mission quick actions first */}
       <div className="relative z-20 mb-6">
         <p className="text-xs font-semibold text-aurora-muted uppercase tracking-widest mb-3">
           Start here
@@ -116,20 +139,9 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
               </Link>
             );
           })}
-          {!quickActions.some((a) => a.label === "Recipe ideas") && (
-            <Link
-              href="/recipes"
-              onClick={() => holmesMissionLockCombo()}
-              className="inline-flex min-h-[2.75rem] items-center gap-2.5 px-5 py-3 rounded-2xl bg-aurora-surface border border-aurora-border shadow-sm hover:border-aurora-primary/40 hover:shadow-md transition-all text-sm font-semibold text-aurora-text"
-            >
-              <Sparkles className="h-4 w-4 shrink-0 text-aurora-primary" />
-              Recipe ideas
-            </Link>
-          )}
         </div>
       </div>
 
-      {/* Secondary: search as tool, not entry point */}
       <div className="relative z-10">
         <p className="text-xs font-semibold text-aurora-muted uppercase tracking-widest mb-2">
           Search the store
@@ -140,7 +152,7 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
             data-command-search
           >
             <SearchDropdown
-              placeholder="milk, pasta, bananas…"
+              placeholder="drill, paint, garden hose…"
               vendorId={store.id}
               fullWidth
               variant="embedded"
@@ -164,7 +176,6 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
   return (
     <section className="command-surface-hero py-12 sm:py-16 lg:py-20 px-4 sm:px-6 bg-gradient-to-b from-aurora-surface to-aurora-bg">
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-10 lg:gap-12 xl:gap-16">
-        {/* Logo - always on left, with subtle well + texture anchor */}
         <div className="flex-1 min-w-0 order-2 lg:order-1 flex justify-center lg:justify-start w-full lg:min-w-[280px]">
           <Link
             href="/"
@@ -187,7 +198,6 @@ export function CommandSurface({ logoUrl }: { logoUrl?: string | null }) {
           </Link>
         </div>
 
-        {/* Form - right on desktop */}
         <div className="flex-1 min-w-0 order-1 lg:order-2 flex justify-center lg:justify-end w-full lg:min-w-[320px]">
           {formContent}
         </div>

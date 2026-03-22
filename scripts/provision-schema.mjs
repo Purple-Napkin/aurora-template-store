@@ -13,8 +13,9 @@ import { dirname, join } from "path";
 import { loadRootEnv, loadTemplateDotenv } from "../../scripts/hippo-seed/root-env.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-loadRootEnv(import.meta.url);
+// App `.env.local` wins over monorepo root so provision targets the correct tenant.
 loadTemplateDotenv(join(__dirname, ".."));
+loadRootEnv(import.meta.url);
 
 const apiUrl = process.env.AURORA_API_URL || process.env.NEXT_PUBLIC_AURORA_API_URL;
 const apiKey = process.env.AURORA_API_KEY;
