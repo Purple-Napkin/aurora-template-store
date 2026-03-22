@@ -9,13 +9,6 @@ import {
   type StoreContentSection,
 } from "@/components/storeContentBlocksUi";
 
-const SYMBOLS: Record<string, string> = {
-  gbp: "£",
-  usd: "$",
-  eur: "€",
-  aud: "A$",
-};
-
 type Props = {
   contentPage: string;
   contentRegion: string;
@@ -40,7 +33,7 @@ export function ClientStoreContentRail({
   const urlCategory = searchParams.get("category")?.trim() ?? "";
   const { excludeDietary } = useDietaryExclusions();
   const [sections, setSections] = useState<StoreContentSection[]>([]);
-  const [symbol, setSymbol] = useState("£");
+  const [currency, setCurrency] = useState("GBP");
 
   const resolvedCategory =
     useCatalogueCategoryFromUrl && !categorySlug ? urlCategory : categorySlug?.trim() ?? "";
@@ -50,7 +43,7 @@ export function ClientStoreContentRail({
     getStoreConfig().then((c) => {
       if (cancelled) return;
       const curr = ((c as { currency?: string })?.currency ?? "gbp").toLowerCase();
-      setSymbol(SYMBOLS[curr] ?? "£");
+      setCurrency(curr.length >= 3 ? curr.toUpperCase() : "GBP");
     });
     return () => {
       cancelled = true;
@@ -95,7 +88,7 @@ export function ClientStoreContentRail({
   return (
     <GroupedStoreContentSections
       sections={sections}
-      symbol={symbol}
+      currency={currency}
       recipesWithProducts={[]}
       withHolmesMarkers={false}
       className={className}
