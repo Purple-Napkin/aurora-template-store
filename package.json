@@ -12,7 +12,7 @@
     "seed:apply": "node ../scripts/template-seed/apply-seed-sql-api.mjs"
   },
   "dependencies": {
-    "@aurora-studio/sdk": "^0.2.36",
+    "@aurora-studio/sdk": "^0.2.37",
     "@aurora-studio/starter-core": "file:../aurora-starter-core",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.454.0",
