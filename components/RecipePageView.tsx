@@ -42,8 +42,8 @@ export function RecipePageView({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    holmesRecipeView(recipeSlug, recipeTitle);
-  }, [recipeSlug, recipeTitle]);
+    holmesRecipeView(recipeSlug, recipe?.title ?? recipeTitle);
+  }, [recipeSlug, recipe?.title, recipeTitle]);
 
   useEffect(() => {
     let cancelled = false;

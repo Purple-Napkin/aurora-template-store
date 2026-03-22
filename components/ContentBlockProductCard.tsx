@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   ProductImage,
+  ProductSaleBadge,
   getThumbnailImageUrl,
   resolveProductImageUrl,
   useStoreConfigImageBase,
@@ -16,6 +17,7 @@ export type ContentBlockProduct = {
   name: string;
   price?: number;
   image_url?: string;
+  on_sale?: boolean;
 };
 
 /** `split` = opaque packshots: warm light stage + cream text band (reference: Nescafe card). `radial` = true alpha PNG: coloured well on one tile. */
@@ -218,6 +220,7 @@ export function ContentBlockProductCard({
         {...cardMarkers}
         className={`group flex h-full min-h-0 flex-col overflow-hidden rounded-3xl bg-white p-0 ${cardShell}`}
       >
+        {prod.on_sale ? <span className="sr-only">On sale. </span> : null}
         <div
           {...imgMarkers}
           className={`relative isolate flex min-h-[11rem] w-full items-stretch justify-center px-3 pb-2 pt-3 sm:min-h-[12.5rem] sm:px-4 sm:pb-3 sm:pt-4 ${stageTop}`}
@@ -228,6 +231,7 @@ export function ContentBlockProductCard({
               className="h-full max-h-[11rem] w-full max-w-full object-contain object-center mix-blend-multiply transition-transform duration-200 ease-out group-hover:scale-[1.02]"
             />
           </div>
+          {prod.on_sale ? <ProductSaleBadge className="start-3 top-3 sm:start-4 sm:top-4" /> : null}
         </div>
         <div className="border-t border-stone-200/90 bg-[#faf8f5] px-4 py-3.5 sm:px-5 sm:py-4">
           <div className="flex min-h-0 flex-1 flex-col gap-1.5 text-stone-900">
@@ -244,6 +248,7 @@ export function ContentBlockProductCard({
       {...cardMarkers}
       className={`group flex h-full min-h-0 flex-col rounded-3xl bg-aurora-surface p-4 sm:p-5 ${cardShell}`}
     >
+      {prod.on_sale ? <span className="sr-only">On sale. </span> : null}
       <div
         {...imgMarkers}
         className="relative isolate mb-4 aspect-square overflow-hidden rounded-2xl ring-1 ring-black/[0.03] dark:ring-white/[0.07]"
@@ -262,6 +267,7 @@ export function ContentBlockProductCard({
             className="max-h-full max-w-full transition-transform duration-200 ease-out group-hover:scale-[1.03] dark:drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)]"
           />
         </div>
+        {prod.on_sale ? <ProductSaleBadge /> : null}
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-1.5">
         <TitlePrice prod={prod} currency={currency} />

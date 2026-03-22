@@ -8,6 +8,7 @@ import {
   mergeTemplateLogoMask,
   useStore,
   useAuth,
+  useVerticalProfile,
 } from "@aurora-studio/starter-core";
 import { useDietaryExclusions } from "./DietaryExclusionsContext";
 import { getRecipeSuggestion } from "@/lib/cart-intelligence";
@@ -18,6 +19,8 @@ export function Nav() {
   const { location, store } = useStore();
   const { user, loading } = useAuth();
   const { excludeDietary } = useDietaryExclusions();
+  const { dietaryFilteringEnabled } = useVerticalProfile();
+  const excludeForSearch = dietaryFilteringEnabled ? excludeDietary : [];
 
   const locationDisplay = location?.address ?? store?.name ?? "Select location";
 
@@ -71,7 +74,7 @@ export function Nav() {
               <SearchDropdown
                 placeholder="Search products"
                 vendorId={store.id}
-                excludeDietary={excludeDietary}
+                excludeDietary={excludeForSearch}
                 getRecipeSuggestion={getRecipeSuggestion}
               />
             ) : (
@@ -80,7 +83,7 @@ export function Nav() {
                   <SearchDropdown
                     placeholder="Select a store to search products…"
                     vendorId={undefined}
-                    excludeDietary={excludeDietary}
+                    excludeDietary={excludeForSearch}
                     getRecipeSuggestion={getRecipeSuggestion}
                   />
                 </span>
