@@ -70,7 +70,7 @@ export function RecipePageView({
         setCatalogSlug(slug);
       })
       .catch((err) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load recipe");
+        if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load kit");
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -105,7 +105,7 @@ export function RecipePageView({
   if (loading) {
     return (
       <div className="w-full py-16 flex flex-col items-center justify-center text-aurora-muted">
-        <div className="animate-pulse text-lg">Finding your recipe…</div>
+        <div className="animate-pulse text-lg">Loading your kit…</div>
       </div>
     );
   }
@@ -129,8 +129,8 @@ export function RecipePageView({
       <header>
         <h1 className="font-display text-2xl sm:text-3xl font-bold mb-2">
           {getTimeOfDay() === "evening"
-            ? `Make tonight: ${recipe?.title ?? recipeTitle}`
-            : `Make: ${recipe?.title ?? recipeTitle}`}
+            ? `Finish tonight: ${recipe?.title ?? recipeTitle}`
+            : `Your kit: ${recipe?.title ?? recipeTitle}`}
         </h1>
         {recipe?.origin_tidbit && (
           <p className="text-aurora-muted text-sm sm:text-base max-w-2xl italic">
@@ -160,7 +160,7 @@ export function RecipePageView({
 
       {recipe?.ingredients && recipe.ingredients.length > 0 && (
         <section>
-          <h2 className="font-display text-lg font-semibold mb-3">Ingredients</h2>
+          <h2 className="font-display text-lg font-semibold mb-3">What&apos;s in the kit</h2>
           <ul className="list-disc list-inside text-aurora-text space-y-1">
             {recipe.ingredients.map((ing, i) => (
               <li key={i}>
@@ -175,14 +175,14 @@ export function RecipePageView({
 
       {recipe?.instructions && (
         <section>
-          <h2 className="font-display text-lg font-semibold mb-3">Instructions</h2>
+          <h2 className="font-display text-lg font-semibold mb-3">How to use</h2>
           <div className="text-aurora-text whitespace-pre-wrap">{recipe.instructions}</div>
         </section>
       )}
 
       {products.length > 0 && (
         <section>
-          <h2 className="font-display text-lg font-semibold mb-4">Products for this recipe</h2>
+          <h2 className="font-display text-lg font-semibold mb-4">Products in this kit</h2>
           <div
             className={`grid gap-4 sm:gap-5 w-full grid-cols-[repeat(auto-fill,minmax(160px,1fr))]`}
           >

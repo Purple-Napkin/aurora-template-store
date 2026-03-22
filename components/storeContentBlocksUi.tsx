@@ -325,7 +325,7 @@ export function RecipeIdeasRail({
         className="text-xl font-bold mb-4 flex items-center gap-2"
       >
         <ChefHat className="w-6 h-6 text-aurora-primary" />
-        Recipe ideas
+        Kits & bundles
       </h2>
       <div
         {...(withHolmesMarkers ? { "data-holmes-home-section-grid": true } : {})}
@@ -334,7 +334,7 @@ export function RecipeIdeasRail({
         {recipesWithProducts.map((r) => (
           <Link
             key={r.id}
-            href={`/recipes/${encodeURIComponent(r.slug)}`}
+            href={`/combos/${encodeURIComponent(r.slug)}`}
             {...(withHolmesMarkers ? { "data-holmes-home-card": true } : {})}
             className="block p-4 rounded-xl bg-aurora-surface border border-aurora-border hover:border-aurora-primary/40 hover:shadow-md transition-all"
           >

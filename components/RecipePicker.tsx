@@ -8,8 +8,7 @@ import { holmesCombosForCart, holmesSelectCombo } from "@aurora-studio/starter-c
 import { RecipeProductCollage } from "./RecipeProductCollage";
 
 /**
- * Recipe picker – when cart has 2+ items and Holmes has recipe options, show picker.
- * User selects a recipe; we persist it and refresh mission/personalization.
+ * Combo picker – cart has 2+ items and Holmes returns combo options (API: recipes).
  */
 export function RecipePicker() {
   const { items } = useCart();
@@ -62,7 +61,7 @@ export function RecipePicker() {
 
   return (
     <div
-      id="recipe-picker"
+      id="combo-picker"
       className="pattern-well mb-6 p-4 rounded-xl border border-aurora-primary/30 bg-aurora-primary/5 scroll-mt-24"
     >
       <div className="flex items-center justify-between mb-4">
@@ -100,7 +99,7 @@ export function RecipePicker() {
                 Select
               </button>
               <Link
-                href={`/recipes/${encodeURIComponent(combo.slug)}`}
+                href={`/combos/${encodeURIComponent(combo.slug)}`}
                 className="px-3 py-2 rounded-lg border border-aurora-border hover:bg-aurora-surface-hover text-sm"
               >
                 View

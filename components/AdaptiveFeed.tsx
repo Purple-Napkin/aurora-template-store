@@ -231,13 +231,13 @@ export function AdaptiveFeed({
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-aurora-text flex items-center gap-2">
               <ChefHat className="w-5 h-5 text-aurora-primary" />
-              Recipe ideas
+              Kits & bundles
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {recipes.slice(0, 4).map((r) => (
                 <Link
                   key={r.id}
-                  href={`/recipes/${encodeURIComponent(r.slug)}`}
+                  href={`/combos/${encodeURIComponent(r.slug)}`}
                   className="block p-3 rounded-xl bg-aurora-surface border border-aurora-border hover:border-aurora-primary/40 transition-all"
                 >
                   <div className="aspect-square rounded-lg mb-2 overflow-hidden">

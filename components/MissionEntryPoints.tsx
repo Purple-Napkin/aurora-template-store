@@ -22,6 +22,7 @@ const ICON_MAP: Record<string, typeof Wrench> = {
   "Paint & supplies": PaintBucket,
   "Explore more": Sparkles,
   "Recipe ideas": Sparkles,
+  "Kits & bundles": Sparkles,
   "Cook dinner": Sparkles,
 };
 
@@ -44,7 +45,8 @@ export function MissionEntryPoints() {
       <div className="flex flex-wrap gap-3">
         {missions.map((m) => {
           const Icon = m.icon;
-          const href = m.label === "Recipe ideas" ? "/recipes" : m.href;
+          const href =
+            m.label === "Recipe ideas" || m.label === "Kits & bundles" ? "/combos" : m.href;
           return (
             <Link
               key={m.label}

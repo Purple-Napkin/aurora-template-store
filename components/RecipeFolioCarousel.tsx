@@ -7,7 +7,6 @@ import { useCart } from "@aurora-studio/starter-core";
 import { holmesCombosForCart, holmesRecentRecipes, holmesRecipe, holmesRecipeProducts, getStoreConfig } from "@aurora-studio/starter-core";
 import { useDietaryExclusions } from "@/components/DietaryExclusionsContext";
 import { getMealToComplete } from "@/lib/cart-intelligence";
-import { getTimeOfDay } from "@aurora-studio/starter-core";
 import { AddToCartButton } from "@aurora-studio/starter-core";
 import { ProductImage } from "@aurora-studio/starter-core";
 import { formatPrice, toCents } from "@aurora-studio/starter-core";
@@ -15,7 +14,7 @@ import type { SearchHit } from "@aurora-studio/starter-core";
 
 type Combo = { slug: string; title: string; productImageUrls?: string[] };
 
-/** Rank recipes by cart match: best fit (meal) first, then cart ingredient matches, then rest. */
+/** Rank Holmes combo/recipe records by cart match (API still calls them recipes). */
 function rankRecipesByCart(
   recipes: Array<{ slug: string; title: string; description: string | null }>,
   cartNames: string[],
@@ -80,22 +79,11 @@ export function RecipeFolioCarousel() {
 
     const dietaryOpts = excludeDietary.length ? { excludeDietary } : undefined;
     const fetchCatalogueFallback = () => {
-      holmesRecentRecipes(24, getTimeOfDay(), dietaryOpts)
+      holmesRecentRecipes(24, undefined, dietaryOpts)
         .then(({ recipes }) => {
-          if (cancelled) return;
-          if (recipes?.length) {
-            const meal = getMealToComplete(cartNames)?.meal ?? null;
-            const ranked = rankRecipesByCart(recipes, cartNames, meal);
-            setCombos(ranked.map((r) => ({ slug: r.slug, title: r.title })));
-            return;
-          }
-          // Retry without time filter if time-filtered returned empty
-          return holmesRecentRecipes(24, undefined, dietaryOpts);
-        })
-        .then((res) => {
-          if (!res || cancelled || !res.recipes?.length) return;
+          if (cancelled || !recipes?.length) return;
           const meal = getMealToComplete(cartNames)?.meal ?? null;
-          const ranked = rankRecipesByCart(res.recipes, cartNames, meal);
+          const ranked = rankRecipesByCart(recipes, cartNames, meal);
           setCombos(ranked.map((r) => ({ slug: r.slug, title: r.title })));
         })
         .catch(() => {});
@@ -230,8 +218,8 @@ export function RecipeFolioCarousel() {
   if (items.length < 2) {
     return (
       <div className="max-w-2xl mx-auto py-16 px-6 text-center">
-        <p className="font-folio text-2xl text-aurora-muted mb-4">
-          Add at least 2 items to your cart to see recipe ideas.
+        <p className="font-sans text-2xl text-aurora-muted mb-4">
+          Add at least 2 items to your cart to see kit ideas.
         </p>
         <Link
           href="/catalogue"
@@ -246,8 +234,8 @@ export function RecipeFolioCarousel() {
   if (combos.length === 0 && !loading) {
     return (
       <div className="max-w-2xl mx-auto py-16 px-6 text-center">
-        <p className="font-folio text-2xl text-aurora-muted mb-4">
-          No recipe matches for your cart yet. Keep shopping!
+        <p className="font-sans text-2xl text-aurora-muted mb-4">
+          No kit matches for your cart yet. Keep shopping!
         </p>
         <Link
           href="/catalogue"
@@ -268,13 +256,13 @@ export function RecipeFolioCarousel() {
           onClick={goPrev}
           disabled={animating}
           className="absolute left-2 sm:left-4 top-[28%] -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-aurora-surface/95 backdrop-blur-sm shadow-lg border border-aurora-border flex items-center justify-center text-aurora-muted hover:text-aurora-primary hover:bg-aurora-surface disabled:opacity-50 transition-all"
-          aria-label="Previous recipe"
+          aria-label="Previous kit"
         >
           <Carrot className="w-6 h-6" />
         </button>
       )}
 
-      {/* Recipe page */}
+      {/* Project kit card */}
       <div
         className="relative w-full max-w-2xl mx-4 sm:mx-16"
         style={{ perspective: "1200px" }}
@@ -293,25 +281,25 @@ export function RecipeFolioCarousel() {
           }`}
         >
           {loading ? (
-            <div className="font-folio text-2xl text-aurora-muted py-20 text-center">
-              Finding your recipe…
+            <div className="font-sans text-2xl text-aurora-muted py-20 text-center">
+              Loading your kit…
             </div>
           ) : recipe ? (
-            <div className="font-folio space-y-6 relative z-10">
-              <h1 className="text-3xl sm:text-4xl font-semibold text-aurora-text" style={{ fontFamily: "Caveat, cursive" }}>
+            <div className="font-sans space-y-6 relative z-10">
+              <h1 className="text-3xl sm:text-4xl font-semibold text-aurora-text">
                 {recipe.title}
               </h1>
               {recipe.description && (
-                <p className="text-xl text-aurora-muted" style={{ fontFamily: "Caveat, cursive" }}>
+                <p className="text-xl text-aurora-muted">
                   {recipe.description}
                 </p>
               )}
               {recipe.ingredients.length > 0 && (
                 <section>
-                  <h2 className="text-2xl font-semibold text-aurora-text mb-2" style={{ fontFamily: "Caveat, cursive" }}>
-                    Ingredients
+                  <h2 className="text-2xl font-semibold text-aurora-text mb-2">
+                    What&apos;s in the kit
                   </h2>
-                  <ul className="text-xl text-aurora-text space-y-1" style={{ fontFamily: "Caveat, cursive" }}>
+                  <ul className="text-xl text-aurora-text space-y-1">
                     {recipe.ingredients.map((ing, i) => (
                       <li key={i}>
                         {ing.quantity && `${ing.quantity} `}
@@ -324,17 +312,17 @@ export function RecipeFolioCarousel() {
               )}
               {recipe.instructions && (
                 <section>
-                  <h2 className="text-2xl font-semibold text-aurora-text mb-2" style={{ fontFamily: "Caveat, cursive" }}>
-                    Instructions
+                  <h2 className="text-2xl font-semibold text-aurora-text mb-2">
+                    How to use
                   </h2>
-                  <div className="text-xl text-aurora-text whitespace-pre-wrap" style={{ fontFamily: "Caveat, cursive" }}>
+                  <div className="text-xl text-aurora-text whitespace-pre-wrap">
                     {recipe.instructions}
                   </div>
                 </section>
               )}
               {recipe.products.length > 0 && recipe.catalogSlug && (
                 <section>
-                  <h2 className="text-2xl font-semibold text-aurora-text mb-3" style={{ fontFamily: "Caveat, cursive" }}>
+                  <h2 className="text-2xl font-semibold text-aurora-text mb-3">
                     Products
                   </h2>
                   <div className="flex flex-wrap gap-3 mb-4">
@@ -357,7 +345,6 @@ export function RecipeFolioCarousel() {
                           </div>
                           <span
                             className="text-lg truncate max-w-[120px] text-aurora-text"
-                            style={{ fontFamily: "Caveat, cursive" }}
                           >
                             {name}
                           </span>
@@ -380,7 +367,6 @@ export function RecipeFolioCarousel() {
                     onClick={addAllToCart}
                     disabled={allAdded}
                     className="px-6 py-3 rounded-lg bg-aurora-primary text-white font-semibold text-xl hover:bg-aurora-primary-dark transition-colors disabled:opacity-90 disabled:cursor-default inline-flex items-center gap-2"
-                    style={{ fontFamily: "Caveat, cursive" }}
                   >
                     {allAdded ? (
                       <>
@@ -398,11 +384,10 @@ export function RecipeFolioCarousel() {
               )}
               {currentSlug && (
                 <a
-                  href={`/recipes/${encodeURIComponent(currentSlug)}`}
+                  href={`/combos/${encodeURIComponent(currentSlug)}`}
                   className="inline-block mt-4 text-aurora-primary hover:underline font-semibold text-xl cursor-pointer"
-                  style={{ fontFamily: "Caveat, cursive" }}
                 >
-                  View full recipe →
+                  View full kit →
                 </a>
               )}
             </div>
@@ -417,7 +402,7 @@ export function RecipeFolioCarousel() {
           onClick={goNext}
           disabled={animating}
           className="absolute right-2 sm:right-4 top-[28%] -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-aurora-surface/95 backdrop-blur-sm shadow-lg border border-aurora-border flex items-center justify-center text-aurora-muted hover:text-aurora-primary hover:bg-aurora-surface disabled:opacity-50 transition-all"
-          aria-label="Next recipe"
+          aria-label="Next kit"
         >
           <Apple className="w-6 h-6" />
         </button>
@@ -434,7 +419,7 @@ export function RecipeFolioCarousel() {
               className={`w-2 h-2 rounded-full transition-colors ${
                 i === index ? "bg-aurora-primary" : "bg-aurora-border hover:bg-aurora-muted"
               }`}
-              aria-label={`Go to recipe ${i + 1}`}
+              aria-label={`Go to kit ${i + 1}`}
             />
           ))}
         </div>

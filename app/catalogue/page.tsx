@@ -371,8 +371,8 @@ function CatalogueContent() {
               {recipeTitle ? (
                 <h1 className="font-display text-xl sm:text-2xl font-bold">
                   {getTimeOfDay() === "evening"
-                    ? `Make tonight: ${recipeTitle}`
-                    : `Make: ${recipeTitle}`}
+                    ? `Finish tonight: ${recipeTitle}`
+                    : `Your kit: ${recipeTitle}`}
                 </h1>
               ) : (
                 <h1 className="sr-only">
@@ -392,7 +392,7 @@ function CatalogueContent() {
             <SortDropdown value={tab} onChange={handleSortChange} />
           </div>
 
-          {/* Holmes injects "Complete your [Recipe]" when recipe mission + cart has items */}
+          {/* Holmes basket-bundle when combo/recipe mission + cart has items */}
           <div data-holmes="basket-bundle" className="mb-6 min-h-[1px]" />
 
           {/* Holmes injects personalised "Recommended for you" block */}
@@ -514,7 +514,7 @@ function CatalogueContent() {
             <>
               <div
                 className={`grid gap-4 sm:gap-5 w-full transition-opacity duration-200 grid-cols-[repeat(auto-fill,minmax(160px,1fr))] ${
-                  loading ? "opacity-50 pointer-events-none" : ""
+                  loading ? "opacity-60" : ""
                 }`}
               >
                 {hits.map((record) => {

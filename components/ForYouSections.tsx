@@ -1,6 +1,5 @@
 import { getHomePersonalization, holmesRecentRecipes, holmesRecipeProducts } from "@aurora-studio/starter-core";
 import { getStoreConfig } from "@aurora-studio/starter-core";
-import { getTimeOfDay } from "@aurora-studio/starter-core";
 import { getDietaryFromCookie } from "@/lib/dietary-server";
 import { RecipeIdeasRail, GroupedStoreContentSections } from "./storeContentBlocksUi";
 
@@ -19,7 +18,7 @@ export async function ForYouSections() {
       contentRegion: FOR_YOU_REGION,
     }),
     getStoreConfig(),
-    holmesRecentRecipes(8, getTimeOfDay(), dietaryOpts),
+    holmesRecentRecipes(8, undefined, dietaryOpts),
   ]);
 
   const currency =
@@ -47,7 +46,7 @@ export async function ForYouSections() {
   if (sections.length === 0 && !hasRecipes) {
     return (
       <section className="space-y-6">
-        <h2 className="text-xl font-bold">Recipe ideas</h2>
+        <h2 className="text-xl font-bold">Kits & bundles</h2>
         <p className="text-aurora-muted text-sm">
           Add items to your basket to see personalized suggestions.
         </p>

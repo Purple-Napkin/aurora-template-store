@@ -11,12 +11,12 @@ export function LiveSignalsRow() {
   const timeOfDay = getTimeOfDay();
 
   const signal = store
-    ? { label: `Popular at ${store.name} right now`, href: "/catalogue" }
+    ? { label: `Popular at ${store.name} today`, href: "/catalogue" }
     : timeOfDay === "evening"
-      ? { label: "Dinner in 20 mins?", href: "/catalogue?q=quick+dinner" }
+      ? { label: "Finish today’s job — tools & fixings", href: "/catalogue?q=tools" }
       : timeOfDay === "afternoon"
-        ? { label: "After school snacks", href: "/catalogue?q=snacks" }
-        : { label: "Trending now", href: "/catalogue" };
+        ? { label: "Project supplies in stock", href: "/catalogue" }
+        : { label: "Browse departments", href: "/catalogue" };
 
   return (
     <section className="py-4">

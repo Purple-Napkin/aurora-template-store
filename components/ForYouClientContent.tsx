@@ -7,7 +7,7 @@ import { RecipePicker } from "@/components/RecipePicker";
 import { BasketBundlePlaceholder } from "@/components/BasketBundlePlaceholder";
 import { CompleteYourMeal } from "@/components/CompleteYourMeal";
 import { ForgotSuggestions } from "@/components/ForgotSuggestions";
-import { Sparkles } from "lucide-react";
+import { Wrench } from "lucide-react";
 
 /** Client-only parts of For You page (cart-dependent). */
 export function ForYouClientContent({
@@ -21,24 +21,24 @@ export function ForYouClientContent({
   const hasCartItems = items.length > 0;
 
   return (
-    <div className="max-w-5xl mx-auto py-12 px-4 sm:px-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Sparkles className="w-6 h-6 text-aurora-primary" aria-hidden />
-          For You
+    <div className="max-w-5xl mx-auto py-8 px-4 sm:px-6">
+      <div className="mb-6">
+        <h1 className="text-xl font-bold flex items-center gap-2 text-aurora-text">
+          <Wrench className="w-5 h-5 text-aurora-primary shrink-0" aria-hidden />
+          For you
         </h1>
-        <p className="text-aurora-muted mt-1">
-          Bundles, recipes, and suggestions assembled just for you.
+        <p className="text-aurora-muted text-sm mt-1 leading-snug">
+          Bundles and add-ons based on your basket and browsing.
         </p>
         {belowTitle}
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-6">
         <HolmesContextualWell variant="for-you" />
 
         {hasCartItems && (
           <>
-            <section id="recipe-picker" className="scroll-mt-24">
+            <section id="combo-picker" className="scroll-mt-24">
               <RecipePicker />
             </section>
             <section id="basket-bundle" className="mb-6">

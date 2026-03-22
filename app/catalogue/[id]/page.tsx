@@ -95,7 +95,7 @@ export default async function ProductPage({
   const description = record.description as string | undefined;
 
   return (
-    <div className="max-w-6xl mx-auto py-10 sm:py-14 px-4 sm:px-6">
+    <div className="max-w-6xl mx-auto py-6 sm:py-10 px-4 sm:px-6">
       <HolmesProductViewTracker productId={id} />
       <HolmesContextualWell currentProductId={id} />
 
@@ -107,26 +107,28 @@ export default async function ProductPage({
         <span className="text-aurora-text">{name}</span>
       </nav>
 
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
         <div className="shrink-0 lg:w-2/5">
           <ProductImageGallery record={record} />
         </div>
 
-        <div className="flex-1 min-w-0 space-y-6">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{name}</h1>
+        <div className="flex-1 min-w-0 space-y-4">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-aurora-text leading-snug">
+            {name}
+          </h1>
           {sellByWeight && pricePerUnitCents != null ? (
-            <p className="text-xl font-bold text-aurora-accent">
+            <p className="text-2xl sm:text-3xl font-extrabold text-aurora-text tabular-nums">
               {formatPrice(pricePerUnitCents, currency)}/{unit}
             </p>
           ) : priceCents != null ? (
-            <p className="text-xl font-bold text-aurora-accent">
+            <p className="text-2xl sm:text-3xl font-extrabold text-aurora-text tabular-nums">
               {formatPrice(priceCents, currency)}
             </p>
           ) : null}
           {description && (
-            <p className="text-aurora-muted">{description}</p>
+            <p className="text-aurora-muted text-sm leading-snug">{description}</p>
           )}
-          <div className="mt-4">
+          <div className="mt-2">
             <HolmesTidbits
               entity={toProductEntity(name)}
               entityType="product"
@@ -140,16 +142,18 @@ export default async function ProductPage({
               </Link>
             </p>
           )}
-          <p className="text-sm text-aurora-muted flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-500" />
+          <p className="text-xs text-aurora-muted flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-aurora-primary" />
             Free delivery on orders over £50
           </p>
           {stockQuantity != null && (
-            <p className="text-sm text-aurora-muted">
-              In stock ({stockQuantity} available)
+            <p className="text-sm font-semibold text-aurora-text">
+              {Number(stockQuantity) > 0
+                ? `In stock — ${stockQuantity} available`
+                : "Out of stock online — try your local branch"}
             </p>
           )}
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-2 pt-1">
             {((sellByWeight && pricePerUnitCents != null) || priceCents != null) && catalogTableSlug && (
               <AddToCartButton
                 recordId={id}
@@ -159,24 +163,24 @@ export default async function ProductPage({
                 sellByWeight={sellByWeight}
                 unit={unit}
                 imageUrl={imageUrl}
-                className="px-8 py-4 rounded-component bg-aurora-accent text-aurora-bg font-bold hover:opacity-90 flex items-center gap-2"
+                className="px-6 py-3 rounded-md bg-aurora-primary text-white font-semibold hover:bg-aurora-primary-dark flex items-center gap-2"
               />
             )}
             <button
               type="button"
-              className="px-6 py-4 rounded-component border border-aurora-border text-aurora-text hover:bg-aurora-surface-hover hover:border-aurora-primary/40 transition-colors"
+              className="px-5 py-3 rounded-md border border-aurora-border text-aurora-text text-sm font-medium hover:bg-aurora-surface-hover transition-colors"
             >
-              Add to Favorites
+              Save for later
             </button>
           </div>
         </div>
       </div>
 
-      <div className="mt-12">
-        <ProductDetailTabs record={record} />
+      <div className="mt-8">
+        <ProductDetailTabs record={record} tabSet="retail" />
       </div>
 
-      <div className="mt-10 space-y-10">
+      <div className="mt-8 space-y-8">
         <StoreContentRails contentPage="product_detail" contentRegion="pdp_below_tabs" />
         <StoreContentRails contentPage="product_detail" contentRegion="pdp_below_context" />
       </div>

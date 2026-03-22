@@ -18,3 +18,13 @@ pnpm dev
 ```
 
 Open [http://localhost:3001](http://localhost:3001).
+
+### Vertical theme (CSS tokens)
+
+Defined in `app/globals.css` (`:root` / `[data-theme="dark"]`). Precedence: **`NEXT_PUBLIC_ACCENT_COLOR`** → Studio **`branding.accent_color`** → template default (`app/layout.tsx` + starter-core `getResolvedStorefrontAccentForLayout`).
+
+| Token | Light | Dark |
+|-------|-------|------|
+| `--aurora-primary` | `#1e3a8a` | `#3b82f6` |
+| `--aurora-accent` | `#ea580c` | `#fb923c` |
+| `--aurora-bg` | `#f4f4f5` | `#0c0f14` |

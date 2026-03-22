@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export default async function RecipePage({ params }: Props) {
+export default async function ComboDetailPage({ params }: Props) {
   const { slug } = await params;
   const safeSlug = slug?.trim();
   if (!safeSlug) notFound();

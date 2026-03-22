@@ -1,6 +1,5 @@
 import { getHomePersonalization, holmesRecentRecipes, holmesRecipeProducts } from "@aurora-studio/starter-core";
 import { getStoreConfig } from "@aurora-studio/starter-core";
-import { getTimeOfDay } from "@aurora-studio/starter-core";
 import { getDietaryFromCookie } from "@/lib/dietary-server";
 import { AdaptiveFeed } from "./AdaptiveFeed";
 import {
@@ -23,7 +22,7 @@ export async function HomeSections() {
       contentRegion: HOME_REGION,
     }),
     getStoreConfig(),
-    holmesRecentRecipes(8, getTimeOfDay(), dietaryOpts),
+    holmesRecentRecipes(8, undefined, dietaryOpts),
   ]);
 
   const currency =

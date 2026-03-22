@@ -127,8 +127,8 @@ export function ActiveMissionBar() {
                       ? ["recipe_mission", "combo_mission", "cook_dinner", "cook_dinner_tonight"].includes(
                           activeMission!.key
                         )
-                        ? "/for-you/recipes"
-                        : "/for-you#recipe-picker"
+                        ? "/for-you/combos"
+                        : "/for-you#combo-picker"
                       : "/for-you"
                   }
                   className="inline-flex items-center gap-1 text-xs text-aurora-primary hover:underline mt-1.5 font-medium"
@@ -137,7 +137,7 @@ export function ActiveMissionBar() {
                     ? ["recipe_mission", "combo_mission", "cook_dinner", "cook_dinner_tonight"].includes(
                         activeMission!.key
                       )
-                      ? "View recipes →"
+                      ? "View kits →"
                       : "View bundles →"
                     : "View ideas →"}
                 </a>

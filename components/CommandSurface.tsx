@@ -55,6 +55,7 @@ const ICON_MAP: Record<string, typeof Wrench> = {
   "Healthy options": Sparkles,
   "Breakfast ideas": Sparkles,
   "Recipe ideas": Sparkles,
+  "Kits & bundles": Sparkles,
   "Dinner now": Sparkles,
   "Dinner in 20 mins": Sparkles,
   "Repeat last shop": RotateCcw,
@@ -69,25 +70,25 @@ type LocalQuickAction = {
 
 function getDefaultQuickActions(timeOfDay: string): LocalQuickAction[] {
   const afternoon: LocalQuickAction[] = [
-    { label: "Tools & hardware", href: "/catalogue?q=tools", icon: Wrench },
-    { label: "Paint & decor", href: "/catalogue?q=paint", icon: PaintBucket },
+    { label: "Fix something", href: "/catalogue?q=tools", icon: Wrench },
+    { label: "Paint a room", href: "/catalogue?q=paint", icon: PaintBucket },
+    { label: "Build something", href: "/catalogue?q=timber", icon: Hammer },
     { label: "Garden & outdoor", href: "/catalogue?q=garden", icon: Trees },
-    { label: "Deals under £50", href: "/catalogue", icon: PiggyBank },
   ];
   if (timeOfDay === "morning") {
     return [
-      { label: "Today's project", href: "/catalogue?q=tools", icon: Hammer },
-      { label: "Paint this weekend", href: "/catalogue?q=paint", icon: PaintBucket },
+      { label: "Stock up", href: "/catalogue?q=screws", icon: Wrench },
+      { label: "Paint a room", href: "/catalogue?q=paint", icon: PaintBucket },
       { label: "Outdoor jobs", href: "/catalogue?q=garden", icon: Trees },
-      { label: "Budget picks", href: "/catalogue", icon: PiggyBank },
+      { label: "Deals", href: "/catalogue", icon: PiggyBank },
     ];
   }
   if (timeOfDay === "evening") {
     return [
       { label: "Finish the job", href: "/catalogue?q=tools", icon: Wrench },
-      { label: "Lighting & finish", href: "/catalogue?q=decor", icon: Sun },
+      { label: "Lighting & electrics", href: "/catalogue?q=lighting", icon: Sun },
       { label: "Garden & outdoor", href: "/catalogue?q=garden", icon: Trees },
-      { label: "Deals under £50", href: "/catalogue", icon: PiggyBank },
+      { label: "Deals", href: "/catalogue", icon: PiggyBank },
     ];
   }
   return afternoon;
@@ -192,19 +193,22 @@ export function CommandSurface({
           />
         </div>
       )}
-      <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-aurora-text mb-3">
-        {isRecipeMission ? "Or something else?" : `How can we assist you this ${timeOfDay}?`}
+      <h1 className="font-sans text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-aurora-text mb-2 leading-tight">
+        {isRecipeMission ? "Something else?" : "What do you need?"}
       </h1>
-      <p className="text-aurora-muted text-base sm:text-lg mb-6 font-medium">
-        {isRecipeMission ? "Let's get you there fast" : verticalMissionSubtitle(verticalProfile)}
+      <p className="text-aurora-muted text-sm sm:text-base mb-5 font-medium leading-snug">
+        {isRecipeMission ? "Pick another category or search" : verticalMissionSubtitle(verticalProfile)}
       </p>
 
-      <div className="relative z-20 mb-6">
-        <p className="text-xs font-semibold text-aurora-muted uppercase tracking-widest mb-3">Start here</p>
-        <div className="flex flex-wrap gap-3">
+      <div className="relative z-20 mb-5">
+        <p className="text-xs font-semibold text-aurora-muted uppercase tracking-wide mb-2">Quick tasks</p>
+        <div className="flex flex-wrap gap-2">
           {quickActions.map((action) => {
             const Icon = action.icon;
-            const href = action.label === "Recipe ideas" ? "/recipes" : action.href;
+            const href =
+              action.label === "Recipe ideas" || action.label === "Kits & bundles"
+                ? "/combos"
+                : action.href;
             return (
               <Link
                 key={action.label}
@@ -212,7 +216,7 @@ export function CommandSurface({
                 onClick={() => {
                   if (shouldLockRecipeMissionForMissionPill(action.label, href)) holmesMissionLockCombo();
                 }}
-                className="inline-flex min-h-[2.75rem] items-center gap-2.5 px-5 py-3 rounded-2xl bg-aurora-surface border border-aurora-border shadow-sm hover:border-aurora-primary/40 hover:shadow-md transition-all text-sm font-semibold text-aurora-text"
+                className="inline-flex min-h-[2.5rem] items-center gap-2 px-4 py-2.5 rounded-md bg-aurora-surface border border-aurora-border hover:border-aurora-primary transition-colors text-sm font-semibold text-aurora-text"
               >
                 <Icon className="h-4 w-4 shrink-0 text-aurora-primary" />
                 {action.label}
