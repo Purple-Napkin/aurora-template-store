@@ -29,6 +29,7 @@ export default async function RootLayout({
   return (
     <html lang="en" data-theme={theme}>
       <body
+        data-vertical="template-store"
         className="min-h-screen bg-aurora-bg pb-28 sm:pb-32"
         style={
           {

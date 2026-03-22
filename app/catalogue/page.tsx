@@ -28,6 +28,12 @@ import { CatalogueEmptyState } from "@aurora-studio/starter-core";
 import { RecipePageView } from "@/components/RecipePageView";
 import { CatalogueStoreContentRail } from "@/components/CatalogueStoreContentRail";
 import { ExampleDataCatalogueCTA } from "@/components/ExampleDataCatalogueCTA";
+import {
+  dedupeSearchHitsByRecordId,
+  resolveCataloguePriceCents,
+  getStockStatus,
+} from "@/lib/catalogue-utils";
+import { storeAtcButtonClassName, storeViewDetailsClassName } from "@/lib/store-product-card-styles";
 
 const DEFAULT_CATEGORIES: CategoryItem[] = [
   { name: "Tools", slug: "template-store-tools" },
@@ -38,12 +44,6 @@ const DEFAULT_CATEGORIES: CategoryItem[] = [
 function getImageUrl(record: Record<string, unknown>): string | null {
   const url = (record as SearchHit).image_url ?? record.image_url ?? record.image ?? record.thumbnail ?? record.photo;
   return url ? String(url) : null;
-}
-
-/** Aurora/Meilisearch return price as decimal (e.g. 2.00 = £2). Use toCents for display/cart. */
-function getPrice(record: Record<string, unknown>): number | undefined {
-  const p = (record as SearchHit).price ?? record.price ?? record.amount ?? record.value;
-  return p != null ? Number(p) : undefined;
 }
 
 function getDisplayName(record: Record<string, unknown>): string {
@@ -144,7 +144,7 @@ function CatalogueContent() {
         order,
         excludeDietary: excludeDietary.length ? excludeDietary : undefined,
       });
-      setHits(res.hits ?? []);
+      setHits(dedupeSearchHitsByRecordId(res.hits ?? []));
       setTotal(res.total ?? 0);
     } catch {
       setHits([]);
@@ -205,7 +205,7 @@ function CatalogueContent() {
       excludeDietary: excludeDietary.length ? excludeDietary : undefined,
     })
       .then((res) => {
-        if (!cancelled) setMissionFocusHits(res.hits ?? []);
+        if (!cancelled) setMissionFocusHits(dedupeSearchHitsByRecordId(res.hits ?? []));
       })
       .catch(() => {
         if (!cancelled) setMissionFocusHits([]);
@@ -313,8 +313,9 @@ function CatalogueContent() {
     for (const hit of hits) {
       const id = (hit.recordId ?? hit.id) as string;
       const name = getDisplayName(hit);
-      const rawPrice = getPrice(hit);
-      const priceCents = rawPrice != null ? Math.round(rawPrice * 100) : 0;
+      const sellByWeight = Boolean(hit.sell_by_weight);
+      const pricePerUnit = hit.price_per_unit as number | undefined;
+      const priceCents = resolveCataloguePriceCents(hit, sellByWeight, pricePerUnit) ?? 0;
       if (priceCents > 0) {
         addItem({
           recordId: id,
@@ -404,62 +405,79 @@ function CatalogueContent() {
               <h2 className="text-sm font-semibold text-aurora-muted uppercase tracking-widest mb-4">
                 For your mission: {activeMission.label}
               </h2>
-              <div className="grid gap-4 sm:gap-5 grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 xl:grid-cols-5">
                 {missionFocusHits.map((record) => {
                   const id = (record.recordId ?? record.id) as string;
                   const name = getDisplayName(record);
-                  const rawPrice = getPrice(record);
                   const sellByWeight = Boolean(record.sell_by_weight);
                   const unit = (record.unit as string) || "kg";
                   const pricePerUnit = record.price_per_unit as number | undefined;
-                  const priceCents =
-                    sellByWeight && pricePerUnit != null
-                      ? Math.round(pricePerUnit * 100)
-                      : rawPrice != null
-                        ? Math.round(rawPrice * 100)
-                        : undefined;
+                  const priceCents = resolveCataloguePriceCents(record, sellByWeight, pricePerUnit);
                   const imageUrl = getImageUrl(record);
                   const onSale = isRecordOnSale(record as Record<string, unknown>);
+                  const stock = getStockStatus(record);
+                  const canAdd = priceCents != null && catalogSlug;
                   return (
-                    <div
-                      key={id}
-                      className="group p-4 rounded-xl bg-aurora-surface border border-aurora-border hover:border-aurora-primary/40 transition-all overflow-hidden min-w-[160px] min-h-[260px] flex flex-col"
-                    >
-                      <Link href={`/catalogue/${id}`} className="block">
+                    <div key={id} className="store-product-card group min-w-0">
+                      <Link
+                        href={`/catalogue/${id}`}
+                        className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-aurora-primary/25"
+                      >
                         {onSale ? <span className="sr-only">On sale. </span> : null}
-                        <div className="relative aspect-square rounded-lg bg-aurora-surface-hover mb-3 overflow-hidden">
+                        <div className="store-product-card__media">
                           <ProductImage
                             src={imageUrl}
-                            className="w-full h-full"
+                            className="absolute inset-0 h-full w-full"
+                            objectFit="cover"
                             thumbnail
                             fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">-</div>}
                           />
                           {onSale ? <ProductSaleBadge /> : null}
                         </div>
-                        <p className="font-semibold text-sm truncate group-hover:text-aurora-primary transition-colors">
-                          {name}
-                        </p>
-                        {priceCents != null && (
-                          <p className="text-sm mt-1 font-bold text-aurora-primary">
-                            {sellByWeight && pricePerUnit != null
-                              ? formatPrice(Math.round(pricePerUnit * 100), currency) + `/${unit}`
-                              : formatPrice(priceCents, currency)}
+                        <div className="store-product-card__body">
+                          <p className="store-product-card__title transition-colors group-hover:text-aurora-primary">
+                            {name}
                           </p>
-                        )}
+                          <div className="store-product-card__price-row">
+                            {priceCents != null ? (
+                              <p className="text-sm font-bold tabular-nums text-aurora-primary">
+                                {sellByWeight && pricePerUnit != null
+                                  ? formatPrice(Math.round(pricePerUnit * 100), currency) + `/${unit}`
+                                  : formatPrice(priceCents, currency)}
+                              </p>
+                            ) : (
+                              <span className="text-sm text-aurora-muted">Price on request</span>
+                            )}
+                          </div>
+                          {stock ? (
+                            <p className="mt-2 flex items-center gap-1.5 text-xs text-aurora-muted">
+                              <span
+                                className={`h-1.5 w-1.5 shrink-0 rounded-full ${stock.inStock ? "bg-emerald-500" : "bg-red-500"}`}
+                                aria-hidden
+                              />
+                              {stock.label}
+                            </p>
+                          ) : null}
+                        </div>
                       </Link>
-                      {priceCents != null && catalogSlug && (
-                        <div className="mt-auto pt-3">
+                      <div className="store-product-card__actions">
+                        {canAdd ? (
                           <AddToCartButton
                             recordId={id}
-                            tableSlug={catalogSlug}
+                            tableSlug={catalogSlug!}
                             name={name}
-                            unitAmount={priceCents}
+                            unitAmount={priceCents!}
                             sellByWeight={sellByWeight}
                             unit={unit}
                             imageUrl={imageUrl}
+                            className={storeAtcButtonClassName}
                           />
-                        </div>
-                      )}
+                        ) : (
+                          <Link href={`/catalogue/${id}`} className={storeViewDetailsClassName}>
+                            View details
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
@@ -487,7 +505,7 @@ function CatalogueContent() {
           {/* Loading/empty/grid - ensure full width so layout doesn't collapse */}
           <div className="min-h-[400px] w-full flex-1 min-w-0 flex">
           {loading && hits.length === 0 && store ? (
-            <div className="grid gap-4 sm:gap-5 w-full transition-opacity duration-200 flex-1 min-w-0 grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
+            <div className="grid w-full flex-1 min-w-0 grid-cols-2 gap-3 transition-opacity duration-200 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 xl:grid-cols-5">
               {Array.from({ length: 8 }).map((_, i) => (
                 <ProductCardSkeleton key={i} />
               ))}
@@ -513,77 +531,96 @@ function CatalogueContent() {
             <div className="w-full flex-1 min-w-0">
             <>
               <div
-                className={`grid gap-4 sm:gap-5 w-full transition-opacity duration-200 grid-cols-[repeat(auto-fill,minmax(160px,1fr))] ${
+                className={`grid w-full grid-cols-2 gap-3 transition-opacity duration-200 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 xl:grid-cols-5 ${
                   loading ? "opacity-60" : ""
                 }`}
               >
                 {hits.map((record) => {
                   const id = (record.recordId ?? record.id) as string;
                   const name = getDisplayName(record);
-                  const rawPrice = getPrice(record);
                   const sellByWeight = Boolean(record.sell_by_weight);
                   const unit = (record.unit as string) || "kg";
                   const pricePerUnit = record.price_per_unit as number | undefined;
-                  const priceCents =
-                    sellByWeight && pricePerUnit != null
-                      ? Math.round(pricePerUnit * 100)
-                      : rawPrice != null
-                        ? Math.round(rawPrice * 100)
-                        : undefined;
+                  const priceCents = resolveCataloguePriceCents(record, sellByWeight, pricePerUnit);
                   const imageUrl = getImageUrl(record);
                   const brand = getBrand(record);
                   const rating = getRating(record);
                   const onSale = isRecordOnSale(record as Record<string, unknown>);
+                  const stock = getStockStatus(record);
+                  const canAdd = priceCents != null && catalogSlug;
 
                   return (
-                    <div
-                      key={id}
-                      className="group p-4 rounded-xl bg-aurora-surface border border-aurora-border hover:border-aurora-primary/40 hover:shadow-[0_10px_25px_rgba(0,0,0,0.08)] hover:-translate-y-0.5 transition-all duration-200 overflow-hidden min-w-[160px] min-h-[280px] flex flex-col"
-                    >
-                      <Link href={`/catalogue/${id}`} className="block">
+                    <div key={id} className="store-product-card group min-w-0">
+                      <Link
+                        href={`/catalogue/${id}`}
+                        className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-aurora-primary/25"
+                      >
                         {onSale ? <span className="sr-only">On sale. </span> : null}
-                        <div className="relative aspect-square rounded-lg bg-aurora-surface-hover mb-3 overflow-hidden">
+                        <div className="store-product-card__media">
                           <ProductImage
                             src={imageUrl}
-                            className="w-full h-full"
+                            className="absolute inset-0 h-full w-full"
+                            objectFit="cover"
                             thumbnail
                             fallback={<div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">-</div>}
                           />
                           {onSale ? <ProductSaleBadge /> : null}
                         </div>
-                        {brand && (
-                          <p className="text-xs text-aurora-muted truncate mb-0.5">{brand}</p>
-                        )}
-                        <p className="font-semibold text-sm sm:text-base truncate group-hover:text-aurora-primary transition-colors">
-                          {name}
-                        </p>
-                        {(priceCents != null || (sellByWeight && pricePerUnit != null)) && (
-                          <p className="text-sm mt-1 font-bold text-aurora-primary">
-                            {sellByWeight && pricePerUnit != null
-                              ? formatPrice(Math.round(pricePerUnit * 100), currency) + `/${unit}`
-                              : formatPrice(priceCents!, currency)}
+                        <div className="store-product-card__body">
+                          {brand ? (
+                            <p className="mb-1 line-clamp-1 text-xs font-medium uppercase tracking-wide text-aurora-muted">
+                              {brand}
+                            </p>
+                          ) : null}
+                          <p className="store-product-card__title transition-colors group-hover:text-aurora-primary">
+                            {name}
                           </p>
-                        )}
-                        {rating != null && rating > 0 && (
-                          <p className="text-xs text-aurora-muted mt-1 flex items-center gap-1">
-                            <span className="text-amber-500">★</span>
-                            {rating.toFixed(1)}
-                          </p>
-                        )}
+                          <div className="store-product-card__price-row">
+                            {priceCents != null || (sellByWeight && pricePerUnit != null) ? (
+                              <p className="text-sm font-bold tabular-nums text-aurora-primary">
+                                {sellByWeight && pricePerUnit != null
+                                  ? formatPrice(Math.round(pricePerUnit * 100), currency) + `/${unit}`
+                                  : formatPrice(priceCents!, currency)}
+                              </p>
+                            ) : (
+                              <span className="text-sm text-aurora-muted">Price on request</span>
+                            )}
+                          </div>
+                          {stock ? (
+                            <p className="mt-2 flex items-center gap-1.5 text-xs text-aurora-muted">
+                              <span
+                                className={`h-1.5 w-1.5 shrink-0 rounded-full ${stock.inStock ? "bg-emerald-500" : "bg-red-500"}`}
+                                aria-hidden
+                              />
+                              {stock.label}
+                            </p>
+                          ) : null}
+                          {rating != null && rating > 0 ? (
+                            <p className="mt-1.5 flex items-center gap-1 text-xs text-aurora-muted">
+                              <span className="text-amber-500">★</span>
+                              {rating.toFixed(1)}
+                            </p>
+                          ) : null}
+                        </div>
                       </Link>
-                      {priceCents != null && catalogSlug && (
-                        <div className="mt-auto pt-3">
+                      <div className="store-product-card__actions">
+                        {canAdd ? (
                           <AddToCartButton
                             recordId={id}
                             tableSlug={catalogSlug}
                             name={name}
-                            unitAmount={priceCents}
+                            unitAmount={priceCents!}
                             sellByWeight={sellByWeight}
                             unit={unit}
                             imageUrl={imageUrl}
+                            className={storeAtcButtonClassName}
                           />
-                        </div>
-                      )}
+                        ) : (
+                          <Link href={`/catalogue/${id}`} className={storeViewDetailsClassName}>
+                            View details
+                          </Link>
+                        )}
+                      </div>
                     </div>
                   );
                 })}

@@ -14,6 +14,17 @@ import { useDietaryExclusions } from "@/components/DietaryExclusionsContext";
 import { getStoreConfig } from "@aurora-studio/starter-core";
 import type { SearchHit } from "@aurora-studio/starter-core";
 import { getTimeOfDay } from "@aurora-studio/starter-core";
+import { RecipeInstructions } from "@/components/RecipeInstructions";
+import {
+  dedupeSearchHitsByRecordId,
+  getPriceMajor,
+  getStockStatus,
+} from "@/lib/catalogue-utils";
+import { storeAtcButtonClassName, storeViewDetailsClassName } from "@/lib/store-product-card-styles";
+
+function hitPriceCents(hit: SearchHit): number | undefined {
+  return toCents(getPriceMajor(hit as Record<string, unknown>));
+}
 
 interface RecipePageViewProps {
   recipeSlug: string;
@@ -65,7 +76,7 @@ export function RecipePageView({
             origin_tidbit: rec.origin_tidbit,
           });
         }
-        setProducts((prodRes.products ?? []) as SearchHit[]);
+        setProducts(dedupeSearchHitsByRecordId((prodRes.products ?? []) as SearchHit[]));
         const slug = (config as { catalogTableSlug?: string })?.catalogTableSlug ?? null;
         setCatalogSlug(slug);
       })
@@ -83,8 +94,7 @@ export function RecipePageView({
     for (const hit of products) {
       const id = (hit.recordId ?? hit.id) as string;
       const name = hit.name ?? hit.title ?? String(id);
-      const rawPrice = hit.price;
-      const priceCents = rawPrice != null ? toCents(rawPrice) : 0;
+      const priceCents = hitPriceCents(hit);
       if (priceCents != null && priceCents > 0) {
         addItem({
           recordId: id,
@@ -97,10 +107,7 @@ export function RecipePageView({
     }
   };
 
-  const totalCents = products.reduce(
-    (s, p) => s + (toCents(p.price) ?? 0),
-    0
-  );
+  const totalCents = products.reduce((s, p) => s + (hitPriceCents(p) ?? 0), 0);
 
   if (loading) {
     return (
@@ -176,59 +183,80 @@ export function RecipePageView({
       {recipe?.instructions && (
         <section>
           <h2 className="font-display text-lg font-semibold mb-3">How to use</h2>
-          <div className="text-aurora-text whitespace-pre-wrap">{recipe.instructions}</div>
+          <RecipeInstructions text={recipe.instructions} />
         </section>
       )}
 
       {products.length > 0 && (
         <section>
           <h2 className="font-display text-lg font-semibold mb-4">Products in this kit</h2>
-          <div
-            className={`grid gap-4 sm:gap-5 w-full grid-cols-[repeat(auto-fill,minmax(160px,1fr))]`}
-          >
+          <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 xl:grid-cols-5">
             {products.map((hit) => {
               const id = (hit.recordId ?? hit.id) as string;
               const name = hit.name ?? hit.title ?? String(id);
-              const priceCents = toCents(hit.price);
+              const priceCents = hitPriceCents(hit);
               const imageUrl = hit.image_url ?? null;
+              const stock = getStockStatus(hit as Record<string, unknown>);
+              const canAdd = priceCents != null && priceCents > 0 && catalogSlug;
               return (
-                <div
-                  key={id}
-                  className="p-4 rounded-xl bg-aurora-surface border border-aurora-border hover:border-aurora-primary/40 hover:shadow-[0_10px_25px_rgba(0,0,0,0.08)] transition-all overflow-hidden min-w-[160px] min-h-[280px] flex flex-col"
-                >
-                  <Link href={`/catalogue/${id}`} className="block">
-                    <div className="aspect-square rounded-lg bg-aurora-surface-hover mb-3 overflow-hidden">
+                <div key={id} className="store-product-card group min-w-0">
+                  <Link
+                    href={`/catalogue/${id}`}
+                    className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-t-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-aurora-primary/25"
+                  >
+                    <div className="store-product-card__media">
                       <ProductImage
                         src={imageUrl}
-                        className="w-full h-full"
+                        className="absolute inset-0 h-full w-full"
+                        objectFit="cover"
                         thumbnail
                         fallback={
-                          <div className="w-full h-full flex items-center justify-center text-aurora-muted text-4xl">
+                          <div className="flex h-full w-full items-center justify-center text-aurora-muted text-4xl">
                             -
                           </div>
                         }
                       />
                     </div>
-                    <p className="font-semibold text-sm sm:text-base truncate group-hover:text-aurora-primary transition-colors">
-                      {name}
-                    </p>
-                    {priceCents != null && (
-                      <p className="text-sm mt-1 font-bold text-aurora-primary">
-                        {formatPrice(priceCents, currency)}
+                    <div className="store-product-card__body">
+                      <p className="store-product-card__title transition-colors group-hover:text-aurora-primary">
+                        {name}
                       </p>
-                    )}
+                      <div className="store-product-card__price-row">
+                        {priceCents != null && priceCents > 0 ? (
+                          <p className="text-sm font-bold tabular-nums text-aurora-primary">
+                            {formatPrice(priceCents, currency)}
+                          </p>
+                        ) : (
+                          <span className="text-sm text-aurora-muted">Price on request</span>
+                        )}
+                      </div>
+                      {stock ? (
+                        <p className="mt-2 flex items-center gap-1.5 text-xs text-aurora-muted">
+                          <span
+                            className={`h-1.5 w-1.5 shrink-0 rounded-full ${stock.inStock ? "bg-emerald-500" : "bg-red-500"}`}
+                            aria-hidden
+                          />
+                          {stock.label}
+                        </p>
+                      ) : null}
+                    </div>
                   </Link>
-                  {priceCents != null && catalogSlug && (
-                    <div className="mt-auto pt-3">
+                  <div className="store-product-card__actions">
+                    {canAdd ? (
                       <AddToCartButton
                         recordId={id}
-                        tableSlug={catalogSlug}
+                        tableSlug={catalogSlug!}
                         name={name}
-                        unitAmount={priceCents}
+                        unitAmount={priceCents!}
                         imageUrl={imageUrl}
+                        className={storeAtcButtonClassName}
                       />
-                    </div>
-                  )}
+                    ) : (
+                      <Link href={`/catalogue/${id}`} className={storeViewDetailsClassName}>
+                        View details
+                      </Link>
+                    )}
+                  </div>
                 </div>
               );
             })}

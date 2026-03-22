@@ -11,6 +11,12 @@ import { AddToCartButton } from "@aurora-studio/starter-core";
 import { ProductImage } from "@aurora-studio/starter-core";
 import { formatPrice, toCents } from "@aurora-studio/starter-core";
 import type { SearchHit } from "@aurora-studio/starter-core";
+import { RecipeInstructions } from "@/components/RecipeInstructions";
+import { dedupeSearchHitsByRecordId, getPriceMajor } from "@/lib/catalogue-utils";
+
+function hitPriceCents(hit: SearchHit): number | undefined {
+  return toCents(getPriceMajor(hit as Record<string, unknown>));
+}
 
 type Combo = { slug: string; title: string; productImageUrls?: string[] };
 
@@ -144,7 +150,7 @@ export function RecipeFolioCarousel() {
                 description: rec.description,
                 ingredients: rec.ingredients ?? [],
                 instructions: rec.instructions,
-                products: (prodRes.products ?? []) as SearchHit[],
+                products: dedupeSearchHitsByRecordId((prodRes.products ?? []) as SearchHit[]),
                 catalogSlug: slug,
               }
             : null
@@ -191,7 +197,7 @@ export function RecipeFolioCarousel() {
     for (const hit of recipe.products) {
       const id = (hit.recordId ?? hit.id) as string;
       const name = hit.name ?? hit.title ?? String(id);
-      const priceCents = toCents(hit.price);
+      const priceCents = hitPriceCents(hit);
       if (priceCents != null && priceCents > 0) {
         addItem({
           recordId: id,
@@ -204,11 +210,14 @@ export function RecipeFolioCarousel() {
     }
   };
 
-  const totalCents = recipe?.products.reduce((s, p) => s + (toCents(p.price) ?? 0), 0) ?? 0;
+  const totalCents = recipe?.products.reduce((s, p) => s + (hitPriceCents(p) ?? 0), 0) ?? 0;
 
   const recipeProductIds = new Set(
     recipe?.products
-      .filter((p) => toCents(p.price) != null && toCents(p.price)! > 0)
+      .filter((p) => {
+        const c = hitPriceCents(p);
+        return c != null && c > 0;
+      })
       .map((p) => `${recipe!.catalogSlug}:${(p.recordId ?? p.id) as string}`) ?? []
   );
   const inCartProductIds = new Set(items.filter((i) => recipeProductIds.has(i.id)).map((i) => i.id));
@@ -315,9 +324,7 @@ export function RecipeFolioCarousel() {
                   <h2 className="text-2xl font-semibold text-aurora-text mb-2">
                     How to use
                   </h2>
-                  <div className="text-xl text-aurora-text whitespace-pre-wrap">
-                    {recipe.instructions}
-                  </div>
+                  <RecipeInstructions text={recipe.instructions} className="text-xl" />
                 </section>
               )}
               {recipe.products.length > 0 && recipe.catalogSlug && (
@@ -329,7 +336,7 @@ export function RecipeFolioCarousel() {
                     {recipe.products.slice(0, 6).map((hit) => {
                       const id = (hit.recordId ?? hit.id) as string;
                       const name = hit.name ?? hit.title ?? String(id);
-                      const priceCents = toCents(hit.price);
+                      const priceCents = hitPriceCents(hit);
                       return (
                         <div
                           key={id}
