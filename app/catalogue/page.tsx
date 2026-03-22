@@ -26,6 +26,8 @@ import { SortDropdown } from "@aurora-studio/starter-core";
 import { ProductCardSkeleton } from "@aurora-studio/starter-core";
 import { CatalogueEmptyState } from "@aurora-studio/starter-core";
 import { RecipePageView } from "@/components/RecipePageView";
+import { CatalogueStoreContentRail } from "@/components/CatalogueStoreContentRail";
+import { ExampleDataCatalogueCTA } from "@/components/ExampleDataCatalogueCTA";
 
 const DEFAULT_CATEGORIES: CategoryItem[] = [
   { name: "Bakery Items", slug: "bakery-items" },
@@ -331,6 +333,7 @@ function CatalogueContent() {
 
   return (
     <div className="max-w-7xl mx-auto py-6 sm:py-10 px-4 sm:px-6">
+      <CatalogueStoreContentRail region="catalogue_above_grid" className="mb-6" />
       <div className="flex flex-col md:flex-row gap-6">
         {/* Sidebar filters (desktop) */}
         <CatalogueFilters
@@ -363,6 +366,8 @@ function CatalogueContent() {
 
         {/* Main content - min-w-0 lets it shrink; flex-1 lets it grow to fill space */}
         <main className="flex-1 min-w-0 w-full sm:min-w-[280px] flex flex-col">
+          <CatalogueStoreContentRail region="catalogue_below_filters" className="mb-6" />
+
           <div
             className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${recipeTitle ? "mb-4" : "mb-3"}`}
           >
@@ -497,12 +502,13 @@ function CatalogueContent() {
               />
             </div>
           ) : hits.length === 0 ? (
-            <div className="w-full flex-1 flex items-start justify-center">
-            <CatalogueEmptyState
-              hasCategory={!!category}
-              hasStore={!!store}
-              categories={categoriesWithProducts}
-            />
+            <div className="w-full flex-1 flex flex-col items-center">
+              <CatalogueEmptyState
+                hasCategory={!!category}
+                hasStore={!!store}
+                categories={categoriesWithProducts}
+              />
+              <ExampleDataCatalogueCTA />
             </div>
           ) : (
             <div className="w-full flex-1 min-w-0">

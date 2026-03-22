@@ -1,6 +1,6 @@
 /**
  * Next.js instrumentation hook: runs once when the server starts (Node.js only).
- * Calls first-run schema provisioning; see README.md in this folder.
+ * Merges init/schema via POST /v1/provision-schema, then POST /v1/run-schema-migration (DDL + views).
  */
 import { runFirstRunProvision } from "./provision";
 

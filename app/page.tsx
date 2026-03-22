@@ -7,6 +7,7 @@ import { HolmesHomeRefresher } from "@aurora-studio/starter-core";
 import { HomeSections } from "@/components/HomeSections";
 import { SmartCartPanel } from "@aurora-studio/starter-core";
 import { LiveSignalsRow } from "@/components/LiveSignalsRow";
+import { DiyDepartmentTiles } from "@/components/DiyDepartmentTiles";
 import {
   MissionAwareHero,
   MissionAwareSections,
@@ -29,7 +30,7 @@ export default function HomePage() {
           </MissionAwareHero>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-0">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-0 hippo-store-home">
           <HolmesContextualWell />
 
           {/* Holmes injects "Complete your [Recipe]" when recipe mission + cart has items */}
@@ -37,6 +38,8 @@ export default function HomePage() {
 
           {/* Mission-based entry points - Holmes-influenced when inference exists */}
           <MissionEntryPoints />
+
+          <DiyDepartmentTiles />
 
           {/* Shopping list templates - e.g. Travel essentials when travel prep detected */}
           <ShoppingListTemplates />
