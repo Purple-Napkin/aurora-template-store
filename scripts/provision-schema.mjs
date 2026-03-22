@@ -5,12 +5,16 @@
  * POSTs to /v1/provision-schema. Base: marketplace-base.
  *
  * Requires: AURORA_API_URL, AURORA_API_KEY. Run: pnpm schema:provision
+ * Loads monorepo root `.env` and this template’s `.env.local` / `.env` when unset.
  */
 import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { loadRootEnv, loadTemplateDotenv } from "../../scripts/hippo-seed/root-env.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+loadRootEnv(import.meta.url);
+loadTemplateDotenv(join(__dirname, ".."));
 
 const apiUrl = process.env.AURORA_API_URL || process.env.NEXT_PUBLIC_AURORA_API_URL;
 const apiKey = process.env.AURORA_API_KEY;
