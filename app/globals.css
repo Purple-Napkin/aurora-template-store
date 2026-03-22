@@ -943,7 +943,7 @@ button.checkout-btn:active {
   font-size: 0.85rem;
 }
 
-/* Hippo Store — DIY-style: slightly denser mission row above department tiles */
-.hippo-store-home [data-holmes="home-hero"] h1 {
+/* Store template — DIY-style: slightly denser mission row above department tiles */
+.marketplace-store-home [data-holmes="home-hero"] h1 {
   letter-spacing: -0.025em;
 }

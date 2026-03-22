@@ -30,7 +30,7 @@ export default async function HomePage() {
           </MissionAwareHero>
         </div>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-0 hippo-store-home">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-0 marketplace-store-home">
           <HolmesContextualWell />
 
           {/* Holmes injects "Complete your [Recipe]" when recipe mission + cart has items */}

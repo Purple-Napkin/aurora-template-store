@@ -3,29 +3,29 @@ import { Hammer, Flower2, Paintbrush } from "lucide-react";
 
 const DEPTS = [
   {
-    href: "/catalogue?category=hippo-store-tools",
+    href: "/catalogue?category=template-store-tools",
     label: "Tools",
     sub: "Drills, fixings, workshop",
     Icon: Hammer,
   },
   {
-    href: "/catalogue?category=hippo-store-garden",
+    href: "/catalogue?category=template-store-garden",
     label: "Garden",
     sub: "Outdoor, trimmers, compost",
     Icon: Flower2,
   },
   {
-    href: "/catalogue?category=hippo-store-paint-decor",
+    href: "/catalogue?category=template-store-paint-decor",
     label: "Paint & decor",
     sub: "Emulsion, rollers, prep",
     Icon: Paintbrush,
   },
 ] as const;
 
-/** DIY-style department tiles (Hippo Store). */
+/** DIY-style department tiles (store template). */
 export function DiyDepartmentTiles() {
   return (
-    <section className="hippo-diy-dept mb-6" aria-label="Shop by department">
+    <section className="marketplace-diy-dept mb-6" aria-label="Shop by department">
       <p className="text-xs font-semibold text-aurora-muted uppercase tracking-widest mb-3">
         Shop by department
       </p>

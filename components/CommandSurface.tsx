@@ -24,7 +24,7 @@ import {
   fullWidthHeroBandClass,
   splitHeroFallbackTitleClass,
   splitHeroImageClampClass,
-  splitHeroLogoWellSizingClass,
+  splitHeroLogoWellLinkClass,
   splitHeroRowGapClass,
   splitHeroSectionPaddingClass,
   type HeroSize,
@@ -121,16 +121,12 @@ function HeroImageLink({
     );
   }
   return (
-    <Link
-      href={href}
-      className={`logo-well block w-full ${splitHeroLogoWellSizingClass(heroSize)} transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-aurora-primary/50 rounded-2xl border border-aurora-border/60`}
-      aria-label="Home"
-    >
+    <Link href={href} className={splitHeroLogoWellLinkClass(heroSize)} aria-label="Home">
       {heroImageUrl ? (
         <img
           src={heroImageUrl}
           alt=""
-          className={`w-full h-auto object-contain drop-shadow-sm ${splitClampClass}`}
+          className={`w-auto max-w-full h-auto object-contain mx-auto drop-shadow-sm ${splitClampClass}`}
         />
       ) : (
         <span className={splitHeroFallbackTitleClass(heroSize)}>
@@ -189,9 +185,7 @@ export function CommandSurface({
       </p>
 
       <div className="relative z-20 mb-6">
-        <p className="text-xs font-semibold text-aurora-muted uppercase tracking-widest mb-3">
-          Start here
-        </p>
+        <p className="text-xs font-semibold text-aurora-muted uppercase tracking-widest mb-3">Start here</p>
         <div className="flex flex-wrap gap-3">
           {quickActions.map((action) => {
             const Icon = action.icon;
@@ -273,9 +267,9 @@ export function CommandSurface({
       className={`command-surface-hero px-4 sm:px-6 bg-gradient-to-b from-aurora-surface to-aurora-bg ${splitHeroSectionPaddingClass(heroSize)}`}
     >
       <div
-        className={`max-w-6xl mx-auto flex flex-col lg:flex-row items-center ${splitHeroRowGapClass(heroSize)}`}
+        className={`max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center lg:items-start ${splitHeroRowGapClass(heroSize)}`}
       >
-        <div className="flex-1 min-w-0 order-2 lg:order-1 flex justify-center lg:justify-start w-full lg:min-w-[280px]">
+        <div className="min-w-0 order-2 lg:order-1 flex justify-center lg:justify-start items-start w-full lg:min-w-[280px] justify-self-center lg:justify-self-start">
           <HeroImageLink
             href="/"
             heroImageUrl={displayUrl}
@@ -285,7 +279,7 @@ export function CommandSurface({
           />
         </div>
 
-        <div className="flex-1 min-w-0 order-1 lg:order-2 flex justify-center lg:justify-end w-full lg:min-w-[320px]">
+        <div className="min-w-0 order-1 lg:order-2 flex justify-center lg:justify-end w-full lg:min-w-[320px] justify-self-center lg:justify-self-end">
           {formContent}
         </div>
       </div>

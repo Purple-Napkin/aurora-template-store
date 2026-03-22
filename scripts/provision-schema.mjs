@@ -10,7 +10,7 @@
 import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { loadRootEnv, loadTemplateDotenv } from "../../scripts/hippo-seed/root-env.mjs";
+import { loadRootEnv, loadTemplateDotenv } from "../../scripts/template-seed/root-env.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 // App `.env.local` wins over monorepo root so provision targets the correct tenant.

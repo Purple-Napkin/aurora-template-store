@@ -1,5 +1,5 @@
 {
-  "name": "@aurora-studio/hippo-store",
+  "name": "@aurora-studio/template-store",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,11 +9,11 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "schema:provision": "node scripts/provision-schema.mjs",
-    "seed:apply": "node ../scripts/hippo-seed/apply-seed-sql-api.mjs"
+    "seed:apply": "node ../scripts/template-seed/apply-seed-sql-api.mjs"
   },
   "dependencies": {
-    "@aurora-studio/sdk": "^0.2.32",
-    "@aurora-studio/starter-core": "^0.1.14",
+    "@aurora-studio/sdk": "^0.2.33",
+    "@aurora-studio/starter-core": "^0.1.15",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.454.0",
     "next": "15.0.7",

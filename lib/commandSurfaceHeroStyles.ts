@@ -7,9 +7,9 @@ export function splitHeroImageClampClass(size: HeroSize): string {
     case "compact":
       return "max-h-[min(7.5rem,42vw)] sm:max-h-[min(8rem,34vw)] md:max-h-[min(8.5rem,28vw)] lg:max-h-36 xl:max-h-40";
     case "tall":
-      return "max-h-[clamp(9rem,44vw,14rem)] sm:max-h-[clamp(12rem,42vw,18rem)] md:max-h-[clamp(14rem,40vw,22rem)] lg:max-h-[clamp(18rem,58vh,28rem)] xl:max-h-[clamp(20rem,60vh,32rem)]";
+      return "max-h-[min(9rem,44vw)] sm:max-h-[min(11rem,40vw)] md:max-h-[min(13rem,36vw)] lg:max-h-72 xl:max-h-80 2xl:max-h-[22rem]";
     default:
-      return "max-h-[clamp(7rem,40vw,12rem)] sm:max-h-[clamp(9rem,38vw,15rem)] md:max-h-[clamp(11rem,36vw,18rem)] lg:max-h-[clamp(14rem,55vh,24rem)] xl:max-h-[clamp(16rem,58vh,28rem)] 2xl:max-h-[clamp(18rem,60vh,32rem)]";
+      return "max-h-[min(7rem,40vw)] sm:max-h-[min(8.5rem,36vw)] md:max-h-[min(10rem,32vw)] lg:max-h-52 xl:max-h-56 2xl:max-h-60";
   }
 }
 
@@ -28,7 +28,7 @@ export function splitHeroLogoWellSizingClass(size: HeroSize): string {
 export function splitHeroSectionPaddingClass(size: HeroSize): string {
   switch (size) {
     case "compact":
-      return "py-6 sm:py-8 lg:py-10";
+      return "py-5 sm:py-6 lg:py-8";
     case "tall":
       return "py-14 sm:py-16 lg:py-24";
     default:
@@ -50,12 +50,17 @@ export function splitHeroRowGapClass(size: HeroSize): string {
 export function splitHeroFallbackTitleClass(size: HeroSize): string {
   switch (size) {
     case "compact":
-      return "font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-aurora-text";
+      return "font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-aurora-text text-center";
     case "tall":
-      return "font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-aurora-text";
+      return "font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-aurora-text text-center";
     default:
-      return "font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-aurora-text";
+      return "font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-aurora-text text-center";
   }
+}
+
+/** Split layout: logo well — w-fit so card height follows the image, not the form column. */
+export function splitHeroLogoWellLinkClass(size: HeroSize): string {
+  return `logo-well inline-flex flex-col items-center justify-center self-start h-fit w-fit max-w-full ${splitHeroLogoWellSizingClass(size)} transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-aurora-primary/50 rounded-2xl border border-aurora-border/60`;
 }
 
 /** Fixed viewport-relative height for full-width hero band. */
