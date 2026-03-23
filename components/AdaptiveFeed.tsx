@@ -39,7 +39,9 @@ type HomeData = {
 function getTrustSignal(section: Section, timeOfDay: string, storeName?: string): string | null {
   switch (section.type) {
     case "meals":
-      return timeOfDay === "evening" ? "Because it's dinner time" : `For ${timeOfDay}`;
+      return timeOfDay === "evening"
+        ? "Evening rush — popular picks on the trade counter"
+        : `Highlights for ${timeOfDay}`;
     case "for_you":
       return "Based on your browsing";
     case "top_up":

@@ -121,7 +121,6 @@ export function MissionAwareHomeProvider({
       }, 350);
     };
     const holmesEvents = [
-      "holmes:search",
       "holmes:cartUpdate",
       "holmes:refreshHome",
       "holmes:productView",

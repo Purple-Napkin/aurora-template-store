@@ -103,7 +103,8 @@ function IntentPresenceBarInner() {
   );
   const cta = missionCta(activeMission.key, items.length);
   const subHref = summaryLinkHref(activeMission.key);
-  const summaryClassName = "text-xs sm:text-sm text-emerald-200/80 mt-0.5 line-clamp-2 block";
+  const summaryClassName =
+    "text-xs sm:text-sm text-[var(--aurora-mission-bar-muted)] mt-0.5 line-clamp-2 block";
 
   const handleDismiss = () => {
     persistDismissed(true);
@@ -121,20 +122,22 @@ function IntentPresenceBarInner() {
 
   return (
     <div
-      className="w-full border-b border-emerald-900/30 bg-[#14532d] text-emerald-50 shadow-sm"
+      className="w-full border-b border-[var(--aurora-mission-bar-border)] bg-[var(--aurora-mission-bar-bg)] text-white shadow-sm"
       data-holmes="intent-presence-bar"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
         <div className="min-w-0 flex-1">
           <p className="text-sm sm:text-base font-semibold tracking-tight">
-            <span className="text-emerald-200/90">Shop by mission · </span>
+            <span className="text-[var(--aurora-mission-bar-muted)]">Shop by mission · </span>
             {activeMission.label}
-            <span className="font-normal text-emerald-100/85">{bandSuffix(activeMission.band)}</span>
+            <span className="font-normal text-[var(--aurora-mission-bar-faint)]">
+              {bandSuffix(activeMission.band)}
+            </span>
           </p>
           {subHref ? (
             <Link
               href={subHref}
-              className={`${summaryClassName} font-medium text-emerald-100 underline decoration-emerald-200/70 underline-offset-2 hover:text-white hover:decoration-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80 rounded-sm`}
+              className={`${summaryClassName} font-medium text-white/95 underline decoration-white/50 underline-offset-2 hover:text-white hover:decoration-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80 rounded-sm`}
             >
               {summary}
             </Link>
@@ -147,27 +150,27 @@ function IntentPresenceBarInner() {
             <button
               type="button"
               onClick={() => setWhyOpen((o) => !o)}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-emerald-100 hover:bg-white/10 transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-[var(--aurora-mission-bar-muted)] hover:bg-white/10 transition-colors"
             >
               <Info className="w-3.5 h-3.5 shrink-0" aria-hidden />
               Why am I seeing this?
             </button>
             {whyOpen && (
-              <div className="absolute right-0 top-full mt-1 z-50 w-[min(100vw-2rem,20rem)] rounded-xl border border-emerald-800 bg-[#0f3d24] p-3 text-xs text-emerald-100 shadow-xl">
+              <div className="absolute right-0 top-full mt-1 z-50 w-[min(100vw-2rem,20rem)] rounded-xl border border-white/20 bg-[var(--aurora-mission-bar-bg)] p-3 text-xs text-[var(--aurora-mission-bar-muted)] shadow-xl">
                 {summary}
               </div>
             )}
           </div>
           <Link
             href={cta.href}
-            className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-[#14532d] hover:bg-emerald-50 transition-colors"
+            className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-[var(--aurora-primary)] hover:bg-white/90 transition-colors"
           >
             {cta.label}
           </Link>
           <button
             type="button"
             onClick={handleReset}
-            className="p-2 rounded-lg text-emerald-200 hover:bg-white/10 transition-colors"
+            className="p-2 rounded-lg text-[var(--aurora-mission-bar-muted)] hover:bg-white/10 transition-colors"
             aria-label="Not what I’m doing"
             title="Not what I’m doing"
           >
@@ -176,7 +179,7 @@ function IntentPresenceBarInner() {
           <button
             type="button"
             onClick={handleDismiss}
-            className="p-2 rounded-lg text-emerald-200 hover:bg-white/10 transition-colors"
+            className="p-2 rounded-lg text-[var(--aurora-mission-bar-muted)] hover:bg-white/10 transition-colors"
             aria-label="Dismiss"
           >
             <X className="w-4 h-4" />

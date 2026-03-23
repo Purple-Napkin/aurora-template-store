@@ -5,6 +5,7 @@ const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./lib/**/*.{js,ts,jsx,tsx}",
     // Pick up utilities used in @aurora-studio/starter-core (e.g. CatalogueFilters sidebar md:block)
     "./node_modules/@aurora-studio/starter-core/dist/**/*.js",
   ],

@@ -22,8 +22,8 @@ export function isTravelLikeMission(key: string | undefined): boolean {
   return TRAVEL_MISSION_KEYS.has(key);
 }
 
-/** Meal / time-of-day trust lines from the API that contradict a travel mission headline + CTA. */
-function mealTimeTrustMisfitForTravel(summary: string): boolean {
+/** Meal / time-of-day trust lines from the grocery vertical — wrong on hardware/DIY. */
+function isGroceryEraTrustSummary(summary: string): boolean {
   return (
     /because it'?s (dinner|breakfast|lunch) time/i.test(summary) ||
     /^Breakfast ideas for your morning/i.test(summary) ||
@@ -40,8 +40,17 @@ export function alignedMissionTrustLine(
 ): string {
   const s = apiSummary?.trim() ?? "";
 
+  if (s && isGroceryEraTrustSummary(s)) {
+    if (isTravelLikeMission(key)) {
+      return "Planning a trip? We've picked travel essentials.";
+    }
+    return hasCartItems
+      ? "DIY-focused picks weighted against what’s in your basket."
+      : "DIY-focused picks tuned to your search and browsing.";
+  }
+
   if (isTravelLikeMission(key)) {
-    if (!s || mealTimeTrustMisfitForTravel(s)) {
+    if (!s || isGroceryEraTrustSummary(s)) {
       return "Planning a trip? We've picked travel essentials.";
     }
     return s;
