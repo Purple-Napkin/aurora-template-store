@@ -1,5 +1,5 @@
 /**
- * Mission bar dismiss state - shared between ActiveMissionBar and catalogue narrowing.
+ * Mission bar dismiss state - shared between IntentPresenceBar and catalogue narrowing.
  * When dismissed, we skip narrowCatalog UI (show full categories).
  */
 

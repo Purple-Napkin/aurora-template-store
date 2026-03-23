@@ -371,8 +371,6 @@ function CatalogueContent() {
 
         {/* Main content - min-w-0 lets it shrink; flex-1 lets it grow to fill space */}
         <main className="flex-1 min-w-0 w-full sm:min-w-[280px] flex flex-col">
-          <CatalogueStoreContentRail region="catalogue_below_filters" className="mb-6" />
-
           {catalogueMissionSkin ? (
             <div className={catalogueMissionSkin.wrapperClass}>
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] opacity-80 mb-2">
@@ -672,6 +670,8 @@ function CatalogueContent() {
             </div>
           )}
           </div>
+
+          <CatalogueStoreContentRail region="catalogue_below_filters" className="mt-6 mb-0" />
         </main>
       </div>
     </div>

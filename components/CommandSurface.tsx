@@ -40,6 +40,7 @@ import {
 } from "@/lib/commandSurfaceHeroStyles";
 import type { StoreFeaturedProject } from "@/lib/store-featured-project";
 import { getStoreMissionHeroSkin } from "@/lib/store-mission-skin";
+import { shouldFullComboHomeTakeover } from "@/lib/intent-mission";
 
 const POPULAR_LINKS = [
   { label: "Drill kits", href: "/catalogue?q=drill" },
@@ -254,22 +255,29 @@ export function CommandSurface({
 
   const quickActions = rawActions.filter((a) => !a.authOnly || user);
 
-  const isRecipeMission =
-    homeData?.mode === "recipe_mission" && homeData.recipeSlug && homeData.recipeTitle;
+  const isFullComboHero =
+    !!homeData &&
+    shouldFullComboHomeTakeover({
+      mode: homeData.mode,
+      recipeSlug: homeData.recipeSlug,
+      recipeTitle: homeData.recipeTitle,
+      band: homeData.activeMission?.band,
+      missionKey: homeData.activeMission?.key,
+    });
 
-  const heroSkin = getStoreMissionHeroSkin(homeData?.activeMission, Boolean(isRecipeMission));
+  const heroSkin = getStoreMissionHeroSkin(homeData?.activeMission, Boolean(isFullComboHero));
   const heroBackdropClass = heroSkin.sectionClass.trim()
     ? heroSkin.sectionClass
     : "bg-gradient-to-b from-aurora-surface to-aurora-bg";
 
   const missionHeadline =
-    !isRecipeMission && heroSkin.headline ? heroSkin.headline : null;
+    !isFullComboHero && heroSkin.headline ? heroSkin.headline : null;
   const missionSubline =
-    !isRecipeMission && heroSkin.subline ? heroSkin.subline : null;
+    !isFullComboHero && heroSkin.subline ? heroSkin.subline : null;
 
   const formContentInner = (
     <>
-      {isRecipeMission && (
+      {isFullComboHero && (
         <div className="mb-6">
           <RecipeMissionHero
             recipeTitle={homeData.recipeTitle!}
@@ -280,15 +288,15 @@ export function CommandSurface({
       )}
       <h1
         className={`font-sans font-bold tracking-tight text-aurora-text mb-2 leading-tight ${
-          isRecipeMission
+          isFullComboHero
             ? "text-2xl sm:text-3xl md:text-4xl"
             : "store-home-hero-headline text-xl sm:text-2xl md:text-3xl lg:text-[2rem]"
         }`}
       >
-        {isRecipeMission ? "Something else?" : missionHeadline ?? "What are you working on?"}
+        {isFullComboHero ? "Something else?" : missionHeadline ?? "What are you working on?"}
       </h1>
       <p className="text-aurora-muted text-sm sm:text-base mb-5 font-medium leading-snug max-w-xl">
-        {isRecipeMission
+        {isFullComboHero
           ? "Pick another category or search"
           : missionSubline ?? verticalMissionSubtitle(verticalProfile)}
       </p>
@@ -318,7 +326,7 @@ export function CommandSurface({
         </div>
       </div>
 
-      {!isRecipeMission && (
+      {!isFullComboHero && (
         <div className="store-home-popular mb-6">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-aurora-muted mb-2">
             Popular right now
@@ -343,7 +351,7 @@ export function CommandSurface({
         </p>
         {store ? (
           <div
-            className="rounded-xl border border-aurora-border bg-aurora-surface shadow-sm focus-within:border-aurora-primary/60 focus-within:ring-1 focus-within:ring-aurora-primary/25 transition-all max-w-md overflow-hidden"
+            className="rounded-xl border border-aurora-border bg-aurora-surface shadow-sm focus-within:border-aurora-primary/60 focus-within:ring-1 focus-within:ring-aurora-primary/25 transition-all max-w-md overflow-visible relative z-30"
             data-command-search
           >
             <SearchDropdown
@@ -366,7 +374,7 @@ export function CommandSurface({
         )}
       </div>
 
-      {!isRecipeMission && <HomeTrustList storeName={store?.name} />}
+      {!isFullComboHero && <HomeTrustList storeName={store?.name} />}
     </>
   );
 
