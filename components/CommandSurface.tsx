@@ -125,6 +125,7 @@ const ICON_MAP: Record<string, typeof Wrench> = {
   "Breakfast ideas": Sparkles,
   "Recipe ideas": Sparkles,
   "Kits & bundles": Sparkles,
+  "Paint prep": PaintBucket,
   "Dinner now": Sparkles,
   "Dinner in 20 mins": Sparkles,
   "Repeat last shop": RotateCcw,
@@ -284,10 +285,7 @@ export function CommandSurface({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 max-w-2xl">
           {quickActions.map((action) => {
             const Icon = action.icon;
-            const href =
-              action.label === "Recipe ideas" || action.label === "Kits & bundles"
-                ? "/combos"
-                : action.href;
+            const href = action.href;
             return (
               <Link
                 key={action.label}

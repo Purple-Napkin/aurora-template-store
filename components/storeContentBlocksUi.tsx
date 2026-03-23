@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ProductImage } from "@aurora-studio/starter-core";
-import { ChefHat, ShoppingBasket } from "lucide-react";
+import { Package, ShoppingBasket } from "lucide-react";
 import { ContentBlockProductCard } from "./ContentBlockProductCard";
 import { RecipeProductCollage } from "./RecipeProductCollage";
 
@@ -324,7 +324,7 @@ export function RecipeIdeasRail({
         {...(withHolmesMarkers ? { "data-holmes-home-section-title": true } : {})}
         className="text-xl font-bold mb-4 flex items-center gap-2"
       >
-        <ChefHat className="w-6 h-6 text-aurora-primary" />
+        <Package className="w-6 h-6 text-aurora-primary" aria-hidden />
         Kits & bundles
       </h2>
       <div
