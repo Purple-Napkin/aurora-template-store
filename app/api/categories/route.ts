@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAuroraClient } from "@aurora-studio/starter-core";
 import { search } from "@aurora-studio/starter-core";
 
-/** Fallback when store config or API is unavailable; matches `init/seed.sql` (legacy deploys may still use `hippo-store-*` in DB — enable category table in store config so real rows load). */
+/** Fallback when store config or API is unavailable; aligns with template demo category slugs (enable category table in store config so real rows load). */
 const DEFAULT_CATEGORIES: { name: string; slug: string; image_url?: string }[] = [
   { name: "Tools", slug: "template-store-tools" },
   { name: "Garden & outdoor", slug: "template-store-garden" },

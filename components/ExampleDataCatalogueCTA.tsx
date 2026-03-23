@@ -1,11 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-/** Catalogue empty state: load bundled init/seed.sql via server route (API key never exposed). */
+/**
+ * Catalogue empty UI: load bundled init/catalog-seed.json + init/seed-cms.sql via server route.
+ * Only rendered when GET /api/store/catalog-empty reports the tenant has no vendors, categories, or products
+ * (so zero-hit searches do not show this CTA).
+ */
 export function ExampleDataCatalogueCTA() {
+  const [tenantEmpty, setTenantEmpty] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/store/catalog-empty")
+      .then((r) => r.json())
+      .then((d: { empty?: unknown }) => {
+        if (cancelled) return;
+        setTenantEmpty(d.empty === true);
+      })
+      .catch(() => {
+        if (!cancelled) setTenantEmpty(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function onClick() {
     setError(null);
@@ -24,6 +45,8 @@ export function ExampleDataCatalogueCTA() {
       setLoading(false);
     }
   }
+
+  if (tenantEmpty !== true) return null;
 
   return (
     <div className="mt-8 w-full max-w-md rounded-xl border border-aurora-border bg-aurora-surface/80 p-6 text-center shadow-sm">

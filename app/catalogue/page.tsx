@@ -34,6 +34,7 @@ import {
   getStockStatus,
 } from "@/lib/catalogue-utils";
 import { storeAtcButtonClassName, storeViewDetailsClassName } from "@/lib/store-product-card-styles";
+import { getStoreMissionCatalogueSkin } from "@/lib/store-mission-skin";
 
 const DEFAULT_CATEGORIES: CategoryItem[] = [
   { name: "Tools", slug: "template-store-tools" },
@@ -97,6 +98,11 @@ function CatalogueContent() {
   const focusQuery = narrowCatalog && activeMission
     ? (MISSION_FOCUS_QUERY[activeMission.key] ?? "")
     : "";
+
+  const catalogueMissionSkin =
+    activeMission && !missionBarDismissed
+      ? getStoreMissionCatalogueSkin(activeMission, Boolean(narrowCatalog), activeMission.label)
+      : null;
 
   const categoriesWithProducts = categories.filter(
     (cat) => categoryCounts[cat.slug] === undefined || categoryCounts[cat.slug] > 0
@@ -366,6 +372,18 @@ function CatalogueContent() {
         {/* Main content - min-w-0 lets it shrink; flex-1 lets it grow to fill space */}
         <main className="flex-1 min-w-0 w-full sm:min-w-[280px] flex flex-col">
           <CatalogueStoreContentRail region="catalogue_below_filters" className="mb-6" />
+
+          {catalogueMissionSkin ? (
+            <div className={catalogueMissionSkin.wrapperClass}>
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] opacity-80 mb-2">
+                {catalogueMissionSkin.kicker}
+              </p>
+              <h2 className="text-lg sm:text-xl font-bold font-display leading-snug mb-2">
+                {catalogueMissionSkin.title}
+              </h2>
+              <p className="text-sm leading-relaxed opacity-90 max-w-3xl">{catalogueMissionSkin.body}</p>
+            </div>
+          ) : null}
 
           <div
             className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${recipeTitle ? "mb-4" : "mb-3"}`}

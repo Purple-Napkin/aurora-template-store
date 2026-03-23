@@ -61,12 +61,6 @@ export function Nav() {
                 All Categories
               </Link>
               <Link
-                href="/combos"
-                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
-              >
-                Combos
-              </Link>
-              <Link
                 href="/about"
                 className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
               >

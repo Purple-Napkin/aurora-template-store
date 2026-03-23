@@ -11,8 +11,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "schema:provision": "node scripts/provision-schema.mjs",
-    "seed:apply": "node ../scripts/template-seed/apply-seed-sql-api.mjs",
-    "catalog:enrich": "node scripts/enrich-catalog.mjs"
+    "seed:apply": "node scripts/catalog-seed.mjs apply && node scripts/apply-seed.mjs --file init/seed-cms.sql",
+    "seed:catalog:apply": "node scripts/catalog-seed.mjs apply"
   },
   "dependencies": {
     "@aurora-studio/sdk": "^0.2.42",

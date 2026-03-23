@@ -8,7 +8,7 @@ import { holmesCombosForCart, holmesSelectCombo } from "@aurora-studio/starter-c
 import { RecipeProductCollage } from "./RecipeProductCollage";
 
 /**
- * Combo picker – cart has 2+ items and Holmes returns combo options (API: recipes).
+ * Combo picker – cart has 2+ items and the API returns combo options (still named “recipes” in the API).
  */
 export function RecipePicker() {
   const { items } = useCart();
@@ -75,7 +75,7 @@ export function RecipePicker() {
         </button>
       </div>
       <p className="text-sm text-aurora-muted mb-4">
-        Holmes found suggestions for your cart. Choose one to complete your order.
+        We found suggestions for your cart. Choose one to complete your order.
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {combos.map((combo) => (

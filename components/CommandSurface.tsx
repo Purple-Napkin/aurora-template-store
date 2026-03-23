@@ -12,6 +12,7 @@ import {
   Hammer,
   Sun,
   Check,
+  ShoppingCart,
 } from "lucide-react";
 import {
   SearchDropdown,
@@ -38,6 +39,7 @@ import {
   type HeroSize,
 } from "@/lib/commandSurfaceHeroStyles";
 import type { StoreFeaturedProject } from "@/lib/store-featured-project";
+import { getStoreMissionHeroSkin } from "@/lib/store-mission-skin";
 
 const POPULAR_LINKS = [
   { label: "Drill kits", href: "/catalogue?q=drill" },
@@ -51,7 +53,7 @@ function StoreFeaturedProjectCard({ project }: { project: StoreFeaturedProject }
     <div className="store-featured-project overflow-hidden rounded-xl border border-zinc-200/90 bg-[var(--aurora-surface)] shadow-[0_2px_14px_rgba(15,23,42,0.07)]">
       <Link
         href={`/combos/${encodeURIComponent(project.slug)}`}
-        aria-label={`View kit: ${project.title}`}
+        aria-label={`View bundle: ${project.title}`}
         className="group block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-aurora-primary/30 focus-visible:ring-offset-2"
       >
         <div className="store-featured-project__media relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
@@ -70,7 +72,7 @@ function StoreFeaturedProjectCard({ project }: { project: StoreFeaturedProject }
         </div>
         <div className="store-featured-project__body p-4 sm:p-5">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-aurora-muted">
-            Featured project
+            Featured bundle
           </p>
           <h3 className="mt-1.5 font-display text-lg font-bold leading-snug tracking-tight text-aurora-text transition-colors group-hover:text-aurora-primary sm:text-xl line-clamp-2">
             {project.title}
@@ -79,7 +81,7 @@ function StoreFeaturedProjectCard({ project }: { project: StoreFeaturedProject }
             <p className="mt-2 text-sm leading-snug text-aurora-muted line-clamp-2">{project.description}</p>
           ) : null}
           <span className="store-featured-project__cta mt-4 flex h-11 w-full items-center justify-center rounded-lg text-sm font-bold">
-            View kit
+            View bundle
           </span>
         </div>
       </Link>
@@ -125,6 +127,7 @@ const ICON_MAP: Record<string, typeof Wrench> = {
   "Breakfast ideas": Sparkles,
   "Recipe ideas": Sparkles,
   "Kits & bundles": Sparkles,
+  "Basket add-ons": ShoppingCart,
   "Paint prep": PaintBucket,
   "Dinner now": Sparkles,
   "Dinner in 20 mins": Sparkles,
@@ -254,6 +257,16 @@ export function CommandSurface({
   const isRecipeMission =
     homeData?.mode === "recipe_mission" && homeData.recipeSlug && homeData.recipeTitle;
 
+  const heroSkin = getStoreMissionHeroSkin(homeData?.activeMission, Boolean(isRecipeMission));
+  const heroBackdropClass = heroSkin.sectionClass.trim()
+    ? heroSkin.sectionClass
+    : "bg-gradient-to-b from-aurora-surface to-aurora-bg";
+
+  const missionHeadline =
+    !isRecipeMission && heroSkin.headline ? heroSkin.headline : null;
+  const missionSubline =
+    !isRecipeMission && heroSkin.subline ? heroSkin.subline : null;
+
   const formContentInner = (
     <>
       {isRecipeMission && (
@@ -272,10 +285,12 @@ export function CommandSurface({
             : "store-home-hero-headline text-xl sm:text-2xl md:text-3xl lg:text-[2rem]"
         }`}
       >
-        {isRecipeMission ? "Something else?" : "What are you working on?"}
+        {isRecipeMission ? "Something else?" : missionHeadline ?? "What are you working on?"}
       </h1>
       <p className="text-aurora-muted text-sm sm:text-base mb-5 font-medium leading-snug max-w-xl">
-        {isRecipeMission ? "Pick another category or search" : verticalMissionSubtitle(verticalProfile)}
+        {isRecipeMission
+          ? "Pick another category or search"
+          : missionSubline ?? verticalMissionSubtitle(verticalProfile)}
       </p>
 
       <div className="relative z-20 mb-5">
@@ -360,7 +375,7 @@ export function CommandSurface({
 
   if (heroLayout === "full_width") {
     return (
-      <section className="command-surface-hero bg-gradient-to-b from-aurora-surface to-aurora-bg">
+      <section className={`command-surface-hero ${heroBackdropClass}`}>
         <div
           className={`relative w-full overflow-hidden bg-aurora-surface/80 border-b border-aurora-border ${fullWidthHeroBandClass(heroSize)}`}
         >
@@ -386,7 +401,7 @@ export function CommandSurface({
 
   return (
     <section
-      className={`command-surface-hero px-4 sm:px-6 bg-gradient-to-b from-aurora-surface to-aurora-bg ${splitHeroSectionPaddingClass(heroSize)}`}
+      className={`command-surface-hero px-4 sm:px-6 ${heroBackdropClass} ${splitHeroSectionPaddingClass(heroSize)}`}
     >
       <div
         className={`max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_minmax(280px,360px)] xl:grid-cols-[1fr_minmax(300px,400px)] items-start ${splitHeroRowGapClass(heroSize)}`}

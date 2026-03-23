@@ -30,10 +30,10 @@ export function RecipeMissionHero({ recipeTitle, recipeSlug, compact }: RecipeMi
             Working on {displayTitle}?
           </h2>
           <p className="text-aurora-muted text-sm sm:text-base mb-4 line-clamp-2">
-            We&apos;ve matched supplies for this kit. View line items and add to basket.
+            We lined up this bundle from your intent—open it for line items, compatible add-ons, and any deal pricing.
           </p>
           <span className="inline-flex items-center gap-2 text-sm font-semibold text-aurora-primary">
-            View kit →
+            View bundle →
           </span>
         </div>
       </Link>
@@ -46,13 +46,13 @@ export function RecipeMissionHero({ recipeTitle, recipeSlug, compact }: RecipeMi
         Working on {displayTitle}?
       </h1>
       <p className="text-aurora-muted text-base sm:text-lg max-w-xl mb-6">
-        Open the full kit and add everything to your basket in one go.
+        Review parts, grab missing consumables or the right driver for your screws, and add everything in one pass.
       </p>
       <Link
         href={`/combos/${encodeURIComponent(recipeSlug)}`}
         className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-aurora-primary text-white font-semibold hover:bg-aurora-primary-dark transition-colors"
       >
-        View kit
+        View bundle
       </Link>
     </div>
   );

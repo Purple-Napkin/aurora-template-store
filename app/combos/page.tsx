@@ -8,7 +8,8 @@ import { Wrench, ArrowLeft } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 /**
- * Kits & bundles (Holmes/API still use "recipe" for this entity).
+ * Featured kits in the catalogue (API still uses "recipe" for this entity).
+ * Day-to-day “what goes with my basket?” lives on the basket page — this index is editorial / curated bundles.
  */
 export default async function CombosIndexPage() {
   const excludeDietary = await getDietaryFromCookie();
@@ -48,10 +49,11 @@ export default async function CombosIndexPage() {
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-aurora-text font-sans leading-snug">
-              Project kits & bundles
+              Featured bundles & project kits
             </h1>
             <p className="text-aurora-muted text-sm mt-0.5 leading-snug">
-              Multi-SKU kits and popular project combinations
+              Curated multi-SKU kits. For real-time “goes with your basket” suggestions and deal bundles, add items to your
+              basket — we surface those on the cart, not in the main nav.
             </p>
           </div>
         </div>

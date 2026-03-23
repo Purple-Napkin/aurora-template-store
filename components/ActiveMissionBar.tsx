@@ -11,6 +11,7 @@ import {
   setMissionBarCollapsed,
 } from "@/lib/mission-bar";
 import { holmesMissionLockClear } from "@aurora-studio/starter-core";
+import type { ActiveMission } from "./MissionAwareHome";
 
 const BUNDLE_MISSION_KEYS = new Set([
   "recipe_mission",
@@ -32,6 +33,22 @@ function setDismissed(value: boolean) {
   } catch {
     /* ignore */
   }
+}
+
+/** Store-template narrative: DIY / intent demo (not returned from generic home-personalization). */
+function storeMissionBarHeadline(m: ActiveMission): string {
+  if (m.key === "recipe_mission" || m.key === "combo_mission") {
+    if (m.band === "high") {
+      return "We’re comparing your basket to the job you look to be doing—surfacing matching fixings, bits, consumables, and bundle deals that usually go with those SKUs.";
+    }
+    if (m.band === "medium") {
+      return "We inferred a project from your behaviour; complements and promoted bundles are tuned to that task—not a generic catalogue.";
+    }
+  }
+  if (m.summary && /ideas|for your/i.test(m.summary)) {
+    return m.summary.replace(/\.$/, "").replace(/your meal/i, "your cart");
+  }
+  return `${m.label} for your cart`;
 }
 
 export function ActiveMissionBar() {
@@ -115,31 +132,19 @@ export function ActiveMissionBar() {
               <Sparkles className="w-4 h-4 text-aurora-primary" aria-hidden />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-aurora-text">
-                {activeMission!.summary && /ideas|for your/i.test(activeMission!.summary)
-                  ? activeMission!.summary.replace(/\.$/, "").replace(/your meal/i, "your cart")
-                  : `${activeMission!.label} for your cart`}
-              </p>
+              <p className="text-sm font-semibold text-aurora-text">{storeMissionBarHeadline(activeMission!)}</p>
               {(isBundleMission && hasCartItems) || activeMission!.band !== "low" ? (
                 <a
                   href={
                     isBundleMission && hasCartItems
-                      ? ["recipe_mission", "combo_mission", "cook_dinner", "cook_dinner_tonight"].includes(
-                          activeMission!.key
-                        )
-                        ? "/for-you/combos"
-                        : "/for-you#combo-picker"
-                      : "/for-you"
+                      ? "/cart#basket-bundle"
+                      : "/catalogue"
                   }
                   className="inline-flex items-center gap-1 text-xs text-aurora-primary hover:underline mt-1.5 font-medium"
                 >
                   {isBundleMission && hasCartItems
-                    ? ["recipe_mission", "combo_mission", "cook_dinner", "cook_dinner_tonight"].includes(
-                        activeMission!.key
-                      )
-                      ? "View kits →"
-                      : "View bundles →"
-                    : "View ideas →"}
+                    ? "Basket suggestions →"
+                    : "Browse catalogue →"}
                 </a>
               ) : null}
             </div>

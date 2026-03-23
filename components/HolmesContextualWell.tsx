@@ -9,14 +9,14 @@ import { ProductImage } from "@aurora-studio/starter-core";
 type Props = {
   /** Pass when on product detail page */
   currentProductId?: string | null;
-  /** "cart" = scroll to #basket-bundle; "for-you" = on For You page, no link; "default" = link to /combos */
+  /** "cart" = scroll to #basket-bundle; "for-you" = on For You page, no link; "default" = link to basket suggestions */
   variant?: "default" | "cart" | "for-you";
 };
 
 /**
- * Holmes "paying attention" well - subtle hint based on cart and mission.
- * Renders at top of cart, PDP, or home when Holmes has something relevant.
- * Proactive hint when Holmes has a project kit / bundle for the cart.
+ * Contextual hint well — subtle hint based on cart and mission.
+ * Renders at top of cart, PDP, or home when we have something relevant to show.
+ * Proactive hint when a project kit / bundle matches the cart.
  */
 export function HolmesContextualWell({ currentProductId, variant = "default" }: Props) {
   const { items } = useCart();
@@ -67,12 +67,12 @@ export function HolmesContextualWell({ currentProductId, variant = "default" }: 
       });
   }, [items.map((i) => `${i.recordId}:${i.name}`).join(","), currentProductId, excludeDietary]);
 
-  // Proactive kit/bundle hint when combo exists but no rule-based hint
+  // Proactive bundle hint: complements + deal suggestions for what’s already in the basket
   if (hasCombo && !hint) {
     const cartCopy =
       variant === "cart" && comboTitle
-        ? `Complete your ${comboTitle} – add the remaining parts`
-        : `Holmes matched a project kit to your basket${comboTitle ? ` — ${comboTitle}` : ""}.`;
+        ? `We suggest parts and a bundle that pair with your basket${comboTitle ? ` — ${comboTitle}` : ""}.`
+        : `We have complementary SKUs and a bundle offer that fit what’s in your basket${comboTitle ? ` — ${comboTitle}` : ""}.`;
     return (
       <div className="pattern-well mb-6 p-4 rounded-xl border border-aurora-primary/30 bg-aurora-primary/5">
         <p className="text-sm text-aurora-text mb-2">{cartCopy}</p>
@@ -85,14 +85,14 @@ export function HolmesContextualWell({ currentProductId, variant = "default" }: 
               document.getElementById("basket-bundle")?.scrollIntoView({ behavior: "smooth" });
             }}
           >
-            See parts to add
+            See suggestions
           </a>
         ) : variant === "for-you" ? null : (
           <Link
-            href="/combos"
+            href="/cart#basket-bundle"
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-aurora-primary/15 text-aurora-primary text-sm font-medium hover:bg-aurora-primary/25 transition-colors"
           >
-            Browse kits
+            Open basket suggestions
           </Link>
         )}
       </div>

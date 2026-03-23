@@ -20,7 +20,7 @@ function setHolmesDisabled(disabled: boolean): void {
   }
 }
 
-/** Holmes dev tools: reset session, toggle Holmes on/off. Shown in dev and production. */
+/** Dev strip: reset session, toggle personalization holdout. Shown in dev and production. */
 export function HolmesDevTools() {
   const { clearCart } = useCart();
   const [holmesDisabled, setHolmesDisabledState] = useState(false);
@@ -64,16 +64,16 @@ export function HolmesDevTools() {
     <div
       className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-3 py-2 bg-aurora-surface/95 border-t border-aurora-border text-xs"
       role="group"
-      aria-label="Holmes development tools"
+      aria-label="Store development tools"
     >
       <span className="text-aurora-muted">Dev:</span>
       <button
         type="button"
         onClick={handleResetSession}
         className="px-3 py-1.5 rounded border border-aurora-border hover:bg-aurora-surface-hover text-aurora-text transition-colors"
-        title="Clear cart, session storage, and reload for a fresh Holmes session"
+        title="Clear cart, session storage, and reload for a fresh session"
       >
-        Reset Holmes session
+        Reset session
       </button>
       <button
         type="button"
@@ -83,9 +83,13 @@ export function HolmesDevTools() {
             ? "border-aurora-primary bg-aurora-primary/20 text-aurora-primary hover:bg-aurora-primary/30"
             : "border-aurora-border hover:bg-aurora-surface-hover text-aurora-text"
         }`}
-        title={holmesDisabled ? "Re-enable Holmes" : "Disable Holmes to see site without it"}
+        title={
+          holmesDisabled
+            ? "Re-enable personalized shopping"
+            : "Disable personalized shopping to see the site without it"
+        }
       >
-        {holmesDisabled ? "Holmes off (click to enable)" : "Disable Holmes"}
+        {holmesDisabled ? "Personalization off (click to enable)" : "Disable personalization"}
       </button>
     </div>
   );
