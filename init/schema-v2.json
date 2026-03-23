@@ -217,6 +217,34 @@
           "validation": {}
         },
         {
+          "slug": "functional_name",
+          "name": "Functional name",
+          "field_type": "text",
+          "required": false,
+          "validation": {}
+        },
+        {
+          "slug": "features",
+          "name": "Features (JSON array)",
+          "field_type": "text",
+          "required": false,
+          "validation": {}
+        },
+        {
+          "slug": "attributes",
+          "name": "Specification attributes",
+          "field_type": "text",
+          "required": false,
+          "validation": {}
+        },
+        {
+          "slug": "storage_instructions",
+          "name": "Storage instructions",
+          "field_type": "text",
+          "required": false,
+          "validation": {}
+        },
+        {
           "slug": "category_id",
           "name": "Category",
           "field_type": "relation",

@@ -24,6 +24,8 @@ function getPrice(record: Record<string, unknown>): number | undefined {
 }
 
 function getDisplayName(record: Record<string, unknown>): string {
+  const fn = record.functional_name;
+  if (typeof fn === "string" && fn.trim()) return fn.trim();
   const field = ["name", "title", "slug"].find((f) => record[f]) ?? "id";
   return String(record[field] ?? record.id ?? "");
 }
