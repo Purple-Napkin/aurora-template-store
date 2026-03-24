@@ -7,7 +7,7 @@ General e-commerce storefront template for Aurora Studio (products, cart, checko
 - **Studio:** create a workspace with template **Store (example template)** (`aurora-template-store`).
 - **Deploy:** Settings → Apps → generate credentials → use GitHub template **Purple-Napkin/aurora-template-store**.
 
-See [Marketplace storefront docs](../aurora-studio/docs/marketplace-storefront-templates.md) for the full checklist.
+See [Storefront deploy](../aurora-studio/docs/06-storefront-deploy.md) for the full checklist.
 
 ## Run locally
 
