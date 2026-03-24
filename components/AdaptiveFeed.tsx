@@ -60,6 +60,7 @@ type RecipeWithProducts = {
   slug: string;
   title: string;
   description: string | null;
+  image_url?: string | null;
   productImageUrls?: string[];
 };
 
@@ -244,6 +245,7 @@ export function AdaptiveFeed({
                 >
                   <div className="aspect-square rounded-lg mb-2 overflow-hidden">
                     <RecipeProductCollage
+                      imageUrl={r.image_url}
                       imageUrls={r.productImageUrls ?? []}
                       className="w-full h-full"
                     />

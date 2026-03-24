@@ -8,6 +8,7 @@ import {
   GroupedStoreContentSections,
   type StoreContentSection,
 } from "@/components/storeContentBlocksUi";
+import { fetchHomePersonalizationDeduped } from "@/lib/fetch-home-personalization-deduped";
 
 type Props = {
   contentPage: string;
@@ -67,8 +68,7 @@ export function ClientStoreContentRail({
       if (resolvedCategory) {
         url += `&categorySlug=${encodeURIComponent(resolvedCategory)}`;
       }
-      fetch(url)
-        .then((r) => r.json())
+      fetchHomePersonalizationDeduped(url)
         .then((d) => {
           if (cancelled) return;
           setSections(Array.isArray(d?.sections) ? d.sections : []);

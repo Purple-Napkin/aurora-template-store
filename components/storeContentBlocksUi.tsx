@@ -25,6 +25,8 @@ export type RecipeWithProducts = {
   slug: string;
   title: string;
   description: string | null;
+  /** Holmes combo hero (holmes_recipes.image_url). When set, cards use this instead of a product collage. */
+  image_url?: string | null;
   productImageUrls?: string[];
 };
 
@@ -343,6 +345,7 @@ export function RecipeIdeasRail({
               className="aspect-square rounded-lg mb-2 overflow-hidden"
             >
               <RecipeProductCollage
+                imageUrl={r.image_url}
                 imageUrls={r.productImageUrls ?? []}
                 className="w-full h-full"
               />

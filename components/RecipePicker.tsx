@@ -13,7 +13,9 @@ import { RecipeProductCollage } from "./RecipeProductCollage";
 export function RecipePicker() {
   const { items } = useCart();
   const missionData = useMissionAware();
-  const [combos, setCombos] = useState<Array<{ slug: string; title: string; productImageUrls?: string[] }>>([]);
+  const [combos, setCombos] = useState<
+    Array<{ slug: string; title: string; image_url?: string | null; productImageUrls?: string[] }>
+  >([]);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
@@ -85,6 +87,7 @@ export function RecipePicker() {
           >
             <div className="aspect-square rounded-lg mb-3 overflow-hidden bg-aurora-surface-hover">
               <RecipeProductCollage
+                imageUrl={combo.image_url}
                 imageUrls={combo.productImageUrls ?? []}
                 className="w-full h-full"
               />

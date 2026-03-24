@@ -48,6 +48,7 @@ export function RecipePageView({
   const [recipe, setRecipe] = useState<{
     title: string;
     description: string | null;
+    image_url: string | null;
     ingredients: Array<{ name: string; quantity?: string; unit?: string }>;
     instructions: string | null;
     origin_tidbit: string | null;
@@ -81,6 +82,7 @@ export function RecipePageView({
           setRecipe({
             title: rec.title,
             description: rec.description,
+            image_url: rec.image_url?.trim() ? rec.image_url.trim() : null,
             ingredients: rec.ingredients ?? [],
             instructions: rec.instructions,
             origin_tidbit: rec.origin_tidbit,
@@ -179,6 +181,18 @@ export function RecipePageView({
           </div>
         )}
       </header>
+
+      {!compact && recipe?.image_url && (
+        <div className="w-full max-w-3xl aspect-video rounded-xl overflow-hidden border border-aurora-border bg-aurora-surface-hover">
+          <ProductImage
+            src={recipe.image_url}
+            className="w-full h-full"
+            objectFit="cover"
+            thumbnail
+            fallback={<div className="w-full h-full bg-aurora-surface-hover" />}
+          />
+        </div>
+      )}
 
       {displayProducts.length > 0 && catalogSlug && (
         <div className="flex flex-wrap items-center gap-3">

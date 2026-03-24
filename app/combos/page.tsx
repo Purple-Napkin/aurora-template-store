@@ -18,16 +18,22 @@ export default async function CombosIndexPage() {
   /* Omit time_of_day: API filter was hiding rows when DB time_of_day ≠ client clock. */
   const { recipes } = await holmesRecentRecipes(48, undefined, dietaryOpts);
 
-  const recipesWithProducts = await Promise.all(
+  type RecipeRow = (typeof recipes)[number] & {
+    image_url?: string | null;
+    productImageUrls: string[];
+  };
+
+  const recipesWithProducts: RecipeRow[] = await Promise.all(
     recipes.map(async (r) => {
+      const image_url = (r as { image_url?: string | null }).image_url ?? null;
       try {
         const { products } = await holmesRecipeProducts(r.slug, 4, dietaryOpts);
         const imageUrls = (products ?? [])
           .map((p) => (p as { image_url?: string }).image_url)
           .filter((u): u is string => !!u);
-        return { ...r, productImageUrls: imageUrls };
+        return { ...r, image_url, productImageUrls: imageUrls };
       } catch {
-        return { ...r, productImageUrls: [] as string[] };
+        return { ...r, image_url, productImageUrls: [] as string[] };
       }
     })
   );
@@ -84,6 +90,7 @@ export default async function CombosIndexPage() {
               >
                 <div className="aspect-square rounded-sm mb-2 overflow-hidden bg-aurora-bg border border-aurora-border/80">
                   <RecipeProductCollage
+                    imageUrl={r.image_url}
                     imageUrls={r.productImageUrls ?? []}
                     className="w-full h-full"
                   />
