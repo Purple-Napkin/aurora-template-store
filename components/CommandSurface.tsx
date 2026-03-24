@@ -51,18 +51,18 @@ const POPULAR_LINKS = [
 
 function StoreFeaturedProjectCard({ project }: { project: StoreFeaturedProject }) {
   return (
-    <div className="store-featured-project overflow-hidden rounded-xl border border-zinc-200/90 bg-[var(--aurora-surface)] shadow-[0_2px_14px_rgba(15,23,42,0.07)]">
+    <div className="store-featured-project overflow-hidden">
       <Link
         href={`/combos/${encodeURIComponent(project.slug)}`}
         aria-label={`View bundle: ${project.title}`}
-        className="group block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-aurora-primary/30 focus-visible:ring-offset-2"
+        className="group block rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-aurora-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-aurora-bg"
       >
         <div className="store-featured-project__media relative aspect-[4/3] w-full overflow-hidden bg-zinc-100">
           {project.imageUrl ? (
             <img
               src={project.imageUrl}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-150 ease-out group-hover:scale-[1.01]"
               loading="lazy"
             />
           ) : (
@@ -72,10 +72,10 @@ function StoreFeaturedProjectCard({ project }: { project: StoreFeaturedProject }
           )}
         </div>
         <div className="store-featured-project__body p-4 sm:p-5">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-aurora-muted">
+          <p className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-aurora-muted">
             Featured bundle
           </p>
-          <h3 className="mt-1.5 font-display text-lg font-bold leading-snug tracking-tight text-aurora-text transition-colors group-hover:text-aurora-primary sm:text-xl line-clamp-2">
+          <h3 className="mt-1.5 font-display text-lg font-bold leading-snug tracking-tight text-aurora-text transition-colors duration-150 group-hover:text-aurora-primary sm:text-xl line-clamp-2">
             {project.title}
           </h3>
           {project.description ? (
@@ -101,7 +101,7 @@ function HomeTrustList({ storeName }: { storeName: string | undefined }) {
     <ul className="store-home-trust mt-6 space-y-2.5 border-t border-aurora-border/55 pt-6">
       {items.map((t) => (
         <li key={t} className="flex items-start gap-2.5 text-sm leading-snug text-aurora-text">
-          <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" strokeWidth={2.5} aria-hidden />
+          <Check className="mt-0.5 h-4 w-4 shrink-0 text-aurora-primary" strokeWidth={2.5} aria-hidden />
           <span>{t}</span>
         </li>
       ))}
@@ -287,7 +287,7 @@ export function CommandSurface({
         </div>
       )}
       <h1
-        className={`font-sans font-bold tracking-tight text-aurora-text mb-2 leading-tight ${
+        className={`font-display font-bold tracking-tight text-aurora-text mb-2 leading-tight ${
           isFullComboHero
             ? "text-2xl sm:text-3xl md:text-4xl"
             : "store-home-hero-headline text-xl sm:text-2xl md:text-3xl lg:text-[2rem]"
@@ -295,15 +295,15 @@ export function CommandSurface({
       >
         {isFullComboHero ? "Something else?" : missionHeadline ?? "What are you working on?"}
       </h1>
-      <p className="text-aurora-muted text-sm sm:text-base mb-5 font-medium leading-snug max-w-xl">
+      <p className="text-aurora-muted text-sm sm:text-base mb-5 font-semibold leading-snug max-w-xl">
         {isFullComboHero
           ? "Pick another category or search"
           : missionSubline ?? verticalMissionSubtitle(verticalProfile)}
       </p>
 
       <div className="relative z-20 mb-5">
-        <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-aurora-muted mb-2.5">
-          Shop by task
+        <p className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-aurora-muted mb-2.5">
+          Choose a task
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 max-w-2xl">
           {quickActions.map((action) => {
@@ -316,7 +316,7 @@ export function CommandSurface({
                 onClick={() => {
                   if (shouldLockRecipeMissionForMissionPill(action.label, href)) holmesMissionLockCombo();
                 }}
-                className="store-home-task-chip inline-flex min-h-[2.75rem] flex-col items-center justify-center gap-1 rounded-lg border border-aurora-border bg-aurora-surface px-2 py-2.5 text-center text-xs font-semibold text-aurora-text transition-colors hover:border-aurora-primary sm:min-h-[3rem] sm:text-[0.8125rem]"
+                className="store-home-task-chip inline-flex min-h-[2.75rem] flex-col items-center justify-center gap-1 rounded-md px-2 py-2.5 text-center text-xs font-bold text-aurora-text sm:min-h-[3rem] sm:text-[0.8125rem]"
               >
                 <Icon className="h-4 w-4 shrink-0 text-aurora-primary" aria-hidden />
                 <span className="leading-tight line-clamp-2">{action.label}</span>
@@ -328,15 +328,15 @@ export function CommandSurface({
 
       {!isFullComboHero && (
         <div className="store-home-popular mb-6">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-aurora-muted mb-2">
-            Popular right now
+          <p className="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-aurora-muted mb-2">
+            Quick links
           </p>
-          <div className="flex flex-wrap gap-x-4 gap-y-2">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 store-home-popular">
             {POPULAR_LINKS.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
-                className="text-sm font-semibold text-aurora-primary hover:underline underline-offset-2"
+                className="text-sm font-bold text-aurora-primary"
               >
                 {l.label}
               </Link>
@@ -346,12 +346,12 @@ export function CommandSurface({
       )}
 
       <div className="relative z-10">
-        <p className="text-xs font-semibold text-aurora-muted uppercase tracking-widest mb-2">
-          Search the store
+        <p className="text-[0.6rem] font-bold text-aurora-muted uppercase tracking-[0.16em] mb-2">
+          Search inventory
         </p>
         {store ? (
           <div
-            className="rounded-xl border border-aurora-border bg-aurora-surface shadow-sm focus-within:border-aurora-primary/60 focus-within:ring-1 focus-within:ring-aurora-primary/25 transition-all max-w-md overflow-visible relative z-30"
+            className="store-home-search-well max-w-md overflow-visible relative z-30"
             data-command-search
           >
             <SearchDropdown
@@ -366,7 +366,7 @@ export function CommandSurface({
         ) : (
           <Link
             href="/location"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-aurora-border bg-aurora-surface/80 text-aurora-muted hover:text-aurora-text hover:border-aurora-primary/40 transition-all text-sm"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md border border-dashed border-aurora-border bg-aurora-surface/80 text-aurora-muted hover:text-aurora-text hover:border-aurora-primary/50 transition-all duration-150 text-sm font-semibold"
           >
             <Search className="w-4 h-4 shrink-0" />
             <span>Set location to search</span>

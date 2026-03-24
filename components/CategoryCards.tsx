@@ -133,7 +133,7 @@ export function CategoryCards() {
         <Link
           key={cat.slug}
           href={`/catalogue?category=${encodeURIComponent(cat.slug)}`}
-          className="group block rounded-xl overflow-hidden bg-aurora-surface border border-aurora-border hover:border-aurora-primary/60 hover:shadow-lg hover:shadow-aurora-primary/10 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+          className="group block rounded-md overflow-hidden bg-aurora-surface border border-aurora-border shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_1px_2px_rgb(15_23_42/0.05)] hover:border-aurora-primary/50 hover:-translate-y-px hover:shadow-[0_4px_14px_rgb(15_23_42/0.08)] active:translate-y-0 transition-[border-color,transform,box-shadow] duration-150 ease-out"
         >
           <div
             className={`aspect-square relative bg-gradient-to-br ${gradientForSlug(cat.slug)}`}

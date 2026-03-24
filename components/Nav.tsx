@@ -25,7 +25,7 @@ export function Nav() {
   const locationDisplay = location?.address ?? store?.name ?? "Select location";
 
   return (
-    <nav className="sticky top-0 z-[200] border-b border-aurora-border shadow-sm supports-[backdrop-filter]:bg-aurora-surface/90 supports-[backdrop-filter]:backdrop-blur-md bg-aurora-surface">
+    <nav className="sticky top-0 z-[200] border-b border-aurora-border shadow-[0_1px_0_rgb(0_0_0/0.04)] supports-[backdrop-filter]:bg-aurora-surface/92 supports-[backdrop-filter]:backdrop-blur-md bg-aurora-surface">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between gap-4 h-14">
           <div className="flex items-center gap-6 shrink-0">
@@ -50,19 +50,19 @@ export function Nav() {
             <div className="hidden sm:flex items-center gap-4">
               <Link
                 href="/"
-                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
+                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors duration-150 font-semibold"
               >
                 Home
               </Link>
               <Link
                 href="/catalogue"
-                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
+                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors duration-150 font-semibold"
               >
                 All Categories
               </Link>
               <Link
                 href="/about"
-                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors font-medium"
+                className="text-sm text-aurora-muted hover:text-aurora-text transition-colors duration-150 font-semibold"
               >
                 About
               </Link>
@@ -94,7 +94,7 @@ export function Nav() {
           <div className="flex items-center gap-4 shrink-0">
             <Link
               href={store ? "/stores" : "/location"}
-              className="flex items-center gap-2 text-sm text-aurora-muted hover:text-aurora-text transition-colors min-w-0 max-w-[140px]"
+              className="flex items-center gap-2 text-sm text-aurora-muted hover:text-aurora-text transition-colors duration-150 font-semibold min-w-0 max-w-[140px]"
               title={locationDisplay}
             >
               <MapPin className="w-4 h-4 shrink-0 text-aurora-primary/70" />

@@ -29,9 +29,9 @@ const config: Config = {
         },
       },
       borderRadius: {
-        container: "12px",
-        card: "8px",
-        component: "6px",
+        container: "10px",
+        card: "6px",
+        component: "4px",
       },
     },
   },

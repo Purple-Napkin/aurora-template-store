@@ -74,12 +74,12 @@ export function HolmesContextualWell({ currentProductId, variant = "default" }: 
         ? `We suggest parts and a bundle that pair with your basket${comboTitle ? ` — ${comboTitle}` : ""}.`
         : `We have complementary SKUs and a bundle offer that fit what’s in your basket${comboTitle ? ` — ${comboTitle}` : ""}.`;
     return (
-      <div className="pattern-well mb-6 p-4 rounded-xl border border-aurora-primary/30 bg-aurora-primary/5">
-        <p className="text-sm text-aurora-text mb-2">{cartCopy}</p>
+      <div className="pattern-well mb-6 p-4 rounded-md border border-aurora-primary/35 bg-aurora-primary/[0.06] shadow-[inset_0_1px_0_rgb(255_255_255/0.4),0_1px_2px_rgb(15_23_42/0.04)]">
+        <p className="text-sm font-semibold text-aurora-text mb-2">{cartCopy}</p>
         {variant === "cart" ? (
           <a
             href="#basket-bundle"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-aurora-primary/15 text-aurora-primary text-sm font-medium hover:bg-aurora-primary/25 transition-colors"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-aurora-primary/12 text-aurora-primary text-sm font-bold hover:bg-aurora-primary/20 transition-colors duration-150"
             onClick={(e) => {
               e.preventDefault();
               document.getElementById("basket-bundle")?.scrollIntoView({ behavior: "smooth" });
@@ -90,7 +90,7 @@ export function HolmesContextualWell({ currentProductId, variant = "default" }: 
         ) : variant === "for-you" ? null : (
           <Link
             href="/cart#basket-bundle"
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-aurora-primary/15 text-aurora-primary text-sm font-medium hover:bg-aurora-primary/25 transition-colors"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-aurora-primary/12 text-aurora-primary text-sm font-bold hover:bg-aurora-primary/20 transition-colors duration-150"
           >
             Open basket suggestions
           </Link>
@@ -102,15 +102,15 @@ export function HolmesContextualWell({ currentProductId, variant = "default" }: 
   if (!hint) return null;
 
   return (
-    <div className="pattern-well mb-6 p-4 rounded-xl border border-aurora-primary/30">
-      <p className="text-sm text-aurora-text mb-2">{hint}</p>
+    <div className="pattern-well mb-6 p-4 rounded-md border border-aurora-primary/35 shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_1px_2px_rgb(15_23_42/0.04)]">
+      <p className="text-sm font-semibold text-aurora-text mb-2">{hint}</p>
       {products.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {products.map((p) => (
             <Link
               key={p.id}
               href={p.url}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-aurora-primary/15 text-aurora-primary text-sm font-medium hover:bg-aurora-primary/25 transition-colors"
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-aurora-primary/12 text-aurora-primary text-sm font-bold hover:bg-aurora-primary/20 transition-colors duration-150"
             >
               <span className="w-6 h-6 rounded overflow-hidden shrink-0">
                 <ProductImage

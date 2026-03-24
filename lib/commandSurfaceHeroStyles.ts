@@ -60,7 +60,7 @@ export function splitHeroFallbackTitleClass(size: HeroSize): string {
 
 /** Split layout: logo well — w-fit so card height follows the image, not the form column. */
 export function splitHeroLogoWellLinkClass(size: HeroSize): string {
-  return `logo-well inline-flex flex-col items-center justify-center self-start h-fit w-fit max-w-full ${splitHeroLogoWellSizingClass(size)} transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-aurora-primary/50 rounded-2xl border border-aurora-border/60`;
+  return `logo-well inline-flex flex-col items-center justify-center self-start h-fit w-fit max-w-full ${splitHeroLogoWellSizingClass(size)} transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-aurora-primary/45 rounded-lg border border-aurora-border/80`;
 }
 
 /** Fixed viewport-relative height for full-width hero band. */

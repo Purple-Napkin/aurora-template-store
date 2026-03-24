@@ -1,6 +1,7 @@
 /**
- * Next.js instrumentation hook: runs once when the server starts (Node.js only).
- * Merges init/schema via POST /v1/provision-schema, then POST /v1/run-schema-migration (DDL + views).
+ * Next.js instrumentation hook: runs when the server starts (Node.js only).
+ * If the tenant has no tables yet, POST /v1/provision-schema registers init/schema. Otherwise
+ * no-op — DDL is applied via Studio / migration workers, not on every storefront boot.
  */
 import { runFirstRunProvision } from "./provision";
 

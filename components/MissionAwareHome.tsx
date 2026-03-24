@@ -219,7 +219,7 @@ export function MissionAwareSections({ children }: { children: React.ReactNode }
     return (
       <div className="space-y-10">
         {children}
-        <div className="border-t border-aurora-border pt-8 rounded-2xl border border-aurora-border/80 bg-aurora-surface/60 px-4 sm:px-6 py-6">
+        <div className="border-t border-aurora-border pt-8 rounded-lg border border-aurora-border/90 bg-aurora-surface/70 px-4 sm:px-6 py-6 shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_1px_3px_rgb(15_23_42/0.05)]">
           <RecipeIngredientsSection
             recipeSlug={data.recipeSlug}
             recipeTitle={data.recipeTitle}

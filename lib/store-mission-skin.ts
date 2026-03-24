@@ -28,7 +28,7 @@ export function getStoreMissionHeroSkin(
   if (recipeMissionMode) {
     return {
       sectionClass:
-        "from-amber-950/25 via-aurora-surface to-aurora-bg bg-gradient-to-b border-b border-amber-500/20",
+        "from-slate-950/35 via-aurora-surface to-aurora-bg bg-gradient-to-b border-b border-blue-600/15 shadow-[inset_0_1px_0_rgba(59,130,246,0.08)]",
       headline: null,
       subline: null,
     };
@@ -40,7 +40,7 @@ export function getStoreMissionHeroSkin(
   if (PROJECT_MISSION_KEYS.has(key) && band === "high") {
     return {
       sectionClass:
-        "from-slate-950 via-amber-950/35 to-aurora-bg bg-gradient-to-b border-b border-amber-500/30 shadow-[inset_0_1px_0_rgba(251,191,36,0.12)]",
+        "from-[#060a12] via-slate-950/95 to-aurora-bg bg-gradient-to-b border-b border-blue-500/25 shadow-[inset_0_1px_0_rgba(59,130,246,0.14)]",
       headline: "We think you’re mid-project",
       subline:
         "Search, catalogue order, and cart intelligence are biased toward the job implied by your basket—compatible fasteners, the right driver profile, consumables, and promotional bundles that usually go with what you already added.",
@@ -50,7 +50,7 @@ export function getStoreMissionHeroSkin(
   if (PROJECT_MISSION_KEYS.has(key) && band === "medium") {
     return {
       sectionClass:
-        "from-aurora-surface via-amber-950/20 to-aurora-bg bg-gradient-to-b border-b border-amber-500/18",
+        "from-aurora-surface via-slate-900/25 to-aurora-bg bg-gradient-to-b border-b border-blue-500/18 shadow-[inset_0_1px_0_rgba(59,130,246,0.06)]",
       headline: "Task-aware shopping",
       subline:
         "We’re narrowing categories and surfacing complementary SKUs and deal bundles matched to specs you’re likely to need (sizes, bit types, fixings) based on what’s in your basket.",
@@ -85,7 +85,7 @@ export function getStoreMissionCatalogueSkin(
       "We’re still biasing search relevance, injected rails, and sort hints toward this project—so complements, right-size fixings, and bundle deals surface before unrelated aisles.";
     return {
       wrapperClass:
-        "mb-8 rounded-2xl border border-amber-500/40 bg-gradient-to-br from-amber-950/50 via-slate-900/90 to-slate-950 p-6 sm:p-8 text-white shadow-xl shadow-amber-950/25",
+        "mb-8 rounded-xl border border-blue-500/35 bg-gradient-to-br from-slate-950 via-[#0c1424] to-[#060a12] p-6 sm:p-8 text-white shadow-xl shadow-blue-950/40",
       kicker: narrowCatalog ? "Mission-scoped catalogue" : "Task-aware catalogue",
       title: narrowCatalog
         ? `Everything on this page is angled toward: ${missionLabel}`
