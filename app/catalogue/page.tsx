@@ -64,6 +64,15 @@ function getRating(record: Record<string, unknown>): number | null {
   return r != null ? Number(r) : null;
 }
 
+function getCardDescription(record: Record<string, unknown>): string | null {
+  const raw = record.description ?? record.summary;
+  if (typeof raw === "string" && raw.trim()) return raw.trim();
+  const sn = record.snippet;
+  const name = String(record.name ?? record.title ?? "").trim();
+  if (typeof sn === "string" && sn.trim() && sn.trim() !== name) return sn.trim();
+  return null;
+}
+
 function CatalogueContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -435,6 +444,7 @@ function CatalogueContent() {
                   const onSale = isRecordOnSale(record as Record<string, unknown>);
                   const stock = getStockStatus(record);
                   const canAdd = priceCents != null && catalogSlug;
+                  const cardDesc = getCardDescription(record as Record<string, unknown>);
                   return (
                     <div key={id} className="store-product-card group min-w-0">
                       <Link
@@ -456,6 +466,11 @@ function CatalogueContent() {
                           <p className="store-product-card__title transition-colors group-hover:text-aurora-primary">
                             {name}
                           </p>
+                          {cardDesc ? (
+                            <p className="mt-1 line-clamp-2 text-xs leading-snug text-aurora-muted">
+                              {cardDesc}
+                            </p>
+                          ) : null}
                           <div className="store-product-card__price-row">
                             {priceCents != null ? (
                               <p className="text-sm font-bold tabular-nums text-aurora-primary">
@@ -566,6 +581,7 @@ function CatalogueContent() {
                   const onSale = isRecordOnSale(record as Record<string, unknown>);
                   const stock = getStockStatus(record);
                   const canAdd = priceCents != null && catalogSlug;
+                  const cardDesc = getCardDescription(record as Record<string, unknown>);
 
                   return (
                     <div key={id} className="store-product-card group min-w-0">
@@ -593,6 +609,11 @@ function CatalogueContent() {
                           <p className="store-product-card__title transition-colors group-hover:text-aurora-primary">
                             {name}
                           </p>
+                          {cardDesc ? (
+                            <p className="mt-1 line-clamp-2 text-xs leading-snug text-aurora-muted">
+                              {cardDesc}
+                            </p>
+                          ) : null}
                           <div className="store-product-card__price-row">
                             {priceCents != null || (sellByWeight && pricePerUnit != null) ? (
                               <p className="text-sm font-bold tabular-nums text-aurora-primary">
