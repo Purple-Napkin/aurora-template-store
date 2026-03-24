@@ -20,18 +20,22 @@ export async function YouMayAlsoLike({
   productId,
   catalogTableSlug,
   categoryId,
+  currencyCode,
 }: {
   productId: string;
   catalogTableSlug: string;
   categoryId?: string | null;
+  currencyCode?: string;
 }) {
   let records: Record<string, unknown>[] = [];
-  let currency = "GBP";
+  let currency = currencyCode ?? "GBP";
 
   try {
     const aurora = createAuroraClient();
-    const config = await aurora.store.config();
-    currency = (config as { currency?: string }).currency ?? "GBP";
+    if (!currencyCode) {
+      const config = await aurora.store.config();
+      currency = (config as { currency?: string }).currency ?? "GBP";
+    }
 
     const goesWithRes = await holmesGoesWith(productId, 6).catch(() => null);
     if (goesWithRes && goesWithRes.products?.length > 0) {
