@@ -1,7 +1,7 @@
 import { RecipePageView } from "@/components/RecipePageView";
 import { StoreContentRails } from "@/components/StoreContentRails";
 import { getStoreConfig } from "@aurora-studio/starter-core";
-import { holmesRecipe } from "@aurora-studio/starter-core";
+import { holmesRecipe, isHolmesComboPending } from "@aurora-studio/starter-core";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -20,6 +20,10 @@ export default async function ComboDetailPage({ params }: Props) {
 
   if (!recipe) notFound();
 
+  const recipeTitle = isHolmesComboPending(recipe)
+    ? recipe.message?.trim() || safeSlug.replace(/-/g, " ")
+    : recipe.title;
+
   const currency =
     (config as { currency?: string })?.currency ?? "GBP";
 
@@ -27,7 +31,7 @@ export default async function ComboDetailPage({ params }: Props) {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
       <RecipePageView
         recipeSlug={recipe.slug}
-        recipeTitle={recipe.title}
+        recipeTitle={recipeTitle}
         currency={currency}
       />
       <div className="mt-12 space-y-10">
