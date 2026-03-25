@@ -1,6 +1,9 @@
-import { getHomePersonalization, holmesRecentRecipes, holmesRecipeProducts } from "@aurora-studio/starter-core";
-import { getStoreConfig } from "@aurora-studio/starter-core";
-import { getDietaryFromCookie } from "@/lib/dietary-server";
+import { holmesRecentRecipes, holmesRecipeProducts } from "@aurora-studio/starter-core";
+import {
+  getDietaryFromCookieCached,
+  getHomePersonalizationCached,
+  getStoreConfigCached,
+} from "@/lib/server-request-cache";
 import { RecipeIdeasRail, GroupedStoreContentSections } from "./storeContentBlocksUi";
 
 const FOR_YOU_PAGE = "for_you";
@@ -8,16 +11,12 @@ const FOR_YOU_REGION = "for_you_below_cart_blocks";
 
 /** Sections for For You page – same CMS blocks as home, different page/region; no Holmes home-section markers. */
 export async function ForYouSections() {
-  const excludeDietary = await getDietaryFromCookie();
+  const excludeDietary = await getDietaryFromCookieCached();
   const dietaryOpts = excludeDietary.length ? { excludeDietary } : undefined;
 
   const [homeData, config, recipesResult] = await Promise.all([
-    getHomePersonalization(undefined, {
-      ...dietaryOpts,
-      contentPage: FOR_YOU_PAGE,
-      contentRegion: FOR_YOU_REGION,
-    }),
-    getStoreConfig(),
+    getHomePersonalizationCached(FOR_YOU_PAGE, FOR_YOU_REGION, ""),
+    getStoreConfigCached(),
     holmesRecentRecipes(8, undefined, dietaryOpts),
   ]);
 
