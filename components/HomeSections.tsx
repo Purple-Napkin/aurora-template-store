@@ -1,6 +1,9 @@
-import { getHomePersonalization, holmesRecentRecipes, holmesRecipeProducts } from "@aurora-studio/starter-core";
-import { getStoreConfig } from "@aurora-studio/starter-core";
+import { holmesRecentRecipes, holmesRecipeProducts } from "@aurora-studio/starter-core";
 import { getDietaryFromCookie } from "@/lib/dietary-server";
+import {
+  getHomePersonalizationCached,
+  getStoreConfigCached,
+} from "@/lib/server-request-cache";
 import { AdaptiveFeed } from "./AdaptiveFeed";
 import {
   RecipeIdeasRail,
@@ -16,12 +19,8 @@ export async function HomeSections() {
   const dietaryOpts = excludeDietary.length ? { excludeDietary } : undefined;
 
   const [homeData, config, recipesResult] = await Promise.all([
-    getHomePersonalization(undefined, {
-      ...dietaryOpts,
-      contentPage: HOME_PAGE,
-      contentRegion: HOME_REGION,
-    }),
-    getStoreConfig(),
+    getHomePersonalizationCached(HOME_PAGE, HOME_REGION, ""),
+    getStoreConfigCached(),
     holmesRecentRecipes(8, undefined, dietaryOpts),
   ]);
 
