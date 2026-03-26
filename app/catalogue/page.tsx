@@ -194,6 +194,14 @@ function CatalogueContent() {
   }, [loadProducts]);
 
   useEffect(() => {
+    const onInfer = () => {
+      loadProducts();
+    };
+    document.addEventListener("holmes:inferApplied", onInfer);
+    return () => document.removeEventListener("holmes:inferApplied", onInfer);
+  }, [loadProducts]);
+
+  useEffect(() => {
     setMissionBarDismissed(isMissionBarDismissed());
   }, []);
   useEffect(() => {
