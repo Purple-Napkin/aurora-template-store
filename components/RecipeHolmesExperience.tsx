@@ -179,11 +179,11 @@ export function RecipeHolmesExperience({
             </div>
             <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-widest text-aurora-muted">
-                Holmes for this kit
+                We curate this kit for you
               </p>
               <p className="mt-1 max-w-xl text-sm leading-snug text-aurora-muted">
-                We use your session, basket, and this page to preload routes and surface smarter
-                shortcuts for your project, without extra taps to train the shop.
+                We observe how you browse and what’s in your basket, and we adapt to you. We surface
+                helpful routes and shortcuts that fit your project. Nothing extra to set up.
               </p>
             </div>
           </div>
