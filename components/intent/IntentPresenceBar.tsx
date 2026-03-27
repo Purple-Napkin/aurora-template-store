@@ -101,6 +101,10 @@ function IntentPresenceBarInner() {
     activeMission.summary,
     hasCartItems
   );
+  const whyExplanation =
+    activeMission.whyDetail?.trim() ||
+    summary ||
+    "We combine your basket, searches, and browsing to pick this mode.";
   const cta = missionCta(activeMission.key, items.length);
   const subHref = summaryLinkHref(activeMission.key);
   const summaryClassName =
@@ -158,8 +162,8 @@ function IntentPresenceBarInner() {
               Why am I seeing this?
             </button>
             {whyOpen && (
-              <div className="absolute right-0 top-full mt-1 z-50 w-[min(100vw-2rem,20rem)] rounded-xl border border-white/20 bg-[var(--aurora-mission-bar-bg)] p-3 text-xs text-[var(--aurora-mission-bar-muted)] shadow-xl">
-                {summary}
+              <div className="absolute right-0 top-full mt-1 z-50 w-[min(100vw-2rem,24rem)] rounded-xl border border-white/20 bg-[var(--aurora-mission-bar-bg)] p-3 text-xs text-[var(--aurora-mission-bar-muted)] shadow-xl whitespace-pre-line leading-relaxed">
+                {whyExplanation}
               </div>
             )}
           </div>
