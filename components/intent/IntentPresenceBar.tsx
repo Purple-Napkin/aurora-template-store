@@ -124,7 +124,7 @@ function IntentPresenceBarInner() {
 
   return (
     <div
-      className="w-full border-b border-[var(--aurora-mission-bar-border)] bg-[var(--aurora-mission-bar-bg)] text-white shadow-sm"
+      className="relative z-[100] w-full border-b border-[var(--aurora-mission-bar-border)] bg-[var(--aurora-mission-bar-bg)] text-white shadow-sm"
       data-holmes="intent-presence-bar"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2.5 sm:py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
@@ -162,7 +162,7 @@ function IntentPresenceBarInner() {
               Why am I seeing this?
             </button>
             {whyOpen && (
-              <div className="absolute right-0 top-full mt-1 z-50 w-[min(100vw-2rem,24rem)] rounded-xl border border-white/20 bg-[var(--aurora-mission-bar-bg)] p-3 text-xs text-[var(--aurora-mission-bar-muted)] shadow-xl whitespace-pre-line leading-relaxed">
+              <div className="absolute right-0 top-full z-[110] mt-1 w-[min(100vw-2rem,24rem)] rounded-xl border border-white/20 bg-[var(--aurora-mission-bar-bg)] p-3 text-xs text-[var(--aurora-mission-bar-muted)] shadow-xl whitespace-pre-line leading-relaxed">
                 {whyExplanation}
               </div>
             )}
