@@ -111,6 +111,12 @@ Spec and acceptance criteria: [HOLMES-WHITEPAPER.md](../../aurora-studio/docs/HO
 
 ---
 
+## Cart combos (general retail vs grocery)
+
+**Hardware / general retail** Holmes domain does **not** use grocery **meal occasion** rules (breakfast vs dinner recipe filtering). If this tenant is configured as **ecom** for combos, meal alignment may apply—see [holmes-cart-meal-occasion.md](../../aurora-studio/docs/holmes-cart-meal-occasion.md).
+
+---
+
 ## Don't Lose Track
 
 The command surface, missions, and feed are **expression layers**. Holmes is the **brain**.
