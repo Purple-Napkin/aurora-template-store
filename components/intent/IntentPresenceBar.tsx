@@ -56,9 +56,9 @@ function persistDismissed(value: boolean) {
 }
 
 function bandSuffix(band: string | undefined): string {
-  if (band === "high") return " — mode active";
-  if (band === "medium") return " — suggestions tuned";
-  return " — light context";
+  if (band === "high") return " · mode active";
+  if (band === "medium") return " · suggestions tuned";
+  return " · light context";
 }
 
 function IntentPresenceBarInner() {
@@ -177,8 +177,8 @@ function IntentPresenceBarInner() {
             type="button"
             onClick={handleReset}
             className="p-2 rounded-lg text-[var(--aurora-mission-bar-muted)] hover:bg-white/10 transition-colors"
-            aria-label="Reset Holmes session — clears basket and browsing state, then reloads"
-            title="Reset Holmes session — clears basket, session data, and starts a fresh Holmes session (reloads)"
+            aria-label="Reset Holmes session. Clears basket and browsing state, then reloads."
+            title="Reset Holmes session. Clears basket, session data, and starts a fresh Holmes session (reloads)."
           >
             <RotateCcw className="w-4 h-4" />
           </button>

@@ -115,6 +115,10 @@ function probeImageLayout(absoluteUrl: string): Promise<CardLayoutMode> {
 const cardShell =
   "border border-aurora-border/55 shadow-sm shadow-black/[0.04] transition-[box-shadow,border-color] duration-200 ease-out hover:border-aurora-primary/22 hover:shadow-md hover:shadow-black/[0.07] dark:border-aurora-border/40 dark:shadow-none dark:ring-1 dark:ring-inset dark:ring-white/[0.06] dark:hover:shadow-lg dark:hover:shadow-black/40";
 
+/** Large surfaces (Holmes panels, mission hints) without hover lift. */
+export const CONTENT_BLOCK_PANEL_SHELL =
+  "border border-aurora-border/28 shadow-sm shadow-black/[0.04] dark:border-aurora-border/30 dark:shadow-none dark:ring-1 dark:ring-inset dark:ring-white/[0.06]";
+
 function TitlePrice({
   prod,
   currency = "GBP",
@@ -195,7 +199,7 @@ export function ContentBlockProductCard({
     thumbnail: true as const,
     fallback: (
       <span className="flex h-full min-h-[5rem] w-full items-center justify-center text-aurora-muted text-2xl font-light">
-        —
+        -
       </span>
     ),
   };
@@ -218,7 +222,7 @@ export function ContentBlockProductCard({
           />
           {prod.on_sale ? <ProductSaleBadge /> : null}
         </div>
-        <div className="border-t border-stone-200/90 bg-[#faf8f5] px-4 py-3.5 sm:px-5 sm:py-4">
+        <div className="flex min-h-0 flex-1 flex-col border-t border-stone-200/90 bg-[#faf8f5] px-4 py-3.5 sm:px-5 sm:py-4">
           <div className="flex min-h-0 flex-1 flex-col gap-1.5 text-stone-900">
             <TitlePrice prod={prod} currency={currency} titleClassName="text-stone-900" />
           </div>

@@ -40,7 +40,7 @@ function getTrustSignal(section: Section, timeOfDay: string, storeName?: string)
   switch (section.type) {
     case "meals":
       return timeOfDay === "evening"
-        ? "Evening rush — popular picks on the trade counter"
+        ? "Evening rush: popular picks on the trade counter"
         : `Highlights for ${timeOfDay}`;
     case "for_you":
       return "Based on your browsing";
@@ -172,7 +172,7 @@ export function AdaptiveFeed({
               <span className="text-xs text-aurora-muted font-medium">{trustSignal}</span>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5">
+          <div className="grid grid-cols-2 items-stretch gap-4 sm:grid-cols-4 sm:gap-5">
             {sec.products.map((prod) => (
               <ContentBlockProductCard
                 key={prod.id}

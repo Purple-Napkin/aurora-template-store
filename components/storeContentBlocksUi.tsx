@@ -244,7 +244,7 @@ export function ProductGridSection({
       </div>
       <div
         {...(withHolmesMarkers ? { "data-holmes-home-section-grid": true } : {})}
-        className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5"
+        className="grid grid-cols-2 items-stretch gap-4 sm:grid-cols-4 sm:gap-5"
       >
         {sec.products.map((prod) => (
           <ContentBlockProductCard
@@ -280,14 +280,14 @@ export function InspirationSection({
       ) : null}
       <div
         {...(withHolmesMarkers ? { "data-holmes-home-section-grid": true } : {})}
-        className="grid grid-cols-2 sm:grid-cols-4 gap-4"
+        className="grid grid-cols-2 items-stretch sm:grid-cols-4 gap-4"
       >
         {sec.cards.map((card, j) => (
           <Link
             key={j}
             href={card.linkUrl || "/catalogue"}
             {...(withHolmesMarkers ? { "data-holmes-home-card": true } : {})}
-            className="block p-4 rounded-xl bg-aurora-surface border border-aurora-border hover:border-aurora-primary/40 hover:shadow-md transition-all"
+            className="flex h-full flex-col p-4 rounded-xl bg-aurora-surface border border-aurora-border hover:border-aurora-primary/40 hover:shadow-md transition-all"
           >
             <div className="aspect-square rounded-lg bg-aurora-surface-hover mb-2 overflow-hidden">
               <ProductImage

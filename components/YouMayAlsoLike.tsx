@@ -79,7 +79,7 @@ export async function YouMayAlsoLike({
       <h2 className="font-display text-xl font-bold mb-4">
         {fromHolmes ? "Pairs well with" : "You may also like"}
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-start">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-stretch">
         {records.map((record) => {
           const id = String(record.id ?? "");
           const name = getDisplayName(record);
@@ -89,9 +89,9 @@ export async function YouMayAlsoLike({
           return (
             <div
               key={id}
-              className="pattern-well p-4 rounded-component border border-aurora-border flex flex-col"
+              className="pattern-well p-4 rounded-component border border-aurora-border flex h-full flex-col"
             >
-              <Link href={`/catalogue/${id}`} className="flex flex-col flex-1 min-h-0">
+              <Link href={`/catalogue/${id}`} className="flex flex-col flex-1 min-h-0 shrink-0">
                 <div className="aspect-square w-full rounded-component bg-aurora-surface-hover mb-2 overflow-hidden relative shrink-0">
                   <ProductImage
                     src={imageUrl}
@@ -108,7 +108,7 @@ export async function YouMayAlsoLike({
                 )}
               </Link>
               {priceCents != null && (
-                <div className="mt-2">
+                <div className="mt-auto pt-3">
                   <AddToCartButton
                     recordId={id}
                     tableSlug={catalogTableSlug}

@@ -26,6 +26,7 @@ import {
   getStockStatus,
 } from "@/lib/catalogue-utils";
 import { storeAtcButtonClassName, storeViewDetailsClassName } from "@/lib/store-product-card-styles";
+import { RecipeHolmesExperience } from "@/components/RecipeHolmesExperience";
 
 function hitPriceCents(hit: SearchHit): number | undefined {
   return toCents(getPriceMajor(hit as Record<string, unknown>));
@@ -195,6 +196,10 @@ export function RecipePageView({
           </div>
         )}
       </header>
+
+      {!compact && recipe && (
+        <RecipeHolmesExperience recipeTitle={displayTitle} ingredients={recipe.ingredients ?? []} />
+      )}
 
       {!compact && recipe?.image_url && (
         <div className="w-full max-w-3xl aspect-video rounded-xl overflow-hidden border border-aurora-border bg-aurora-surface-hover">

@@ -71,8 +71,8 @@ export function HolmesContextualWell({ currentProductId, variant = "default" }: 
   if (hasCombo && !hint) {
     const cartCopy =
       variant === "cart" && comboTitle
-        ? `We suggest parts and a bundle that pair with your basket${comboTitle ? ` — ${comboTitle}` : ""}.`
-        : `We have complementary SKUs and a bundle offer that fit what’s in your basket${comboTitle ? ` — ${comboTitle}` : ""}.`;
+        ? `We suggest parts and a bundle that pair with your basket${comboTitle ? `: “${comboTitle}”` : ""}.`
+        : `We have complementary SKUs and a bundle offer that fit what’s in your basket${comboTitle ? `: “${comboTitle}”` : ""}.`;
     return (
       <div className="pattern-well mb-6 p-4 rounded-md border border-aurora-primary/35 bg-aurora-primary/[0.06] shadow-[inset_0_1px_0_rgb(255_255_255/0.4),0_1px_2px_rgb(15_23_42/0.04)]">
         <p className="text-sm font-semibold text-aurora-text mb-2">{cartCopy}</p>
